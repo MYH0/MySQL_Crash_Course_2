@@ -1,0 +1,1262 @@
+{
+    "type": "MySQLNotebook",
+    "version": "1.0",
+    "caption": "DB Notebook",
+    "content": "\\about\n##6.过滤数据\n#6.1 过滤条件WHERE\n-- ORDER BY应在WHERE后面\nSELECT prod_name,prod_price\nFROM products\nWHERE prod_price=2.5;\n#6.2 运算符\n-- 1.等于 =\n-- 2.不等于既可以是!=\n--      也可以是<>\n-- 3.指定在2个值之间:BETWEEN value1 AND value2\n#6.2.1 检查单个条件\nSELECT prod_name,prod_price\nFROM products\nWHERE prod_name='fuses';\nSELECT prod_name,prod_price\nFROM products\nWHERE prod_price<10;\nSELECT prod_name,prod_price\nFROM products\nWHERE prod_price<=10;\n#6.2.2 不匹配检查\nSELECT vend_id,prod_name\nFROM products\nWHERE vend_id != 1003;\n#6.2.3 范围检查\nSELECT prod_name,prod_price\nFROM products\nWHERE prod_price BETWEEN 5 AND 10;\n#6.2.4 空值检查 IS NULL\n-- 注：不具有特定值!=NULL空值\nSELECT cust_name\nFROM customers\nWHERE cust_email IS NULL;\n#P1\nSELECT prod_id,prod_name\nFROM products\nWHERE prod_price=9.49;\n#p2\nSELECT prod_id,prod_name\nFROM products\nWHERE prod_price>=9;\n#P3\nSELECT DISTINCT order_num\nFROM orderitems\nWHERE quantity>=100;\nSELECT prod_name,prod_price\nFROM products\nWHERE prod_price BETWEEN 3 AND 6\nORDER BY prod_price;\n",
+    "options": {
+        "tabSize": 4,
+        "indentSize": 4,
+        "insertSpaces": true,
+        "defaultEOL": "LF",
+        "trimAutoWhitespace": true
+    },
+    "viewState": {
+        "cursorState": [
+            {
+                "inSelectionMode": false,
+                "selectionStart": {
+                    "lineNumber": 52,
+                    "column": 1
+                },
+                "position": {
+                    "lineNumber": 52,
+                    "column": 1
+                }
+            }
+        ],
+        "viewState": {
+            "scrollLeft": 0,
+            "firstPosition": {
+                "lineNumber": 41,
+                "column": 1
+            },
+            "firstPositionDeltaTop": 0
+        },
+        "contributionsState": {
+            "editor.contrib.folding": {},
+            "editor.contrib.wordHighlighter": false
+        }
+    },
+    "contexts": [
+        {
+            "state": {
+                "start": 1,
+                "end": 1,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "content": "Welcome to the MySQL Shell - DB Notebook.\n\nPress Ctrl+Enter to execute the code block.\n\nExecute \\sql to switch to SQL, \\js to JavaScript and \\ts to TypeScript mode.\nExecute \\help or \\? for help;",
+                            "language": "ansi"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 6
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 2,
+                "end": 7,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "059b729b-e0c9-48b4-8b5b-4828c9302f68"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 108
+                        },
+                        "contentStart": 45,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "1",
+                    "resultId": "059b729b-e0c9-48b4-8b5b-4828c9302f68",
+                    "rows": [
+                        {
+                            "0": "Carrots",
+                            "1": "2.50"
+                        },
+                        {
+                            "0": "TNT (1 stick)",
+                            "1": "2.50"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 1.075ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "##6.过滤数据\n#6.1 过滤条件WHERE\n-- ORDER BY应在WHERE后面\nSELECT prod_name,prod_price\nFROM products\nWHERE prod_price=2.5",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 8,
+                "end": 12,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "c5be4d56-b331-497f-d18d-72284c4847a8",
+                            "content": "OK, 0 records retrieved in 1.439ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 88
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 13,
+                "end": 16,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "db59b4a1-40aa-4ff9-a8fd-e1eef7df15f9"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 80
+                        },
+                        "contentStart": 14,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "1",
+                    "resultId": "db59b4a1-40aa-4ff9-a8fd-e1eef7df15f9",
+                    "rows": [
+                        {
+                            "0": "Fuses",
+                            "1": "3.42"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.215ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#6.2.1 检查单个条件\nSELECT prod_name,prod_price\nFROM products\nWHERE prod_name='fuses'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 17,
+                "end": 19,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "685afee5-2afb-43fa-b041-b662b68530f4"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 62
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "1",
+                    "resultId": "685afee5-2afb-43fa-b041-b662b68530f4",
+                    "rows": [
+                        {
+                            "0": ".5 ton anvil",
+                            "1": "5.99"
+                        },
+                        {
+                            "0": "1 ton anvil",
+                            "1": "9.99"
+                        },
+                        {
+                            "0": "Carrots",
+                            "1": "2.50"
+                        },
+                        {
+                            "0": "Fuses",
+                            "1": "3.42"
+                        },
+                        {
+                            "0": "Oil can",
+                            "1": "8.99"
+                        },
+                        {
+                            "0": "Sling",
+                            "1": "4.49"
+                        },
+                        {
+                            "0": "TNT (1 stick)",
+                            "1": "2.50"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 7 records retrieved in 2.307ms"
+                    },
+                    "totalRowCount": 7,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT prod_name,prod_price\nFROM products\nWHERE prod_price<10",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 20,
+                "end": 22,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "1a96a04e-7cf4-43b3-93e0-a09df598edcc"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 63
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "1",
+                    "resultId": "1a96a04e-7cf4-43b3-93e0-a09df598edcc",
+                    "rows": [
+                        {
+                            "0": ".5 ton anvil",
+                            "1": "5.99"
+                        },
+                        {
+                            "0": "1 ton anvil",
+                            "1": "9.99"
+                        },
+                        {
+                            "0": "Bird seed",
+                            "1": "10.00"
+                        },
+                        {
+                            "0": "Carrots",
+                            "1": "2.50"
+                        },
+                        {
+                            "0": "Fuses",
+                            "1": "3.42"
+                        },
+                        {
+                            "0": "Oil can",
+                            "1": "8.99"
+                        },
+                        {
+                            "0": "Sling",
+                            "1": "4.49"
+                        },
+                        {
+                            "0": "TNT (1 stick)",
+                            "1": "2.50"
+                        },
+                        {
+                            "0": "TNT (5 sticks)",
+                            "1": "10.00"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 9 records retrieved in 1.19ms"
+                    },
+                    "totalRowCount": 9,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT prod_name,prod_price\nFROM products\nWHERE prod_price<=10",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 23,
+                "end": 26,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "d32087e1-bb3a-4775-92b3-7917289fea80"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 74
+                        },
+                        "contentStart": 13,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "1",
+                    "resultId": "d32087e1-bb3a-4775-92b3-7917289fea80",
+                    "rows": [
+                        {
+                            "0": 1001,
+                            "1": ".5 ton anvil"
+                        },
+                        {
+                            "0": 1001,
+                            "1": "1 ton anvil"
+                        },
+                        {
+                            "0": 1001,
+                            "1": "2 ton anvil"
+                        },
+                        {
+                            "0": 1002,
+                            "1": "Fuses"
+                        },
+                        {
+                            "0": 1002,
+                            "1": "Oil can"
+                        },
+                        {
+                            "0": 1005,
+                            "1": "JetPack 1000"
+                        },
+                        {
+                            "0": 1005,
+                            "1": "JetPack 2000"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "vend_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 7 records retrieved in 2.806ms"
+                    },
+                    "totalRowCount": 7,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#6.2.2 不匹配检查\nSELECT vend_id,prod_name\nFROM products\nWHERE vend_id != 1003",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 27,
+                "end": 30,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "6ad2cb43-d756-4acd-f7bb-6aa0d8703315"
+                    ]
+                },
+                "currentHeight": 223.28125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 88
+                        },
+                        "contentStart": 12,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "1",
+                    "resultId": "6ad2cb43-d756-4acd-f7bb-6aa0d8703315",
+                    "rows": [
+                        {
+                            "0": ".5 ton anvil",
+                            "1": "5.99"
+                        },
+                        {
+                            "0": "1 ton anvil",
+                            "1": "9.99"
+                        },
+                        {
+                            "0": "Bird seed",
+                            "1": "10.00"
+                        },
+                        {
+                            "0": "Oil can",
+                            "1": "8.99"
+                        },
+                        {
+                            "0": "TNT (5 sticks)",
+                            "1": "10.00"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 5 records retrieved in 1.585ms"
+                    },
+                    "totalRowCount": 5,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#6.2.3 范围检查\nSELECT prod_name,prod_price\nFROM products\nWHERE prod_price BETWEEN 5 AND 10",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 31,
+                "end": 35,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "7d275883-4ae5-4b38-dced-f651447ac82c"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 97
+                        },
+                        "contentStart": 40,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "1",
+                    "resultId": "7d275883-4ae5-4b38-dced-f651447ac82c",
+                    "rows": [
+                        {
+                            "0": "Mouse House"
+                        },
+                        {
+                            "0": "E Fudd"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 0.778ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#6.2.4 空值检查 IS NULL\n-- 注：不具有特定值!=NULL空值\nSELECT cust_name\nFROM customers\nWHERE cust_email IS NULL",
+                    "updatable": false,
+                    "fullTableName": "customers"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 36,
+                "end": 39,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "de60188a-4fd8-46fa-fc99-8c9105ff7ba5"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 65
+                        },
+                        "contentStart": 4,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "1",
+                    "resultId": "de60188a-4fd8-46fa-fc99-8c9105ff7ba5",
+                    "rows": [],
+                    "columns": [
+                        {
+                            "title": "prod_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 13,
+                                "characterMaximumLength": 255,
+                                "flags": [
+                                    "BINARY",
+                                    "UNICODE",
+                                    "ASCII"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "CHARACTER"
+                                ]
+                            },
+                            "inPK": true,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "vend_id",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_name",
+                            "field": "2",
+                            "dataType": {
+                                "type": 13,
+                                "characterMaximumLength": 255,
+                                "flags": [
+                                    "BINARY",
+                                    "UNICODE",
+                                    "ASCII"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "CHARACTER"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "3",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_desc",
+                            "field": "4",
+                            "dataType": {
+                                "type": 19,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": null
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 0 records retrieved in 1.116ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#P1\nSELECT prod_id,prod_name\nFROM products\nWHERE prod_price=9.49",
+                    "updatable": true,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 40,
+                "end": 43,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "a521a4ac-99e8-4a9e-acbf-3c0a0b32d3e9"
+                    ]
+                },
+                "currentHeight": 314.09375,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 63
+                        },
+                        "contentStart": 4,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "1",
+                    "resultId": "a521a4ac-99e8-4a9e-acbf-3c0a0b32d3e9",
+                    "rows": [
+                        {
+                            "0": "ANV02",
+                            "1": "1 ton anvil"
+                        },
+                        {
+                            "0": "ANV03",
+                            "1": "2 ton anvil"
+                        },
+                        {
+                            "0": "DTNTR",
+                            "1": "Detonator"
+                        },
+                        {
+                            "0": "FB",
+                            "1": "Bird seed"
+                        },
+                        {
+                            "0": "JP1000",
+                            "1": "JetPack 1000"
+                        },
+                        {
+                            "0": "JP2000",
+                            "1": "JetPack 2000"
+                        },
+                        {
+                            "0": "SAFE",
+                            "1": "Safe"
+                        },
+                        {
+                            "0": "TNT2",
+                            "1": "TNT (5 sticks)"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": true,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 8 records retrieved in 1.851ms"
+                    },
+                    "totalRowCount": 8,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#p2\nSELECT prod_id,prod_name\nFROM products\nWHERE prod_price>=9",
+                    "updatable": true,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 44,
+                "end": 47,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "6cd8daec-6a0a-4805-9d53-fadb527db3d4"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 66
+                        },
+                        "contentStart": 4,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "1",
+                    "resultId": "6cd8daec-6a0a-4805-9d53-fadb527db3d4",
+                    "rows": [
+                        {
+                            "0": 20007
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "order_num",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 0.918ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#P3\nSELECT DISTINCT order_num\nFROM orderitems\nWHERE quantity>=100",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 48,
+                "end": 51,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "32b66f9d-c2b5-4f01-cb7d-46502bc06bd0"
+                    ]
+                },
+                "currentHeight": 162.75,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 95
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "1",
+                    "resultId": "32b66f9d-c2b5-4f01-cb7d-46502bc06bd0",
+                    "rows": [
+                        {
+                            "0": "Fuses",
+                            "1": "3.42"
+                        },
+                        {
+                            "0": "Sling",
+                            "1": "4.49"
+                        },
+                        {
+                            "0": ".5 ton anvil",
+                            "1": "5.99"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 3 records retrieved in 2.311ms"
+                    },
+                    "totalRowCount": 3,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT prod_name,prod_price\nFROM products\nWHERE prod_price BETWEEN 3 AND 6\nORDER BY prod_price",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 52,
+                "end": 52,
+                "language": "mysql",
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 0
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        }
+    ]
+}
