@@ -1,0 +1,866 @@
+{
+    "type": "MySQLNotebook",
+    "version": "1.0",
+    "caption": "DB Notebook",
+    "content": "\\about\n#C10 计算字段\n##10.1 概念\n/*有些数据，需要从表中提取出来，再做其它的计算*/\n##10.2 拼接字段 Concat()\n-- MySql函数不区分大小写\nSELECT Concat(vend_name,'(',vend_country,')')\nFROM vendors\nORDER BY vend_name;\n-- Trim():删除数据两侧多余的空格\n-- LTrim():删除数据左侧多余的空格\n-- RTrim():删除数据右侧多余的空格\nSELECT Concat(RTrim(vend_name) ,'(',RTrim(vend_country),')')\nFROM vendors\nORDER BY vend_name;\n-- 使用别名，因为没有命名的列不能用于客户端程序\nSELECT Concat(RTrim(vend_name) ,'(',RTrim(vend_country),')')\n    AS vend_title\nFROM vendors\nORDER BY vend_name;\n##10.3 执行算术运算\nSELECT prod_id,quantity,item_price,\n        quantity*item_price AS expanded_price\nFROM orderitems\nWHERE order_num=20005;\n/*E1\n编写一个 SQL 语句，从 Vendors 检索 vend_id、vend_name、vend_address 和 vend_city，将 vend_name 重命名为 vname，将 vend_city 重命名为 vcity，将 vend_address 重命名为 vaddress。按供应商名称对结果进行排序（您可以使用原始名称或重命名的名称）。\n*/\nSELECT vend_id,\n        vend_name AS vname,\n        vend_address AS vaddress,\n        vend_city AS vcity\nFROM vendors\nORDER BY vname; \n/*E2\n我们的示例商店正在进行促销活动，所有产品均可享受 10% 的折扣。编写一个 SQL 语句，从 Products 表中返回 prod_id、prod_price 和 sale_price。sale_price 是一个计算字段，其中包含销售价格。这里有一个提示，你可以乘以 0.9 得到原始价值的 90%（从而得到 10% 的价格）。\n*/\nSELECT prod_id,prod_price,\n        prod_price*0.9 AS sale_price\nFROM products;\n",
+    "options": {
+        "tabSize": 4,
+        "indentSize": 4,
+        "insertSpaces": true,
+        "defaultEOL": "LF",
+        "trimAutoWhitespace": true
+    },
+    "viewState": {
+        "cursorState": [
+            {
+                "inSelectionMode": false,
+                "selectionStart": {
+                    "lineNumber": 41,
+                    "column": 1
+                },
+                "position": {
+                    "lineNumber": 41,
+                    "column": 1
+                }
+            }
+        ],
+        "viewState": {
+            "scrollLeft": 0,
+            "firstPosition": {
+                "lineNumber": 32,
+                "column": 1
+            },
+            "firstPositionDeltaTop": -2
+        },
+        "contributionsState": {
+            "editor.contrib.folding": {},
+            "editor.contrib.wordHighlighter": false
+        }
+    },
+    "contexts": [
+        {
+            "state": {
+                "start": 1,
+                "end": 1,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "content": "Welcome to the MySQL Shell - DB Notebook.\n\nPress Ctrl+Enter to execute the code block.\n\nExecute \\sql to switch to SQL, \\js to JavaScript and \\ts to TypeScript mode.\nExecute \\help or \\? for help;",
+                            "language": "ansi"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 6
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 2,
+                "end": 4,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "86687fc7-29d4-42c0-e12d-4ba0b6890c09",
+                            "content": "OK, 0 records retrieved in 1.231ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 46
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 5,
+                "end": 9,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "c75e21cf-935c-4b83-8abb-a6c4fccd50c2"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 116
+                        },
+                        "contentStart": 38,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4fd0b62c-5ca9-430c-926c-d9c4d295c2b3",
+                    "resultId": "c75e21cf-935c-4b83-8abb-a6c4fccd50c2",
+                    "rows": [
+                        {
+                            "0": "ACME(USA)"
+                        },
+                        {
+                            "0": "Anvils R Us(USA)"
+                        },
+                        {
+                            "0": "Furball Inc.(USA)"
+                        },
+                        {
+                            "0": "Jet Set(England)"
+                        },
+                        {
+                            "0": "Jouets Et Ours(France)"
+                        },
+                        {
+                            "0": "LT Supplies(USA)"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Concat(vend_name,'(',vend_country,')')",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 1.107ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "##10.2 拼接字段 Concat()\n-- MySql函数不区分大小写\nSELECT Concat(vend_name,'(',vend_country,')')\nFROM vendors\nORDER BY vend_name",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 10,
+                "end": 15,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "a15d4191-1aba-4812-a2a3-7fc7a6d86ce6"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 161
+                        },
+                        "contentStart": 68,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4fd0b62c-5ca9-430c-926c-d9c4d295c2b3",
+                    "resultId": "a15d4191-1aba-4812-a2a3-7fc7a6d86ce6",
+                    "rows": [
+                        {
+                            "0": "ACME(USA)"
+                        },
+                        {
+                            "0": "Anvils R Us(USA)"
+                        },
+                        {
+                            "0": "Furball Inc.(USA)"
+                        },
+                        {
+                            "0": "Jet Set(England)"
+                        },
+                        {
+                            "0": "Jouets Et Ours(France)"
+                        },
+                        {
+                            "0": "LT Supplies(USA)"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Concat(RTrim(vend_name) ,'(',RTrim(vend_country),')')",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 1.224ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- Trim():删除数据两侧多余的空格\n-- LTrim():删除数据左侧多余的空格\n-- RTrim():删除数据右侧多余的空格\nSELECT Concat(RTrim(vend_name) ,'(',RTrim(vend_country),')')\nFROM vendors\nORDER BY vend_name",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 16,
+                "end": 20,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "2696253c-bfc1-4f0d-b1d7-c9ff06828544"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 137
+                        },
+                        "contentStart": 26,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4fd0b62c-5ca9-430c-926c-d9c4d295c2b3",
+                    "resultId": "2696253c-bfc1-4f0d-b1d7-c9ff06828544",
+                    "rows": [
+                        {
+                            "0": "ACME(USA)"
+                        },
+                        {
+                            "0": "Anvils R Us(USA)"
+                        },
+                        {
+                            "0": "Furball Inc.(USA)"
+                        },
+                        {
+                            "0": "Jet Set(England)"
+                        },
+                        {
+                            "0": "Jouets Et Ours(France)"
+                        },
+                        {
+                            "0": "LT Supplies(USA)"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "vend_title",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 1.562ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 使用别名，因为没有命名的列不能用于客户端程序\nSELECT Concat(RTrim(vend_name) ,'(',RTrim(vend_country),')')\n    AS vend_title\nFROM vendors\nORDER BY vend_name",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 21,
+                "end": 25,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "a1291313-0b7a-4d04-a7c2-5855782a1111"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 134
+                        },
+                        "contentStart": 14,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4fd0b62c-5ca9-430c-926c-d9c4d295c2b3",
+                    "resultId": "a1291313-0b7a-4d04-a7c2-5855782a1111",
+                    "rows": [
+                        {
+                            "0": "ANV01",
+                            "1": 10,
+                            "2": "5.99",
+                            "3": "59.90"
+                        },
+                        {
+                            "0": "ANV02",
+                            "1": 3,
+                            "2": "9.99",
+                            "3": "29.97"
+                        },
+                        {
+                            "0": "TNT2",
+                            "1": 5,
+                            "2": "10.00",
+                            "3": "50.00"
+                        },
+                        {
+                            "0": "FB",
+                            "1": 1,
+                            "2": "10.00",
+                            "3": "10.00"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "quantity",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "item_price",
+                            "field": "2",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "expanded_price",
+                            "field": "3",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 4 records retrieved in 26.163ms"
+                    },
+                    "totalRowCount": 4,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "##10.3 执行算术运算\nSELECT prod_id,quantity,item_price,\n        quantity*item_price AS expanded_price\nFROM orderitems\nWHERE order_num=20005",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 26,
+                "end": 34,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "436434c8-0401-43fc-df2d-168c90aa67df"
+                    ]
+                },
+                "currentHeight": 253.546875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 317
+                        },
+                        "contentStart": 184,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 317,
+                            "length": 1
+                        },
+                        "contentStart": 316,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4fd0b62c-5ca9-430c-926c-d9c4d295c2b3",
+                    "resultId": "436434c8-0401-43fc-df2d-168c90aa67df",
+                    "rows": [
+                        {
+                            "0": 1003,
+                            "1": "ACME",
+                            "2": "555 High Street",
+                            "3": "Los Angeles"
+                        },
+                        {
+                            "0": 1001,
+                            "1": "Anvils R Us",
+                            "2": "123 Main Street",
+                            "3": "Southfield"
+                        },
+                        {
+                            "0": 1004,
+                            "1": "Furball Inc.",
+                            "2": "1000 5th Avenue",
+                            "3": "New York"
+                        },
+                        {
+                            "0": 1005,
+                            "1": "Jet Set",
+                            "2": "42 Galaxy Road",
+                            "3": "London"
+                        },
+                        {
+                            "0": 1006,
+                            "1": "Jouets Et Ours",
+                            "2": "1 Rue Amusement",
+                            "3": "Paris"
+                        },
+                        {
+                            "0": 1002,
+                            "1": "LT Supplies",
+                            "2": "500 Park Street",
+                            "3": "Anytown"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "vend_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": true,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "vname",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "vaddress",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "vcity",
+                            "field": "3",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 3.572ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E1\n\n*/\nSELECT vend_id,\n        vend_name AS vname,\n        vend_address AS vaddress,\n        vend_city AS vcity\nFROM vendors\nORDER BY vname",
+                    "updatable": true,
+                    "fullTableName": "vendors"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 35,
+                "end": 40,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "33fa7152-44e0-4808-e8d5-7b9b84acd86b"
+                    ]
+                },
+                "currentHeight": 351.984375,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 252
+                        },
+                        "contentStart": 174,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4fd0b62c-5ca9-430c-926c-d9c4d295c2b3",
+                    "resultId": "33fa7152-44e0-4808-e8d5-7b9b84acd86b",
+                    "rows": [
+                        {
+                            "0": "ANV01",
+                            "1": "5.99",
+                            "2": "5.391"
+                        },
+                        {
+                            "0": "ANV02",
+                            "1": "9.99",
+                            "2": "8.991"
+                        },
+                        {
+                            "0": "ANV03",
+                            "1": "14.99",
+                            "2": "13.491"
+                        },
+                        {
+                            "0": "DTNTR",
+                            "1": "13.00",
+                            "2": "11.700"
+                        },
+                        {
+                            "0": "FB",
+                            "1": "10.00",
+                            "2": "9.000"
+                        },
+                        {
+                            "0": "FC",
+                            "1": "2.50",
+                            "2": "2.250"
+                        },
+                        {
+                            "0": "FU1",
+                            "1": "3.42",
+                            "2": "3.078"
+                        },
+                        {
+                            "0": "JP1000",
+                            "1": "35.00",
+                            "2": "31.500"
+                        },
+                        {
+                            "0": "JP2000",
+                            "1": "55.00",
+                            "2": "49.500"
+                        },
+                        {
+                            "0": "OL1",
+                            "1": "8.99",
+                            "2": "8.091"
+                        },
+                        {
+                            "0": "SAFE",
+                            "1": "50.00",
+                            "2": "45.000"
+                        },
+                        {
+                            "0": "SLING",
+                            "1": "4.49",
+                            "2": "4.041"
+                        },
+                        {
+                            "0": "TNT1",
+                            "1": "2.50",
+                            "2": "2.250"
+                        },
+                        {
+                            "0": "TNT2",
+                            "1": "10.00",
+                            "2": "9.000"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "sale_price",
+                            "field": "2",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 14 records retrieved in 1.019ms"
+                    },
+                    "totalRowCount": 14,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E2\n我们的示例商店正在进行促销活动，所有产品均可享受 10% 的折扣。编写一个 SQL 语句，从 Products 表中返回 prod_id、prod_price 和 sale_price。sale_price 是一个计算字段，其中包含销售价格。这里有一个提示，你可以乘以 0.9 得到原始价值的 90%（从而得到 10% 的价格）。\n*/\nSELECT prod_id,prod_price,\n        prod_price*0.9 AS sale_price\nFROM products",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 41,
+                "end": 41,
+                "language": "mysql",
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 0
+                        },
+                        "contentStart": 0,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        }
+    ]
+}
