@@ -1,0 +1,1439 @@
+{
+    "type": "MySQLNotebook",
+    "version": "1.0",
+    "caption": "DB Notebook",
+    "content": "\\about\n#C9 正则表达式\n#9.1 介绍\n#9.2 MySQL的正则表达式\n##9.2.1 基本字符匹配\n-- REGEXP后面的内容是正则表达式\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '1000'\n\n#句点'.'在正则表达式中表示'匹配任意字符'\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '.000'\n-- 正则表达式匹配不区分大小写\n-- 如果要区分,可使用关键字BINARY(新版好像不支持这么做)\n-- 应当这么做,加上COLLATE utf8mb4_bin,注意对比：\nSELECT prod_name\nFROM products\nWHERE prod_name COLLATE utf8mb4_bin REGEXP 'JetPack .000';\n\nSELECT prod_name\nFROM products\nWHERE prod_name COLLATE utf8mb4_bin REGEXP 'jetPack .000';\n##9.2.2 OR匹配 |\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '1000|2000'\n##9.2.3 匹配几个字符之一\n-- [123]表示匹配1或2或3\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '[123] Ton'\n-- 注意对比上面\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '1|2|3 Ton'\n-- 字符集合[]也可以被否定 ^\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '[^23] Ton'\n##9.2.4 匹配范围\n-- [1-9]数字1到9\n-- [a-z]小写a到z\n-- [A-Z]大写A到Z\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '[1-5] Ton'\n##9.2.5匹配特殊字符\n-- 特殊字符有.,、[]|-\\\n-- 要在特殊字符前面加前导号\\\\\nSELECT vend_name\nFROM vendors\nWHERE vend_name REGEXP '\\\\.'\n##9.2.6 匹配字符类\n-- 见P71\n##9.2.7 匹配多个实例\n-- 重复元字符见P71,表示前面的几个字符可出现特定次数\n-- *+?{n}{n,}{n,m}\n-- 其中m<=255\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '\\\\([0-9] sticks?\\\\)'\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '[[:digit:]]{4}'\n##9.2.8 定位符\n-- ^文本开始,在集合[]中表示否定\n-- $文本结尾\n-- [[:<:]]词的开始\n-- [[:>:]]词的结尾\n-- 找一个数值（包括小数点）开始的产品\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '^[0-9\\\\.]'\n-- 测试正则表达式\nSELECT 'all' REGEXP '[0-9]'\n/*E1\n使用正则表达式返回名称以数字结尾的所有产品。\n*/\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '[0-9]$'\n/*E2\n仅匹配名称中没有数字的产品。提示如下：您可以否定整个匹配项（如您在第 7 课 “高级数据筛选”中学到的那样）。\n*/\nSELECT prod_name\nFROM products\nWHERE prod_name NOT REGEXP '[0-9]'\n/*E3--\n产品中列出的某些产品的名称由多个单词组成。使用正则表达式可仅返回名称由三个或更多单词组成的产品。提示：寻找单词之间的空格。\n*/\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '.+ .+ .+'\n",
+    "options": {
+        "tabSize": 4,
+        "indentSize": 4,
+        "insertSpaces": true,
+        "defaultEOL": "LF",
+        "trimAutoWhitespace": true
+    },
+    "viewState": {
+        "cursorState": [
+            {
+                "inSelectionMode": false,
+                "selectionStart": {
+                    "lineNumber": 94,
+                    "column": 14
+                },
+                "position": {
+                    "lineNumber": 94,
+                    "column": 14
+                }
+            }
+        ],
+        "viewState": {
+            "scrollLeft": 0,
+            "firstPosition": {
+                "lineNumber": 84,
+                "column": 1
+            },
+            "firstPositionDeltaTop": 48
+        },
+        "contributionsState": {
+            "editor.contrib.folding": {},
+            "editor.contrib.wordHighlighter": false
+        }
+    },
+    "contexts": [
+        {
+            "state": {
+                "start": 1,
+                "end": 1,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "content": "Welcome to the MySQL Shell - DB Notebook.\n\nPress Ctrl+Enter to execute the code block.\n\nExecute \\sql to switch to SQL, \\js to JavaScript and \\ts to TypeScript mode.\nExecute \\help or \\? for help;",
+                            "language": "ansi"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 6
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 2,
+                "end": 10,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "747f4b92-f17b-4439-9b95-b51e7079e08d"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 132
+                        },
+                        "contentStart": 71,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "747f4b92-f17b-4439-9b95-b51e7079e08d",
+                    "rows": [
+                        {
+                            "0": "JetPack 1000"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.163ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#C9 正则表达式\n#9.1 介绍\n#9.2 MySQL的正则表达式\n##9.2.1 基本字符匹配\n-- REGEXP后面的内容是正则表达式\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '1000'\n",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 11,
+                "end": 14,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "5eccc717-4fa4-4b0b-b178-9b2894ce6e85"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 84
+                        },
+                        "contentStart": 24,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "5eccc717-4fa4-4b0b-b178-9b2894ce6e85",
+                    "rows": [
+                        {
+                            "0": "JetPack 1000"
+                        },
+                        {
+                            "0": "JetPack 2000"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 1.158ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#句点'.'在正则表达式中表示'匹配任意字符'\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '.000'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 15,
+                "end": 24,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "7585c4e3-d972-40be-b0fe-0a61bf7fc219",
+                        "73283ab3-5a24-4f9c-b998-9ab749fd4aa9"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 177
+                        },
+                        "contentStart": 88,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 177,
+                            "length": 91
+                        },
+                        "contentStart": 179,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "7585c4e3-d972-40be-b0fe-0a61bf7fc219",
+                    "rows": [
+                        {
+                            "0": "JetPack 1000"
+                        },
+                        {
+                            "0": "JetPack 2000"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 1.635ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 正则表达式匹配不区分大小写\n-- 如果要区分,可使用关键字BINARY(新版好像不支持这么做)\n-- 应当这么做,加上COLLATE utf8mb4_bin,注意对比：\nSELECT prod_name\nFROM products\nWHERE prod_name COLLATE utf8mb4_bin REGEXP 'JetPack .000'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                },
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "73283ab3-5a24-4f9c-b998-9ab749fd4aa9",
+                    "rows": [],
+                    "columns": [
+                        {
+                            "title": "prod_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 13,
+                                "characterMaximumLength": 255,
+                                "flags": [
+                                    "BINARY",
+                                    "UNICODE",
+                                    "ASCII"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "CHARACTER"
+                                ]
+                            },
+                            "inPK": true,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "vend_id",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_name",
+                            "field": "2",
+                            "dataType": {
+                                "type": 13,
+                                "characterMaximumLength": 255,
+                                "flags": [
+                                    "BINARY",
+                                    "UNICODE",
+                                    "ASCII"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "CHARACTER"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "3",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_desc",
+                            "field": "4",
+                            "dataType": {
+                                "type": 19,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": null
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 0 records retrieved in 1.06ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 1,
+                    "sql": "\n\nSELECT prod_name\nFROM products\nWHERE prod_name COLLATE utf8mb4_bin REGEXP 'jetPack .000'",
+                    "updatable": true,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 25,
+                "end": 28,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "d1a141b7-526e-4846-b1d5-816da2a21a15"
+                    ]
+                },
+                "currentHeight": 132.46875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 80
+                        },
+                        "contentStart": 15,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "d1a141b7-526e-4846-b1d5-816da2a21a15",
+                    "rows": [
+                        {
+                            "0": "JetPack 1000"
+                        },
+                        {
+                            "0": "JetPack 2000"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 1.645ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#9.2.2 OR匹配 |\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '1000|2000'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 29,
+                "end": 33,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "2c126992-88d2-4983-eb0f-8e238cc6695f"
+                    ]
+                },
+                "currentHeight": 132.46875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 100
+                        },
+                        "contentStart": 35,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "2c126992-88d2-4983-eb0f-8e238cc6695f",
+                    "rows": [
+                        {
+                            "0": "1 ton anvil"
+                        },
+                        {
+                            "0": "2 ton anvil"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 1.26ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#9.2.3 匹配几个字符之一\n-- [123]表示匹配1或2或3\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '[123] Ton'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 34,
+                "end": 37,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "6dd8c580-4e40-42b2-bfba-766639659656"
+                    ]
+                },
+                "currentHeight": 223.28125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 75
+                        },
+                        "contentStart": 10,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "6dd8c580-4e40-42b2-bfba-766639659656",
+                    "rows": [
+                        {
+                            "0": "1 ton anvil"
+                        },
+                        {
+                            "0": "2 ton anvil"
+                        },
+                        {
+                            "0": "JetPack 1000"
+                        },
+                        {
+                            "0": "JetPack 2000"
+                        },
+                        {
+                            "0": "TNT (1 stick)"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 5 records retrieved in 1.072ms"
+                    },
+                    "totalRowCount": 5,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 注意对比上面\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '1|2|3 Ton'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 38,
+                "end": 41,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "724ba4dd-2d55-4f54-cbe5-9bb919bf55a0"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 85
+                        },
+                        "contentStart": 18,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "724ba4dd-2d55-4f54-cbe5-9bb919bf55a0",
+                    "rows": [
+                        {
+                            "0": ".5 ton anvil"
+                        },
+                        {
+                            "0": "1 ton anvil"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 13.537ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 字符集合[]也可以被否定 ^\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '[^23] Ton'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 42,
+                "end": 48,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "9b14e1b8-e031-483d-b0d1-b6a122b29789"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 120
+                        },
+                        "contentStart": 55,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "9b14e1b8-e031-483d-b0d1-b6a122b29789",
+                    "rows": [
+                        {
+                            "0": ".5 ton anvil"
+                        },
+                        {
+                            "0": "1 ton anvil"
+                        },
+                        {
+                            "0": "2 ton anvil"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 3 records retrieved in 1.098ms"
+                    },
+                    "totalRowCount": 3,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "##9.2.4 匹配范围\n-- [1-9]数字1到9\n-- [a-z]小写a到z\n-- [A-Z]大写A到Z\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '[1-5] Ton'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 49,
+                "end": 54,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "2346bb03-c6d7-4ee7-fc1f-68b4fbaae3a0"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 107
+                        },
+                        "contentStart": 49,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "2346bb03-c6d7-4ee7-fc1f-68b4fbaae3a0",
+                    "rows": [
+                        {
+                            "0": "Furball Inc."
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "vend_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 49.071ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "##9.2.5匹配特殊字符\n-- 特殊字符有.,、[]|-\n-- 要在特殊字符前面加前导号\\\\\nSELECT vend_name\nFROM vendors\nWHERE vend_name REGEXP '\\\\.'",
+                    "updatable": false,
+                    "fullTableName": "vendors"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 55,
+                "end": 56,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "81c2901f-bbad-420a-c215-b6e00272d478",
+                            "content": "OK, 0 records retrieved in 1.473ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 21
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 57,
+                "end": 63,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "3d160e57-59c2-4f14-f175-2bec9d1e65c8"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 151
+                        },
+                        "contentStart": 76,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "3d160e57-59c2-4f14-f175-2bec9d1e65c8",
+                    "rows": [
+                        {
+                            "0": "TNT (1 stick)"
+                        },
+                        {
+                            "0": "TNT (5 sticks)"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 1.202ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "##9.2.7 匹配多个实例\n-- 重复元字符见P71,表示前面的几个字符可出现特定次数\n-- *+?{n}{n,}{n,m}\n-- 其中m<=255\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '\\\\([0-9] sticks?\\\\)'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 64,
+                "end": 66,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "e9f63455-043d-4752-dfd3-a95cfaa9a5da"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 70
+                        },
+                        "contentStart": 0,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "e9f63455-043d-4752-dfd3-a95cfaa9a5da",
+                    "rows": [
+                        {
+                            "0": "JetPack 1000"
+                        },
+                        {
+                            "0": "JetPack 2000"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 1.907ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT prod_name\nFROM products\nWHERE prod_name REGEXP '[[:digit:]]{4}'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 67,
+                "end": 71,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "b8e59868-6693-4233-93c4-9c379faf2cd2",
+                            "content": "OK, 0 records retrieved in 0.621ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 72
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 72,
+                "end": 75,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "eaa8fc80-c4b1-4c55-faa3-c6d4198791cc"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 86
+                        },
+                        "contentStart": 21,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "eaa8fc80-c4b1-4c55-faa3-c6d4198791cc",
+                    "rows": [
+                        {
+                            "0": ".5 ton anvil"
+                        },
+                        {
+                            "0": "1 ton anvil"
+                        },
+                        {
+                            "0": "2 ton anvil"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 3 records retrieved in 1.248ms"
+                    },
+                    "totalRowCount": 3,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 找一个数值（包括小数点）开始的产品\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '^[0-9\\\\.]'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 76,
+                "end": 77,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "6908b83e-c543-4d88-ee3c-84f2eb7679ce"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 38
+                        },
+                        "contentStart": 11,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "6908b83e-c543-4d88-ee3c-84f2eb7679ce",
+                    "rows": [
+                        {
+                            "0": 0
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "'all' REGEXP '[0-9]'",
+                            "field": "0",
+                            "dataType": {
+                                "type": 42,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 0.913ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 测试正则表达式\nSELECT 'all' REGEXP '[0-9]'",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 78,
+                "end": 83,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "20a3ea33-4afe-441d-eb9f-cbd5fc9604f5"
+                    ]
+                },
+                "currentHeight": 132.46875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 93
+                        },
+                        "contentStart": 31,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "20a3ea33-4afe-441d-eb9f-cbd5fc9604f5",
+                    "rows": [
+                        {
+                            "0": "JetPack 1000"
+                        },
+                        {
+                            "0": "JetPack 2000"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 0.886ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E1\n使用正则表达式返回名称以数字结尾的所有产品。\n*/\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '[0-9]$'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 84,
+                "end": 89,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "223f5843-2a70-473e-eeb0-e5675a597774"
+                    ]
+                },
+                "currentHeight": 283.828125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 129
+                        },
+                        "contentStart": 64,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "223f5843-2a70-473e-eeb0-e5675a597774",
+                    "rows": [
+                        {
+                            "0": "Detonator"
+                        },
+                        {
+                            "0": "Bird seed"
+                        },
+                        {
+                            "0": "Carrots"
+                        },
+                        {
+                            "0": "Fuses"
+                        },
+                        {
+                            "0": "Oil can"
+                        },
+                        {
+                            "0": "Safe"
+                        },
+                        {
+                            "0": "Sling"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 7 records retrieved in 1.401ms"
+                    },
+                    "totalRowCount": 7,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E2\n仅匹配名称中没有数字的产品。提示如下：您可以否定整个匹配项（如您在第 7 课 “高级数据筛选”中学到的那样）。\n*/\nSELECT prod_name\nFROM products\nWHERE prod_name NOT REGEXP '[0-9]'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 90,
+                "end": 95,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "9d429177-8f8f-46d2-b5f6-9edeeb9fb7db"
+                    ]
+                },
+                "currentHeight": 223.28125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 136
+                        },
+                        "contentStart": 72,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2b613f73-a990-4011-cb6e-50a516c17015",
+                    "resultId": "9d429177-8f8f-46d2-b5f6-9edeeb9fb7db",
+                    "rows": [
+                        {
+                            "0": ".5 ton anvil"
+                        },
+                        {
+                            "0": "1 ton anvil"
+                        },
+                        {
+                            "0": "2 ton anvil"
+                        },
+                        {
+                            "0": "TNT (1 stick)"
+                        },
+                        {
+                            "0": "TNT (5 sticks)"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 5 records retrieved in 1.12ms"
+                    },
+                    "totalRowCount": 5,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E3--\n产品中列出的某些产品的名称由多个单词组成。使用正则表达式可仅返回名称由三个或更多单词组成的产品。提示：寻找单词之间的空格。\n*/\nSELECT prod_name\nFROM products\nWHERE prod_name REGEXP '.+ .+ .+'",
+                    "updatable": false,
+                    "fullTableName": "products"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 96,
+                "end": 96,
+                "language": "mysql",
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 0
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        }
+    ]
+}
