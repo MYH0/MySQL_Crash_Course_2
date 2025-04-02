@@ -2,12 +2,12 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C11 数据处理函数\n#11.1 函数\n-- SQL语句的可移植性强,但函数不强。因为函数依赖于DBMS\n#11.2 使用函数\n-- 处理文本字符串\n-- 算术运算\n-- 处理日期和时间值\n-- 返回DBMS信息的系统函数\n##11.2.1 文本处理\n-- 详见P84\nSELECT vend_name,\n        Upper(vend_name) AS vend_name_upcase\nFROM vendors\nORDER BY vend_name;   \n",
+    "content": "\\about\n#C11 数据处理函数\n#11.1 函数\n-- SQL语句的可移植性强,但函数不强。因为函数依赖于DBMS\n#11.2 使用函数\n-- 处理文本字符串\n-- 算术运算\n-- 处理日期和时间值\n-- 返回DBMS信息的系统函数\n##11.2.1 文本处理\n-- 函数表详见P84\nSELECT vend_name,\n        Upper(vend_name) AS vend_name_upcase\nFROM vendors\nORDER BY vend_name;   \n-- 寻找发音相似的文本\nSELECT cust_name,cust_contact\nFROM customers\nWHERE SOUNDEX(cust_contact) = SOUNDEX('Y Lie');\n##11.2.2 日期和时间处理\n-- 函数表详见P86\n-- 日期格式必须为yyyy-mm-dd\nSELECT cust_id,order_num\nFROM orders\nWHERE order_date='2023-09-01';\n-- 如果日期后面接具体时间,比如2023-09-01 08:00:00,将不会被检索出来\n-- 应当使用函数Date(),只提取日期\nSELECT cust_id,order_num\nFROM orders\nWHERE DATE(order_date)='2023-09-01';\n-- 如果要检索2023年9月的订单,有2种方法\n-- 法一\nSELECT cust_id,order_num\nFROM orders\nWHERE DATE(order_date) BETWEEN '2023-09-01' AND '2023-09-30';\n-- 法二:不用管每个月\nSELECT cust_id,order_num\nFROM orders\nWHERE YEAR(order_date)=2023\n    AND MONTH(order_date)=9;\n##11.2.3 数值处理\n-- 详见P89\n/*E1\n我们的商店现已上线，并且正在创建客户帐户。All Every users 都需要登录名，默认登录名将是他们的用户名和城市的组合。编写一条返回客户 ID （cust_id）、客户名称 （customer_name） 和 user_login 的 SQL 语句，该语句均为大写，由客户联系人的前两个字符 （cust_contact） 和客户城市的前三个字符 （cust_city） 组成。因此，例如，我的登录名（Ben Forta，住在 Oak Park）将是 BEOAK。这里有一个提示：对于这个，您将使用函数、连接和别名。\n*/\nSELECT cust_id,cust_name,\n        CONCAT(UPPER(Left(cust_contact,2)),UPPER(Left(cust_city,3))) AS user_login\nFROM customers;\n/*E2\n返回 2023 年 10 月下的所有订单的订单号 （order_num） 和订单日期 （order_date），并按订单日期排序。\n*/\nSELECT order_num,order_date\nFROM orders\nWHERE Date(order_date) BETWEEN '2023-10-01' AND '2023-10-31'\nORDER BY order_date;\n",
     "options": {
         "tabSize": 4,
-        "indentSize": 4,
         "insertSpaces": true,
-        "defaultEOL": "LF",
+        "indentSize": 4,
+        "defaultEOL": "CRLF",
         "trimAutoWhitespace": true
     },
     "viewState": {
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 16,
-                    "column": 1
+                    "lineNumber": 53,
+                    "column": 12
                 },
                 "position": {
-                    "lineNumber": 16,
-                    "column": 1
+                    "lineNumber": 53,
+                    "column": 12
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 1,
+                "lineNumber": 41,
                 "column": 1
             },
-            "firstPositionDeltaTop": 0
+            "firstPositionDeltaTop": 24
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -53,7 +53,7 @@
                         }
                     ]
                 },
-                "currentHeight": 151.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -85,7 +85,7 @@
                         }
                     ]
                 },
-                "currentHeight": 31.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -117,7 +117,7 @@
                         }
                     ]
                 },
-                "currentHeight": 31.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -141,7 +141,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "262d0453-a4e0-436c-cd07-0deaacec6be5"
+                        "b38d1db7-6cef-415e-8dbb-26e691287f1d"
                     ]
                 },
                 "currentHeight": 253.546875,
@@ -151,26 +151,26 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 118
+                            "length": 121
                         },
-                        "contentStart": 23,
+                        "contentStart": 26,
                         "state": 0
                     },
                     {
                         "delimiter": ";",
                         "span": {
-                            "start": 118,
+                            "start": 121,
                             "length": 3
                         },
-                        "contentStart": 117,
+                        "contentStart": 120,
                         "state": 3
                     }
                 ]
             },
             "data": [
                 {
-                    "tabId": "e7b0ce9a-4a95-4901-cf50-c7489d149a02",
-                    "resultId": "262d0453-a4e0-436c-cd07-0deaacec6be5",
+                    "tabId": "c9e0169f-365e-47b2-f28b-297c45c6e993",
+                    "resultId": "b38d1db7-6cef-415e-8dbb-26e691287f1d",
                     "rows": [
                         {
                             "0": "ACME",
@@ -251,7 +251,747 @@
         {
             "state": {
                 "start": 16,
-                "end": 16,
+                "end": 19,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "e8df9cc4-da51-4386-e064-56213cca60af"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 105
+                        },
+                        "contentStart": 13,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c9e0169f-365e-47b2-f28b-297c45c6e993",
+                    "resultId": "e8df9cc4-da51-4386-e064-56213cca60af",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": "Y Lee"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_contact",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 65.187ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 寻找发音相似的文本\nSELECT cust_name,cust_contact\nFROM customers\nWHERE SOUNDEX(cust_contact) = SOUNDEX('Y Lie')",
+                    "updatable": false,
+                    "fullTableName": "customers"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 20,
+                "end": 22,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "3af960eb-551d-48b9-8640-b5600718515d",
+                            "content": "OK, 0 records retrieved in 1.202ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 49
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 23,
+                "end": 25,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "a87d4e71-0ff2-4697-db83-23307c6b7b58"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 67
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c9e0169f-365e-47b2-f28b-297c45c6e993",
+                    "resultId": "a87d4e71-0ff2-4697-db83-23307c6b7b58",
+                    "rows": [
+                        {
+                            "0": 10001,
+                            "1": 20005
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": true,
+                            "nullable": false,
+                            "autoIncrement": true
+                        },
+                        {
+                            "title": "order_num",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.361ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT cust_id,order_num\nFROM orders\nWHERE order_date='2023-09-01'",
+                    "updatable": true,
+                    "fullTableName": "orders"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 26,
+                "end": 30,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "b5d69683-7f17-4775-8d79-e00574e820ca"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 141
+                        },
+                        "contentStart": 68,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c9e0169f-365e-47b2-f28b-297c45c6e993",
+                    "resultId": "b5d69683-7f17-4775-8d79-e00574e820ca",
+                    "rows": [
+                        {
+                            "0": 10001,
+                            "1": 20005
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": true,
+                            "nullable": false,
+                            "autoIncrement": true
+                        },
+                        {
+                            "title": "order_num",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.773ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 如果日期后面接具体时间,比如2023-09-01 08:00:00,将不会被检索出来\n-- 应当使用函数Date(),只提取日期\nSELECT cust_id,order_num\nFROM orders\nWHERE DATE(order_date)='2023-09-01'",
+                    "updatable": true,
+                    "fullTableName": "orders"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 31,
+                "end": 35,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "8fc55cdc-b4ed-445d-a890-aeccb54f3928"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 129
+                        },
+                        "contentStart": 31,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c9e0169f-365e-47b2-f28b-297c45c6e993",
+                    "resultId": "8fc55cdc-b4ed-445d-a890-aeccb54f3928",
+                    "rows": [
+                        {
+                            "0": 10001,
+                            "1": 20005
+                        },
+                        {
+                            "0": 10003,
+                            "1": 20006
+                        },
+                        {
+                            "0": 10004,
+                            "1": 20007
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": true,
+                            "nullable": false,
+                            "autoIncrement": true
+                        },
+                        {
+                            "title": "order_num",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 3 records retrieved in 1.254ms"
+                    },
+                    "totalRowCount": 3,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 如果要检索2023年9月的订单,有2种方法\n-- 法一\nSELECT cust_id,order_num\nFROM orders\nWHERE DATE(order_date) BETWEEN '2023-09-01' AND '2023-09-30'",
+                    "updatable": true,
+                    "fullTableName": "orders"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 36,
+                "end": 40,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "845a5923-26f8-46df-a9f5-eb73cdcc69f4"
+                    ]
+                },
+                "currentHeight": 162.75,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 106
+                        },
+                        "contentStart": 13,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c9e0169f-365e-47b2-f28b-297c45c6e993",
+                    "resultId": "845a5923-26f8-46df-a9f5-eb73cdcc69f4",
+                    "rows": [
+                        {
+                            "0": 10001,
+                            "1": 20005
+                        },
+                        {
+                            "0": 10003,
+                            "1": 20006
+                        },
+                        {
+                            "0": 10004,
+                            "1": 20007
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": true,
+                            "nullable": false,
+                            "autoIncrement": true
+                        },
+                        {
+                            "title": "order_num",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 3 records retrieved in 1.652ms"
+                    },
+                    "totalRowCount": 3,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 法二:不用管每个月\nSELECT cust_id,order_num\nFROM orders\nWHERE YEAR(order_date)=2023\n    AND MONTH(order_date)=9",
+                    "updatable": true,
+                    "fullTableName": "orders"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 41,
+                "end": 42,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "590ea908-f25e-42cf-fa60-d27523fa304f",
+                            "content": "OK, 0 records retrieved in 5.453ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 22
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 43,
+                "end": 48,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "932073ec-6fc7-44e3-8075-959136a329a2"
+                    ]
+                },
+                "currentHeight": 223.28125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 394
+                        },
+                        "contentStart": 270,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c9e0169f-365e-47b2-f28b-297c45c6e993",
+                    "resultId": "932073ec-6fc7-44e3-8075-959136a329a2",
+                    "rows": [
+                        {
+                            "0": 10001,
+                            "1": "Coyote Inc.",
+                            "2": "Y DET"
+                        },
+                        {
+                            "0": 10002,
+                            "1": "Mouse House",
+                            "2": "JECOL"
+                        },
+                        {
+                            "0": 10003,
+                            "1": "Wascals",
+                            "2": "JIMUN"
+                        },
+                        {
+                            "0": 10004,
+                            "1": "Yosemite Place",
+                            "2": "Y PHO"
+                        },
+                        {
+                            "0": 10005,
+                            "1": "E Fudd",
+                            "2": "E CHI"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "user_login",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 5 records retrieved in 2.388ms"
+                    },
+                    "totalRowCount": 5,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E1\n我们的商店现已上线，并且正在创建客户帐户。All Every users 都需要登录名，默认登录名将是他们的用户名和城市的组合。编写一条返回客户 ID （cust_id）、客户名称 （customer_name） 和 user_login 的 SQL 语句，该语句均为大写，由客户联系人的前两个字符 （cust_contact） 和客户城市的前三个字符 （cust_city） 组成。因此，例如，我的登录名（Ben Forta，住在 Oak Park）将是 BEOAK。这里有一个提示：对于这个，您将使用函数、连接和别名。\n*/\nSELECT cust_id,cust_name,\n        CONCAT(UPPER(Left(cust_contact,2)),UPPER(Left(cust_city,3))) AS user_login\nFROM customers",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 49,
+                "end": 55,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "4c625ba9-1b7a-4d95-f2dd-9cf2aedbf0ab"
+                    ]
+                },
+                "currentHeight": 132.46875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 195
+                        },
+                        "contentStart": 74,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c9e0169f-365e-47b2-f28b-297c45c6e993",
+                    "resultId": "4c625ba9-1b7a-4d95-f2dd-9cf2aedbf0ab",
+                    "rows": [
+                        {
+                            "0": 20008,
+                            "1": "2023-10-03 00:00:00"
+                        },
+                        {
+                            "0": 20009,
+                            "1": "2023-10-08 00:00:00"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "order_num",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": true,
+                            "nullable": false,
+                            "autoIncrement": true
+                        },
+                        {
+                            "title": "order_date",
+                            "field": "1",
+                            "dataType": {
+                                "type": 26,
+                                "dateTimePrecision": 8,
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 5.975ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E2\n返回 2023 年 10 月下的所有订单的订单号 （order_num） 和订单日期 （order_date），并按订单日期排序。\n*/\nSELECT order_num,order_date\nFROM orders\nWHERE Date(order_date) BETWEEN '2023-10-01' AND '2023-10-31'\nORDER BY order_date",
+                    "updatable": true,
+                    "fullTableName": "orders"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 56,
+                "end": 56,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
