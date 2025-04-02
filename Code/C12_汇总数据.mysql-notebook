@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C12 汇总数据\n",
+    "content": "\\about\n#C12 汇总数据\n#12.1 聚合函数\n-- 函数表详见P91。\n-- 我们有时候不需要实际检索所有数据,来汇总数据\n-- Avg()\n-- Count() 行数\n-- Max()  要指定列名,可以处理文本,忽略NULL\n-- Min()  要指定列名,可以处理文本,忽略NULL\n-- Sum()  可计算多列,忽略NULL\n##12.1.1 Avg\n-- Avg只计算单列\n-- Avg会忽略列值为NULL的行\n-- 返回特定几列的平均值\nSELECT Avg(prod_price) AS avg_price\nFROM products\nWHERE vend_id = 1003;\n#12.1.2 Count\n-- Count(*)计算表中总行数,不忽略NULL值.比如顾客总数\n-- Count(column)计算特定行的行数,忽略NULL.比如有电子邮件的顾客总数\nSELECT Count(*) AS num_cust\nFROM customers;\nSELECT Count(cust_email) AS num_cust\nFROM customers;\n##12.1.3 Max\nSELECT Max(prod_price) AS max_price\nFROM products;\n##12.1.4 Min\nSELECT Min(prod_price) AS max_price\nFROM products;\n##12.1.5 Sum\nSELECT Sum(item_price*quantity) as total_price\nFROM orderitems\nWHERE order_num=20005;\n#12.2 聚合不同值\n-- 如果只想计算几个不同值的平均数,而不是全部的平均数,可以用参数DISTINCT(默认是ALL)\n-- DISTINCT只能与列名一起使用,不允许DISTINCT *\nSELECT Avg(DISTINCT prod_price) AS avg_price\nFROM products\nWHERE vend_id = 1003;\n#12.3 组合聚合函数\nSELECT Count(*) AS num_items,\n        Max(prod_price) AS max_price,\n        Min(prod_price) AS min_price,\n        Avg(prod_price) AS avg_price\nFROM products;\n/*E1\n编写 SQL 语句来确定售出的商品总数（使用 OrderItems 中的 quantity 列）\n*/\nSELECT Sum(quantity) AS total\nFROM orderitems;\n/*E2\n修改您刚刚创建的语句，以确定 ID 为 （prod_id） BR01 的销售产品总数。\n*/\nSELECT Sum(quantity) AS total\nFROM orderitems\nWHERE prod_id = 'BR01';\n/*E3\n一个客户想要购买 products 表中的每一件商品。编写 SQL 语句计算总价。\n*/\nSELECT Sum(prod_price) AS total\nFROM products;\n/*E4\n确定 Products 表中最昂贵的商品的价格 (prod_price),该商品的价格不超过10。将计算字段命名为 max_price。\n*/\nSELECT Max(prod_price) AS max_price\nFROM products\nWHERE prod_price <= 10;\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,11 +15,11 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 3,
+                    "lineNumber": 69,
                     "column": 1
                 },
                 "position": {
-                    "lineNumber": 3,
+                    "lineNumber": 69,
                     "column": 1
                 }
             }
@@ -27,10 +27,10 @@
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 1,
+                "lineNumber": 50,
                 "column": 1
             },
-            "firstPositionDeltaTop": 0
+            "firstPositionDeltaTop": -21
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -53,7 +53,7 @@
                         }
                     ]
                 },
-                "currentHeight": 151.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -72,7 +72,986 @@
         {
             "state": {
                 "start": 2,
-                "end": 3,
+                "end": 10,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "25eb27fb-4dc9-4e13-de89-bed7cc4dde38",
+                            "content": "OK, 0 records retrieved in 1.442ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 165
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 11,
+                "end": 17,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "c82667fc-bd1b-4c0c-bbf4-4334ba24fd49"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 129
+                        },
+                        "contentStart": 58,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c098972c-d45a-48e0-87bd-f77d7bd77b34",
+                    "resultId": "c82667fc-bd1b-4c0c-bbf4-4334ba24fd49",
+                    "rows": [
+                        {
+                            "0": "13.212857"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "avg_price",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 5.31ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "##12.1 Avg\n-- 返回特定几列的平均值\nSELECT Avg(prod_price) AS avg_price\nFROM products\nWHERE vend_id = 1003",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 18,
+                "end": 20,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "64844c0c-1cdc-4958-d558-5f8177d761a6",
+                            "content": "OK, 0 records retrieved in 0.93ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 93
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 21,
+                "end": 22,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "04b267aa-a89b-4a6c-848c-b93e9891604f"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 43
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c098972c-d45a-48e0-87bd-f77d7bd77b34",
+                    "resultId": "04b267aa-a89b-4a6c-848c-b93e9891604f",
+                    "rows": [
+                        {
+                            "0": 5
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "num_cust",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 28.62ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT Count(*) AS num_cust\nFROM customers",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 23,
+                "end": 24,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "0a77c919-8b0c-414d-dc6d-f5634d98b6bb"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 52
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c098972c-d45a-48e0-87bd-f77d7bd77b34",
+                    "resultId": "0a77c919-8b0c-414d-dc6d-f5634d98b6bb",
+                    "rows": [
+                        {
+                            "0": 3
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "num_cust",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.262ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT Count(cust_email) AS num_cust\nFROM customers",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 25,
+                "end": 27,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "b1320328-3436-4cf8-f2ad-bb98465b1de1"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 63
+                        },
+                        "contentStart": 13,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c098972c-d45a-48e0-87bd-f77d7bd77b34",
+                    "resultId": "b1320328-3436-4cf8-f2ad-bb98465b1de1",
+                    "rows": [
+                        {
+                            "0": "55.00"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "max_price",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.379ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#12.1.3 Max\nSELECT Max(prod_price) AS max_price\nFROM products",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 28,
+                "end": 30,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "3385bbe3-00db-4219-9b7c-f2c0cbd06e18"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 63
+                        },
+                        "contentStart": 13,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c098972c-d45a-48e0-87bd-f77d7bd77b34",
+                    "resultId": "3385bbe3-00db-4219-9b7c-f2c0cbd06e18",
+                    "rows": [
+                        {
+                            "0": "2.50"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "max_price",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 0.928ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#12.1.4 Min\nSELECT Min(prod_price) AS max_price\nFROM products",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 31,
+                "end": 34,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "367db741-c266-4be4-8e75-805d9f324dc2"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 98
+                        },
+                        "contentStart": 13,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c098972c-d45a-48e0-87bd-f77d7bd77b34",
+                    "resultId": "367db741-c266-4be4-8e75-805d9f324dc2",
+                    "rows": [
+                        {
+                            "0": "149.87"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "total_price",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 5.194ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#12.1.5 Sum\nSELECT Sum(item_price*quantity) as total_price\nFROM orderitems\nWHERE order_num=20005",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 35,
+                "end": 40,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "4f47b1d5-f1e6-4544-c340-ffbd7e1ac5b0"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 178
+                        },
+                        "contentStart": 98,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c098972c-d45a-48e0-87bd-f77d7bd77b34",
+                    "resultId": "4f47b1d5-f1e6-4544-c340-ffbd7e1ac5b0",
+                    "rows": [
+                        {
+                            "0": "15.998000"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "avg_price",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 3.032ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#12.2 聚合不同值\n-- 如果只想计算几个不同值的平均数,而不是全部的平均数,可以用参数DISTINCT(默认是ALL)\n-- DISTINCT只能与列名一起使用,不允许DISTINCT *\nSELECT Avg(DISTINCT prod_price) AS avg_price\nFROM products\nWHERE vend_id = 1003",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 41,
+                "end": 46,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "de5efd67-c7c6-47af-f920-83a6bab2ebfe"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 170
+                        },
+                        "contentStart": 13,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c098972c-d45a-48e0-87bd-f77d7bd77b34",
+                    "resultId": "de5efd67-c7c6-47af-f920-83a6bab2ebfe",
+                    "rows": [
+                        {
+                            "0": 14,
+                            "1": "55.00",
+                            "2": "2.50",
+                            "3": "16.133571"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "num_items",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "max_price",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "min_price",
+                            "field": "2",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "avg_price",
+                            "field": "3",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 0.908ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#12.3 组合聚合函数\nSELECT Count(*) AS num_items,\n        Max(prod_price) AS max_price,\n        Min(prod_price) AS min_price,\n        Avg(prod_price) AS avg_price\nFROM products",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 47,
+                "end": 51,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "d1083dbe-1e65-4530-b94b-29e72903caed"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 103
+                        },
+                        "contentStart": 57,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c098972c-d45a-48e0-87bd-f77d7bd77b34",
+                    "resultId": "d1083dbe-1e65-4530-b94b-29e72903caed",
+                    "rows": [
+                        {
+                            "0": "174"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "total",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.241ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E1\n编写 SQL 语句来确定售出的商品总数（使用 OrderItems 中的 quantity 列）\n*/\nSELECT Sum(quantity) as total\nFROM orderitems",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 52,
+                "end": 57,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "ff709f40-ac73-4a03-926c-f371ceaf87ba"
+                    ]
+                },
+                "currentHeight": 101.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 121
+                        },
+                        "contentStart": 52,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c098972c-d45a-48e0-87bd-f77d7bd77b34",
+                    "resultId": "ff709f40-ac73-4a03-926c-f371ceaf87ba",
+                    "rows": [
+                        {
+                            "0": null
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "total",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.522ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E2\n修改您刚刚创建的语句，以确定 ID 为 （prod_id） BR01 的销售产品总数。\n*/\nSELECT Sum(quantity) AS total\nFROM orderitems\nWHERE prod_id = 'BR01'",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 58,
+                "end": 62,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "45c1a184-d6c2-4b5b-dd86-4fe7ef9e0a3d"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 96
+                        },
+                        "contentStart": 50,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c098972c-d45a-48e0-87bd-f77d7bd77b34",
+                    "resultId": "45c1a184-d6c2-4b5b-dd86-4fe7ef9e0a3d",
+                    "rows": [
+                        {
+                            "0": "225.87"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "total",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.045ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E3\n一个客户想要购买 products 表中的每一件商品。编写 SQL 语句计算总价。\n*/\nSELECT Sum(prod_price) AS total\nFROM products",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 63,
+                "end": 68,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "aef3ef15-1717-4792-de43-cad6b08909d8"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 150
+                        },
+                        "contentStart": 77,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "c098972c-d45a-48e0-87bd-f77d7bd77b34",
+                    "resultId": "aef3ef15-1717-4792-de43-cad6b08909d8",
+                    "rows": [
+                        {
+                            "0": "10.00"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "max_price",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.314ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E4\n确定 Products 表中最昂贵的商品的价格 (prod_price),该商品的价格不超过10。将计算字段命名为 max_price。\n*/\nSELECT Max(prod_price) AS max_price\nFROM products\nWHERE prod_price <= 10",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 69,
+                "end": 69,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
@@ -80,10 +1059,10 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 10
+                            "length": 0
                         },
-                        "contentStart": -1,
-                        "state": 3
+                        "contentStart": 0,
+                        "state": 0
                     }
                 ]
             },
