@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C13 分组数据\n",
+    "content": "\\about\n#C13 分组数据\n#13.1数据分组\n#13.2 创建分组\n-- 我想知道每个供应商各自提供多少种产品\nSELECT vend_id,\n        Count(*) AS num_prods\nFROM products\nGROUP BY vend_id;\n-- WITH ROLLUP可获得该分组的汇总值\n-- GROUP BY必须在WHERE后,ORDER BY前\nSELECT vend_id,\n        Count(*) AS num_prods\nFROM products\nGROUP BY vend_id WITH ROLLUP;\n#13.3 过滤分组 HAVING\n-- HAVING支持所有WHERE的语法\n-- 我想知道至少有2笔订单的顾客\nSELECT cust_id,Count(*) AS num_orders\nFROM orders\nGROUP BY cust_id\nHAVING num_orders>=2;\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 3,
-                    "column": 1
+                    "lineNumber": 17,
+                    "column": 22
                 },
                 "position": {
-                    "lineNumber": 3,
-                    "column": 1
+                    "lineNumber": 17,
+                    "column": 22
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 1,
+                "lineNumber": 10,
                 "column": 1
             },
-            "firstPositionDeltaTop": 0
+            "firstPositionDeltaTop": 174
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -53,7 +53,7 @@
                         }
                     ]
                 },
-                "currentHeight": 151.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -74,16 +74,378 @@
                 "start": 2,
                 "end": 3,
                 "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "5f6c5378-efbc-4ad5-f98d-6580b0f76713",
+                            "content": "OK, 0 records retrieved in 34.568ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 10
+                            "length": 19
                         },
-                        "contentStart": -1,
-                        "state": 3
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 4,
+                "end": 9,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "3bc2280e-b9a0-49db-a53e-8e5a9410bccc"
+                    ]
+                },
+                "currentHeight": 193.015625,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 110
+                        },
+                        "contentStart": 33,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "00ac56a6-d87b-4297-931b-531755d98508",
+                    "resultId": "3bc2280e-b9a0-49db-a53e-8e5a9410bccc",
+                    "rows": [
+                        {
+                            "0": 1001,
+                            "1": 3
+                        },
+                        {
+                            "0": 1002,
+                            "1": 2
+                        },
+                        {
+                            "0": 1003,
+                            "1": 7
+                        },
+                        {
+                            "0": 1005,
+                            "1": 2
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "vend_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "num_prods",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 4 records retrieved in 1.818ms"
+                    },
+                    "totalRowCount": 4,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#13.2 创建分组\n-- 我想知道每个供应商各自提供多少种产品\nSELECT vend_id,\n        Count(*) AS num_prods\nFROM products\nGROUP BY vend_id",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 10,
+                "end": 15,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "0b6979d6-41d1-441c-f6ba-8ea62c716645"
+                    ]
+                },
+                "currentHeight": 223.28125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 145
+                        },
+                        "contentStart": 56,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "00ac56a6-d87b-4297-931b-531755d98508",
+                    "resultId": "0b6979d6-41d1-441c-f6ba-8ea62c716645",
+                    "rows": [
+                        {
+                            "0": 1001,
+                            "1": 3
+                        },
+                        {
+                            "0": 1002,
+                            "1": 2
+                        },
+                        {
+                            "0": 1003,
+                            "1": 7
+                        },
+                        {
+                            "0": 1005,
+                            "1": 2
+                        },
+                        {
+                            "0": null,
+                            "1": 14
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "vend_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "num_prods",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 5 records retrieved in 1.085ms"
+                    },
+                    "totalRowCount": 5,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- WITH ROLLUP可获得该分组的汇总值\n-- GROUP BY必须在WHERE后,ORDER BY前\nSELECT vend_id,\n        Count(*) AS num_prods\nFROM products\nGROUP BY vend_id WITH ROLLUP",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 16,
+                "end": 17,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "03a66bc1-e494-4e09-ec84-a8e3bf6e0a7e",
+                            "content": "OK, 0 records retrieved in 0.613ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 39
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 18,
+                "end": 22,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "eccc54b8-994c-41aa-824a-e60f2ff7e9e2"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 106
+                        },
+                        "contentStart": 18,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "00ac56a6-d87b-4297-931b-531755d98508",
+                    "resultId": "eccc54b8-994c-41aa-824a-e60f2ff7e9e2",
+                    "rows": [
+                        {
+                            "0": 10001,
+                            "1": 2
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "num_orders",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 11.794ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 我想知道至少有2笔订单的顾客\nSELECT cust_id,Count(*) AS num_orders\nFROM orders\nGROUP BY cust_id\nHAVING num_orders>=2",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 23,
+                "end": 23,
+                "language": "mysql",
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 0
+                        },
+                        "contentStart": 0,
+                        "state": 0
                     }
                 ]
             },
