@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C14 子查询\n-- 嵌套在其它查询中的查询\n#14.2 利用子查询过滤\n",
+    "content": "\\about\n#C14 子查询\n-- 嵌套在其它查询中的查询\n#14.2 利用子查询过滤\n/*\n我们想一次实现3个连续的任务\n1.检索包含TNT2的所有订单编号\n2.检索上一步中所有订单编号对应的顾客ID\n3.检索上一步中所有客户ID对应的顾客信息\n*/\nSELECT cust_name,cust_contact\nFROM customers\nWHERE cust_id IN (SELECT cust_id\n                    FROM orders\n                    WHERE order_num IN (SELECT order_num\n                                        FROM orderitems\n                                        WHERE prod_id = 'TNT2'\n                                        )\n                  );\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,12 +15,12 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 5,
-                    "column": 1
+                    "lineNumber": 6,
+                    "column": 15
                 },
                 "position": {
-                    "lineNumber": 5,
-                    "column": 1
+                    "lineNumber": 6,
+                    "column": 15
                 }
             }
         ],
@@ -72,7 +72,97 @@
         {
             "state": {
                 "start": 2,
-                "end": 5,
+                "end": 19,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "c22a865d-f07f-4788-da20-89de88c44773"
+                    ]
+                },
+                "currentHeight": 132.46875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 469
+                        },
+                        "contentStart": 121,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "feb5ec1e-9d10-4d7f-86fa-88cc8fa4a60b",
+                    "resultId": "c22a865d-f07f-4788-da20-89de88c44773",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": "Y Lee"
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": "Y Sam"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_contact",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 22.907ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#C14 子查询\n-- 嵌套在其它查询中的查询\n#14.2 利用子查询过滤\n/*\n我们想一次实现3个连续的任务\n1.检索包含TNT2的所有订单编号\n2.检索上一步中所有订单编号对应的顾客ID\n3.检索上一步中所有客户ID对应的顾客信息\n*/\nSELECT cust_name,cust_contact\nFROM customers\nWHERE cust_id IN (SELECT cust_id\n                    FROM orders\n                    WHERE order_num IN (SELECT order_num\n                                        FROM orderitems\n                                        WHERE prod_id = 'TNT2'\n                                        )\n                  )",
+                    "updatable": true,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 20,
+                "end": 20,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
@@ -80,10 +170,10 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 38
+                            "length": 0
                         },
-                        "contentStart": -1,
-                        "state": 3
+                        "contentStart": 0,
+                        "state": 0
                     }
                 ]
             },
