@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C19 插入数据\n",
+    "content": "\\about\n#C19 插入数据\n#19.2 插入完整的行\nINSERT INTO customers\nVALUES\n    (\n        NULL,\n        'Pep',\n        '100 Street',\n        'Los Angeles',\n        'CA',\n        '90046',\n        'USA',\n        NULL,\n        NULL\n    );\n-- 更安全的方法,即使表的结构改变,也能继续正常运行\nINSERT INTO customers\n    (\n        cust_name,\n        cust_address,\n        cust_city,\n        cust_state,\n        cust_zip,\n        cust_country,\n        cust_contact,\n        cust_email\n    )\nVALUES\n    (\n        'Pep',\n        '100 Street',\n        'Los Angeles',\n        'CA',\n        '90046',\n        'USA',\n        NULL,\n        NULL\n    );\n-- 数据检索SELECT一般是最重要的,可以降低INSERT的优先级来提升整体性能\n-- INSERT LOW_PRIORITY INTO\n#19.3 插入多行\n/*法一:\nINSERT INTO XXX\nVALUES (XXX)\n\nINSERT INTO XXX\nVALUES (XXX);\n*/\n/*法二:只要每个INSERT语句的列名和次序相同\nINSERT INTO XXX\nVALUES (XXX),\n       (XXX),\n       (XXX);\n*/\nINSERT INTO customers\n    (\n        cust_name,\n        cust_address,\n        cust_city,\n        cust_state,\n        cust_zip,\n        cust_country\n    )\nVALUES\n    (\n        'Pep',\n        '100 Street',\n        'Los Angeles',\n        'CA',\n        '90046',\n        'USA'\n    ),\n    (\n        'Mar',\n        '42 Way',\n        'New York',\n        'ny',\n        '11213',\n        'USA'\n    );\n#19.4 插入检索结果\n-- 比如,从另一张表中,把顾客列表合并到customers表\n-- 注意!!主键值不能重复,否则会插入失败.或者可以省略这列值,让mysql导入时产生新值\n-- 实际上mysql不关心SELECT返回的列名,使用的是列的位置\n-- custnew不存在,这里只作为示范\nINSERT INTO customers\n    (\n        cust_id,\n        cust_contact,\n        cust_email,\n        cust_name,\n        cust_address,\n        cust_city,\n        cust_state,\n        cust_zip,\n        cust_country\n    )\nSELECT \n    cust_id,\n    cust_contact,\n    cust_email,\n    cust_name,\n    cust_address,\n    cust_city,\n    cust_state,\n    cust_zip,\n    cust_country\nFROM custnew;\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,11 +15,11 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 3,
+                    "lineNumber": 110,
                     "column": 1
                 },
                 "position": {
-                    "lineNumber": 3,
+                    "lineNumber": 110,
                     "column": 1
                 }
             }
@@ -27,10 +27,10 @@
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 1,
+                "lineNumber": 82,
                 "column": 1
             },
-            "firstPositionDeltaTop": 0
+            "firstPositionDeltaTop": 19
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -53,7 +53,7 @@
                         }
                     ]
                 },
-                "currentHeight": 151.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -72,7 +72,202 @@
         {
             "state": {
                 "start": 2,
-                "end": 3,
+                "end": 16,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "c4c890b5-b928-4f2c-80bf-9ebad6459b03",
+                            "content": "OK, 1 row affected in 52.382ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 211
+                        },
+                        "contentStart": 23,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 17,
+                "end": 39,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "49f1f586-b372-4d83-808a-98f78eeec875",
+                            "content": "OK, 1 row affected in 6.262ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 375
+                        },
+                        "contentStart": 28,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 40,
+                "end": 41,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "5d77fce3-9dff-4637-8c1e-4ee2ff7adec7",
+                            "content": "OK, 0 records retrieved in 1.381ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 70
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 42,
+                "end": 55,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "1ead93a2-22bb-4751-8788-1202413c53bf",
+                            "content": "OK, 0 records retrieved in 1.479ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 166
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 56,
+                "end": 81,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "d61b3b0b-226e-4e42-b308-0d865e21e4f5",
+                            "content": "OK, 2 rows affected in 2.904ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 388
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 82,
+                "end": 109,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 0,
+                            "index": 0,
+                            "content": "MySQL Error (1146): Table 'crashcourse.custnew' doesn't exist",
+                            "language": "ansi"
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": ""
+                    }
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 524
+                        },
+                        "contentStart": 149,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 110,
+                "end": 110,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
@@ -80,10 +275,10 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 10
+                            "length": 0
                         },
-                        "contentStart": -1,
-                        "state": 3
+                        "contentStart": 0,
+                        "state": 0
                     }
                 ]
             },
