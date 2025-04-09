@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C19 插入数据\n#19.2 插入完整的行\nINSERT INTO customers\nVALUES\n    (\n        NULL,\n        'Pep',\n        '100 Street',\n        'Los Angeles',\n        'CA',\n        '90046',\n        'USA',\n        NULL,\n        NULL\n    );\n-- 更安全的方法,即使表的结构改变,也能继续正常运行\nINSERT INTO customers\n    (\n        cust_name,\n        cust_address,\n        cust_city,\n        cust_state,\n        cust_zip,\n        cust_country,\n        cust_contact,\n        cust_email\n    )\nVALUES\n    (\n        'Pep',\n        '100 Street',\n        'Los Angeles',\n        'CA',\n        '90046',\n        'USA',\n        NULL,\n        NULL\n    );\n-- 数据检索SELECT一般是最重要的,可以降低INSERT的优先级来提升整体性能\n-- INSERT LOW_PRIORITY INTO\n#19.3 插入多行\n/*法一:\nINSERT INTO XXX\nVALUES (XXX)\n\nINSERT INTO XXX\nVALUES (XXX);\n*/\n/*法二:只要每个INSERT语句的列名和次序相同\nINSERT INTO XXX\nVALUES (XXX),\n       (XXX),\n       (XXX);\n*/\nINSERT INTO customers\n    (\n        cust_name,\n        cust_address,\n        cust_city,\n        cust_state,\n        cust_zip,\n        cust_country\n    )\nVALUES\n    (\n        'Pep',\n        '100 Street',\n        'Los Angeles',\n        'CA',\n        '90046',\n        'USA'\n    ),\n    (\n        'Mar',\n        '42 Way',\n        'New York',\n        'ny',\n        '11213',\n        'USA'\n    );\n#19.4 插入检索结果\n-- 比如,从另一张表中,把顾客列表合并到customers表\n-- 注意!!主键值不能重复,否则会插入失败.或者可以省略这列值,让mysql导入时产生新值\n-- 实际上mysql不关心SELECT返回的列名,使用的是列的位置\n-- custnew不存在,这里只作为示范\nINSERT INTO customers\n    (\n        cust_id,\n        cust_contact,\n        cust_email,\n        cust_name,\n        cust_address,\n        cust_city,\n        cust_state,\n        cust_zip,\n        cust_country\n    )\nSELECT \n    cust_id,\n    cust_contact,\n    cust_email,\n    cust_name,\n    cust_address,\n    cust_city,\n    cust_state,\n    cust_zip,\n    cust_country\nFROM custnew;\n",
+    "content": "\\about\n#C19 插入数据\n#19.2 插入完整的行\nINSERT INTO customers\nVALUES\n    (\n        NULL,\n        'Pep',\n        '100 Street',\n        'Los Angeles',\n        'CA',\n        '90046',\n        'USA',\n        NULL,\n        NULL\n    );\n-- 更安全的方法,即使表的结构改变,也能继续正常运行\nINSERT INTO customers\n    (\n        cust_name,\n        cust_address,\n        cust_city,\n        cust_state,\n        cust_zip,\n        cust_country,\n        cust_contact,\n        cust_email\n    )\nVALUES\n    (\n        'Pep',\n        '100 Street',\n        'Los Angeles',\n        'CA',\n        '90046',\n        'USA',\n        NULL,\n        NULL\n    );\n-- 数据检索SELECT一般是最重要的,可以降低INSERT的优先级来提升整体性能\n-- INSERT LOW_PRIORITY INTO\n#19.3 插入多行\n/*法一:\nINSERT INTO XXX\nVALUES (XXX)\n\nINSERT INTO XXX\nVALUES (XXX);\n*/\n/*法二:只要每个INSERT语句的列名和次序相同\nINSERT INTO XXX\nVALUES (XXX),\n       (XXX),\n       (XXX);\n*/\nINSERT INTO customers\n    (\n        cust_name,\n        cust_address,\n        cust_city,\n        cust_state,\n        cust_zip,\n        cust_country\n    )\nVALUES\n    (\n        'Pep',\n        '100 Street',\n        'Los Angeles',\n        'CA',\n        '90046',\n        'USA'\n    ),\n    (\n        'Mar',\n        '42 Way',\n        'New York',\n        'ny',\n        '11213',\n        'USA'\n    );\n#19.4 插入检索结果\n-- 比如,从另一张表中,把顾客列表合并到customers表\n-- 注意!!主键值不能重复,否则会插入失败.或者可以省略这列值,让mysql导入时产生新值\n-- 实际上mysql不关心SELECT返回的列名,使用的是列的位置\n-- custnew不存在,这里只作为示范\nINSERT INTO customers\n    (\n        cust_id,\n        cust_contact,\n        cust_email,\n        cust_name,\n        cust_address,\n        cust_city,\n        cust_state,\n        cust_zip,\n        cust_country\n    )\nSELECT \n    cust_id,\n    cust_contact,\n    cust_email,\n    cust_name,\n    cust_address,\n    cust_city,\n    cust_state,\n    cust_zip,\n    cust_country\nFROM custnew;\n/*E1\n使用 INSERT 和指定的列，将自己添加到 Customers 表中。\n*/\nINSERT INTO customers\n    (\n        cust_id,\n        cust_name,\n        cust_address,\n        cust_city,\n        cust_state,\n        cust_country\n    )\nVALUES\n    (\n        2000,\n        'MYH',\n        '100 Street',\n        'XA',\n        'SX',\n        'CN'\n    )\n/*E2\n使用 INSERT SELECT,备份您的 Orders 和 OrderItems 表。备份表目前不存在,只是示范\n*/\nINSERT INTO orders_backup(order_num, order_date, cust_id)\nSELECT order_num, order_date, cust_id \nFROM orders;\nINSERT INTO orderItems_backup(order_num, order_item, prod_id, quantity, item_price)\nSELECT order_num, order_item, prod_id, quantity, item_price \nFROM orderItems;\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 110,
-                    "column": 1
+                    "lineNumber": 133,
+                    "column": 3
                 },
                 "position": {
-                    "lineNumber": 110,
-                    "column": 1
+                    "lineNumber": 133,
+                    "column": 3
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 82,
+                "lineNumber": 110,
                 "column": 1
             },
-            "firstPositionDeltaTop": 19
+            "firstPositionDeltaTop": 0
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -213,7 +213,7 @@
                         }
                     ]
                 },
-                "currentHeight": 31.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -248,7 +248,7 @@
                         "text": ""
                     }
                 },
-                "currentHeight": 31.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -267,7 +267,83 @@
         {
             "state": {
                 "start": 110,
-                "end": 110,
+                "end": 130,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "16dbfd18-1f75-4772-be6e-7036d95fe558",
+                            "content": "OK, 1 row affected in 13.287ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 307
+                        },
+                        "contentStart": 45,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 131,
+                "end": 139,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 0,
+                            "index": 0,
+                            "content": "MySQL Error (1146): Table 'crashcourse.orders_backup' doesn't exist",
+                            "language": "ansi"
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": ""
+                    }
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 175
+                        },
+                        "contentStart": 66,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 175,
+                            "length": 162
+                        },
+                        "contentStart": 176,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 140,
+                "end": 140,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
