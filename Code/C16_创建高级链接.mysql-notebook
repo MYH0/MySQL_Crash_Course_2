@@ -1,0 +1,403 @@
+{
+    "type": "MySQLNotebook",
+    "version": "1.0",
+    "caption": "DB Notebook",
+    "content": "\\about\n#C16 创建高级链接\n#16.1 使用表别名\n-- 表别名是DBMS独有的,只在查询中使用。与列别名不同,不会返回到客户端\nSELECT cust_name,cust_contact\nFROM customers AS c,orders AS O,orderitems AS oi\nWHERE c.cust_id =o.cust_id\n    AND oi.order_num=o.order_num\n    AND prod_id='TNT2';\n#16.2 自连接\n-- 我想先根据产品ID找到生产商,再找到生产商的其它的产品\n-- 几乎所有内连接都是自然连接\n-- 法一\nSELECT prod_id,prod_name\nFROM products \nWHERE vend_id=(\n                SELECT vend_id\n                FROM products\n                WHERE prod_id='DTNTR'\n              );\n-- 法二\nSELECT p1.prod_id,p1.prod_name\nFROM products AS p1,products AS p2\nWHERE p1.vend_id=p2.vend_id\n    AND p2.prod_id='DTNTR';\n",
+    "options": {
+        "tabSize": 4,
+        "indentSize": 4,
+        "insertSpaces": true,
+        "defaultEOL": "LF",
+        "trimAutoWhitespace": true
+    },
+    "viewState": {
+        "cursorState": [
+            {
+                "inSelectionMode": false,
+                "selectionStart": {
+                    "lineNumber": 12,
+                    "column": 17
+                },
+                "position": {
+                    "lineNumber": 12,
+                    "column": 17
+                }
+            }
+        ],
+        "viewState": {
+            "scrollLeft": 0,
+            "firstPosition": {
+                "lineNumber": 7,
+                "column": 1
+            },
+            "firstPositionDeltaTop": -8
+        },
+        "contributionsState": {
+            "editor.contrib.folding": {},
+            "editor.contrib.wordHighlighter": false
+        }
+    },
+    "contexts": [
+        {
+            "state": {
+                "start": 1,
+                "end": 1,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "content": "Welcome to the MySQL Shell - DB Notebook.\n\nPress Ctrl+Enter to execute the code block.\n\nExecute \\sql to switch to SQL, \\js to JavaScript and \\ts to TypeScript mode.\nExecute \\help or \\? for help;",
+                            "language": "ansi"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 6
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 2,
+                "end": 9,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "e17c01b8-4d33-49f4-809f-1540f7e97f00"
+                    ]
+                },
+                "currentHeight": 132.46875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 225
+                        },
+                        "contentStart": 63,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2fd0f302-e7fb-4b3e-ca8c-7c90987abd5b",
+                    "resultId": "e17c01b8-4d33-49f4-809f-1540f7e97f00",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": "Y Lee"
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": "Y Sam"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_contact",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 5.765ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#C16 创建高级链接\n#16.1 使用表别名\n-- 表别名是DBMS独有的,只在查询中使用。与列别名不同,不会返回到客户端\nSELECT cust_name,cust_contact\nFROM customers AS c,orders AS O,orderitems AS oi\nWHERE c.cust_id =o.cust_id\n    AND oi.order_num=o.order_num\n    AND prod_id='TNT2'",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 10,
+                "end": 20,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "6aab4575-689c-47ef-b885-a7534329a634"
+                    ]
+                },
+                "currentHeight": 283.828125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 235
+                        },
+                        "contentStart": 64,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2fd0f302-e7fb-4b3e-ca8c-7c90987abd5b",
+                    "resultId": "6aab4575-689c-47ef-b885-a7534329a634",
+                    "rows": [
+                        {
+                            "0": "DTNTR",
+                            "1": "Detonator"
+                        },
+                        {
+                            "0": "FB",
+                            "1": "Bird seed"
+                        },
+                        {
+                            "0": "FC",
+                            "1": "Carrots"
+                        },
+                        {
+                            "0": "SAFE",
+                            "1": "Safe"
+                        },
+                        {
+                            "0": "SLING",
+                            "1": "Sling"
+                        },
+                        {
+                            "0": "TNT1",
+                            "1": "TNT (1 stick)"
+                        },
+                        {
+                            "0": "TNT2",
+                            "1": "TNT (5 sticks)"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 7 records retrieved in 2.129ms"
+                    },
+                    "totalRowCount": 7,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#16.2 自连接\n-- 我想先根据产品ID找到生产商,再找到生产商的其它的产品\n-- 法一\nSELECT prod_id,prod_name\nFROM products \nWHERE vend_id=(\n                SELECT vend_id\n                FROM products\n                WHERE prod_id='DTNTR'\n              )",
+                    "updatable": true,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 21,
+                "end": 25,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "eb253746-c4e5-4abe-a40a-98f23f9cadcf"
+                    ]
+                },
+                "currentHeight": 283.828125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 127
+                        },
+                        "contentStart": 6,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "2fd0f302-e7fb-4b3e-ca8c-7c90987abd5b",
+                    "resultId": "eb253746-c4e5-4abe-a40a-98f23f9cadcf",
+                    "rows": [
+                        {
+                            "0": "DTNTR",
+                            "1": "Detonator"
+                        },
+                        {
+                            "0": "FB",
+                            "1": "Bird seed"
+                        },
+                        {
+                            "0": "FC",
+                            "1": "Carrots"
+                        },
+                        {
+                            "0": "SAFE",
+                            "1": "Safe"
+                        },
+                        {
+                            "0": "SLING",
+                            "1": "Sling"
+                        },
+                        {
+                            "0": "TNT1",
+                            "1": "TNT (1 stick)"
+                        },
+                        {
+                            "0": "TNT2",
+                            "1": "TNT (5 sticks)"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 7 records retrieved in 2.479ms"
+                    },
+                    "totalRowCount": 7,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 法二\nSELECT p1.prod_id,p1.prod_name\nFROM products AS p1,products AS p2\nWHERE p1.vend_id=p2.vend_id\n    AND p2.prod_id='DTNTR'",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 26,
+                "end": 26,
+                "language": "mysql",
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 0
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        }
+    ]
+}
