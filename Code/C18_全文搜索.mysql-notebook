@@ -15,12 +15,12 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 100,
-                    "column": 17
+                    "lineNumber": 101,
+                    "column": 18
                 },
                 "position": {
-                    "lineNumber": 100,
-                    "column": 17
+                    "lineNumber": 101,
+                    "column": 18
                 }
             }
         ],
@@ -141,7 +141,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "0baf9d95-add3-475a-eaac-34e5f9d3f7bd"
+                        "c1938b85-d872-43db-f75a-acd061ba406f"
                     ]
                 },
                 "currentHeight": 156.15625,
@@ -160,8 +160,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "0baf9d95-add3-475a-eaac-34e5f9d3f7bd",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "c1938b85-d872-43db-f75a-acd061ba406f",
                     "rows": [
                         {
                             "0": "Customer complaint: rabbit has been able to detect trap, food apparently less effective now."
@@ -211,7 +211,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "83f035e6-1310-45ba-dbbb-0c6868387c04"
+                        "fa50c5a0-da55-42d3-e8fb-8182172679b6"
                     ]
                 },
                 "currentHeight": 156.15625,
@@ -230,8 +230,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "83f035e6-1310-45ba-dbbb-0c6868387c04",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "fa50c5a0-da55-42d3-e8fb-8182172679b6",
                     "rows": [
                         {
                             "0": "Quantity varies, sold by the sack load.\nAll guaranteed to be bright and orange, and suitable for use as rabbit bait."
@@ -281,7 +281,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "cead3c1f-894f-4f39-c21a-a00ced41b8bf"
+                        "fe4c328e-7e4b-48a6-8e9b-a8e1ee99fcf7"
                     ]
                 },
                 "currentHeight": 351.984375,
@@ -300,8 +300,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "cead3c1f-894f-4f39-c21a-a00ced41b8bf",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "fe4c328e-7e4b-48a6-8e9b-a8e1ee99fcf7",
                     "rows": [
                         {
                             "0": "Customer complaint:\nSticks not individually wrapped, too easy to mistakenly detonate all at once.\nRecommend individual wrapping.",
@@ -453,7 +453,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "1a3bae50-08a8-4bba-e8bc-f5a4360aa95d"
+                        "2f7f184e-9b2a-4e37-fa49-9d21791e026a"
                     ]
                 },
                 "currentHeight": 36,
@@ -472,8 +472,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "1a3bae50-08a8-4bba-e8bc-f5a4360aa95d",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "2f7f184e-9b2a-4e37-fa49-9d21791e026a",
                     "rows": [
                         {
                             "0": "Multiple customer returns, anvils failing to drop fast enough or falling backwards on purchaser. Recommend that customer considers using heavier anvils."
@@ -520,7 +520,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "d84fb960-9d13-4a2e-fbcb-a13631a65764"
+                        "675eeb0d-3f44-460c-9d7e-86f55491896a"
                     ]
                 },
                 "currentHeight": 36,
@@ -539,8 +539,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "d84fb960-9d13-4a2e-fbcb-a13631a65764",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "675eeb0d-3f44-460c-9d7e-86f55491896a",
                     "rows": [
                         {
                             "0": "Multiple customer returns, anvils failing to drop fast enough or falling backwards on purchaser. Recommend that customer considers using heavier anvils."
@@ -637,7 +637,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "04dacc29-9d70-46c9-e507-5e9b956c4c0c"
+                        "faa4b0ad-70f0-483a-8d9f-c43ad14b2120"
                     ]
                 },
                 "currentHeight": 36,
@@ -656,8 +656,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "04dacc29-9d70-46c9-e507-5e9b956c4c0c",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "faa4b0ad-70f0-483a-8d9f-c43ad14b2120",
                     "rows": [
                         {
                             "0": "Customer complaint:\nNot heavy enough to generate flying stars around head of victim. If being purchased for dropping, recommend ANV02 or ANV03 instead."
@@ -704,7 +704,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "0fff34a2-74a0-424f-f778-306c5cbdbfe0"
+                        "b3b2baa4-f57f-420c-8b27-e85c5d76c6c6"
                     ]
                 },
                 "currentHeight": 36,
@@ -723,8 +723,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "0fff34a2-74a0-424f-f778-306c5cbdbfe0",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "b3b2baa4-f57f-420c-8b27-e85c5d76c6c6",
                     "rows": [
                         {
                             "0": "Quantity varies, sold by the sack load.\nAll guaranteed to be bright and orange, and suitable for use as rabbit bait."
@@ -771,7 +771,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "ed362c56-9577-4724-df80-3de32890de26"
+                        "4337e0b5-0dfe-409e-e682-226aeaa39e72"
                     ]
                 },
                 "currentHeight": 36,
@@ -790,8 +790,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "ed362c56-9577-4724-df80-3de32890de26",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "4337e0b5-0dfe-409e-e682-226aeaa39e72",
                     "rows": [
                         {
                             "0": "Quantity varies, sold by the sack load.\nAll guaranteed to be bright and orange, and suitable for use as rabbit bait."
@@ -841,7 +841,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "87b207b2-a5e1-4aa9-8c1e-5c6fe583a3c3"
+                        "04829d39-41b8-4a47-e66d-ef32d3296b70"
                     ]
                 },
                 "currentHeight": 36,
@@ -860,8 +860,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "87b207b2-a5e1-4aa9-8c1e-5c6fe583a3c3",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "04829d39-41b8-4a47-e66d-ef32d3296b70",
                     "rows": [
                         {
                             "0": "Quantity varies, sold by the sack load.\nAll guaranteed to be bright and orange, and suitable for use as rabbit bait."
@@ -908,7 +908,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "f593404a-6153-4d40-b9f1-b4e790b3d783"
+                        "70eca40b-4f83-4173-a3b0-2b62f2b665ff"
                     ]
                 },
                 "currentHeight": 36,
@@ -927,8 +927,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "f593404a-6153-4d40-b9f1-b4e790b3d783",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "70eca40b-4f83-4173-a3b0-2b62f2b665ff",
                     "rows": [
                         {
                             "0": "Quantity varies, sold by the sack load.\nAll guaranteed to be bright and orange, and suitable for use as rabbit bait."
@@ -978,7 +978,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "fa90949e-019b-4354-d2b0-b8c27f543bcd"
+                        "54d56462-7961-4ff2-f380-c81932b5a478"
                     ]
                 },
                 "currentHeight": 36,
@@ -997,8 +997,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "fa90949e-019b-4354-d2b0-b8c27f543bcd",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "54d56462-7961-4ff2-f380-c81932b5a478",
                     "rows": [
                         {
                             "0": "Safe is combination locked, combination not provided with safe.\nThis is rarely a problem as safes are typically blown up or dropped by customers."
@@ -1077,7 +1077,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "0104ed6f-d2db-4de2-9201-2289c1be62c0"
+                        "c4a79105-9afd-4400-9d65-91b63e9927ca"
                     ]
                 },
                 "currentHeight": 210.109375,
@@ -1096,8 +1096,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "0104ed6f-d2db-4de2-9201-2289c1be62c0",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "c4a79105-9afd-4400-9d65-91b63e9927ca",
                     "rows": [
                         {
                             "0": "Safe is combination locked, combination not provided with safe.\nThis is rarely a problem as safes are typically blown up or dropped by customers."
@@ -1150,7 +1150,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "edf4e2db-4342-45c1-cec1-1718573241e1"
+                        "1d1607c4-3567-4edb-98d4-04b99ae8ba38"
                     ]
                 },
                 "currentHeight": 308.234375,
@@ -1169,8 +1169,8 @@
             },
             "data": [
                 {
-                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
-                    "resultId": "edf4e2db-4342-45c1-cec1-1718573241e1",
+                    "tabId": "24c23481-c134-4c90-a627-70e48434e073",
+                    "resultId": "1d1607c4-3567-4edb-98d4-04b99ae8ba38",
                     "rows": [
                         {
                             "0": "Multiple customer returns, anvils failing to drop fast enough or falling backwards on purchaser. Recommend that customer considers using heavier anvils."
