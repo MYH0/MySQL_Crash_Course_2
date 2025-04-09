@@ -1,0 +1,2177 @@
+{
+    "type": "MySQLNotebook",
+    "version": "1.0",
+    "caption": "DB Notebook",
+    "content": "\\about\n#C15 表连接\n#15.1 连接\n-- 把数据分解为多张表可高效存储、方便处理、更大的伸缩性\n-- 连接不是物理实体,由mysql根据需要建立,存在于查询操作中\n#15.2 创建连接\nSELECT vend_name,prod_name,prod_price\nFROM vendors,products\nWHERE vendors.vend_id=products.vend_id\nORDER BY vend_name,prod_name;\n-- 一般来说,必须要有WHERE语句,否则结果会返回笛卡尔积,这是不对的\nSELECT vend_name,prod_name,prod_price\nFROM vendors,products\nORDER BY vend_name,prod_name;\n##15.2.2 内连接\n-- 前面用的是等值连接,也是内连接\n-- 下面来一个新用法\nSELECT vend_name,prod_name,prod_price\nFROM vendors INNER JOIN products\nON vendors.vend_id=products.vend_id; \n#15.3 连接多张表\nSELECT prod_name,vend_name,prod_price,quantity\nFROM orderitems,products,vendors\nWHERE products.vend_id=vendors.vend_id\n    AND orderitems.prod_id=products.prod_id\n    AND order_num=20005;\n-- 连接很耗资源,不要连接不必要的表\n-- 另一种INNER JOIN版本\nSELECT prod_name,vend_name,prod_price,quantity\nFROM vendors\nINNER JOIN products\n    ON vendors.vend_id=products.vend_id\nINNER JOIN orderitems\n    ON orderitems.prod_id=products.prod_id\nWHERE order_num=20005;\n-- 对于第14章的代码\nSELECT cust_name,cust_contact\nFROM customers\nWHERE cust_id IN (SELECT cust_id\n                    FROM orders\n                    WHERE order_num IN (SELECT order_num\n                                        FROM orderitems\n                                        WHERE prod_id = 'TNT2'\n                                        )\n                  );\n-- 可以这样写\nSELECT cust_name,cust_contact\nFROM customers,orders,orderitems\nWHERE customers.cust_id=orders.cust_id\n    AND orderitems.order_num=orders.order_num\n    AND prod_id='TNT2';\n-- 也可以这样写\nSELECT cust_name,cust_contact\nFROM customers\nINNER JOIN orders\n    ON customers.cust_id=orders.cust_id\nINNER JOIN orderitems\n    ON orderitems.order_num=orders.order_num\nWHERE prod_id='TNT2';\n/*E1\n从 Customers 表中返回客户名称 （cust_name），从 Orders 表中返回相关订单号 （order_num），然后按客户名称排序，然后按订单号对结果进行排序。实际上，尝试两次，一次使用简单的 equijoin 语法，一次使用 INNER JOIN。\n*/\nSELECT cust_name,order_num\nFROM customers,orders\nWHERE customers.cust_id=orders.cust_id\nORDER BY cust_name,order_num;\nSELECT cust_name,order_num\nFROM customers\nINNER JOIN orders\n    ON customers.cust_id=orders.cust_id\nORDER BY cust_name,order_num;\n/*E2\n让我们让前面的挑战更有用。除了返回客户名称和订单号之外，还添加名为 OrderTotal 的第三列，其中包含每个订单的总价。有两种方法可以执行此作：可以使用 OrderItems 表上的子查询创建 OrderTotal 列，或者可以将 OrderItems 表联接到现有表并使用聚合函数。这里有一个提示，请注意您需要在哪些地方使用完全限定的列名。\n*/\nSELECT cust_name,orders.order_num,Sum(item_price * quantity) AS ordertotal\nFROM customers,orders,orderitems\nWHERE customers.cust_id=orders.cust_id\n    AND orderitems.order_num=orders.order_num\nGROUP BY cust_name,orders.order_num\nORDER BY cust_name,order_num;\n/*E3\n让我们回顾一下第 14 课中的挑战 2。编写一个 SQL 语句，用于检索订购产品 BR01 的日期，但这次使用 join 和简单的 equijoin 语法。输出应与第 14 课中的输出相同。\n*/\nSELECT cust_id, order_date\nFROM orders, orderItems\nWHERE orders.order_num = orderItems.order_num\n    AND prod_id = 'BR01'\nORDER BY order_date;\n\n/*E4\n重新创建您为第14课挑战3编写的 SQL,这次使用 ANSI INNER JOIN 语法。您在此处编写的代码使用了两个嵌套的子查询，要重新创建它，您需要两个INNER JOIN 语句，每个语句的格式与本课前面的 INNER JOIN示例类似。别忘了使用WHERE子句来按 prod_id 进行筛选。\n*/\nSELECT cust_email\nFROM Customers\n    INNER JOIN Orders ON Customers.cust_id = Orders.cust_id\n    INNER JOIN OrderItems ON Orders.order_num = OrderItems.order_num\nWHERE prod_id = 'BR01';\n/*E5\n我向您发出了一个挑战，以查找值为1000或更大的所有订单号。这些结果很有用，但更有用的是下了至少该金额订单的客户的姓名。因此，编写一个SQL语句，该语句使用联接从Customers表中返回客户名称 （cust_name），并从OrderItems表中返回所有订单的总价。这里有一个提示，要联接这些表，您还需要包括Orders表（因为Customers与OrderItems没有直接关系，Customers与Orders相关，而Orders与OrderItems相关）。不要忘记GROUP BY 和 HAVING，并按客户名称对结果进行排序。对于此函数，可以使用简单的等值连接或 ANSI INNER JOIN 语法。\n*/\n-- Equijoin syntax\nSELECT cust_name, SUM(item_price*quantity) AS total_price\nFROM Customers, Orders, OrderItems\nWHERE Customers.cust_id = Orders.cust_id\n    AND Orders.order_num = OrderItems.order_num\nGROUP BY cust_name \nHAVING SUM(item_price*quantity) >= 1000\nORDER BY cust_name;\n-- ANSI INNER JOIN syntax\nSELECT cust_name, SUM(item_price*quantity) AS total_price\nFROM Customers\n    INNER JOIN Orders ON Customers.cust_id = Orders.cust_id\n    INNER JOIN OrderItems ON Orders.order_num = OrderItems.order_num\nGROUP BY cust_name\nHAVING SUM(item_price*quantity) >= 1000\nORDER BY cust_name;\n",
+    "options": {
+        "tabSize": 4,
+        "indentSize": 4,
+        "insertSpaces": true,
+        "defaultEOL": "LF",
+        "trimAutoWhitespace": true
+    },
+    "viewState": {
+        "cursorState": [
+            {
+                "inSelectionMode": false,
+                "selectionStart": {
+                    "lineNumber": 108,
+                    "column": 20
+                },
+                "position": {
+                    "lineNumber": 108,
+                    "column": 20
+                }
+            }
+        ],
+        "viewState": {
+            "scrollLeft": 0,
+            "firstPosition": {
+                "lineNumber": 93,
+                "column": 1
+            },
+            "firstPositionDeltaTop": -22
+        },
+        "contributionsState": {
+            "editor.contrib.folding": {},
+            "editor.contrib.wordHighlighter": false
+        }
+    },
+    "contexts": [
+        {
+            "state": {
+                "start": 1,
+                "end": 1,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "content": "Welcome to the MySQL Shell - DB Notebook.\n\nPress Ctrl+Enter to execute the code block.\n\nExecute \\sql to switch to SQL, \\js to JavaScript and \\ts to TypeScript mode.\nExecute \\help or \\? for help;",
+                            "language": "ansi"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 6
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 2,
+                "end": 5,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "40dfb1c0-7979-4ac7-993e-a6dca74c366a",
+                            "content": "OK, 0 records retrieved in 1.419ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 81
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 6,
+                "end": 10,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "1757a702-1018-4f97-f186-50711615b3bc"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 139
+                        },
+                        "contentStart": 11,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "1757a702-1018-4f97-f186-50711615b3bc",
+                    "rows": [
+                        {
+                            "0": "ACME",
+                            "1": "Bird seed",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Carrots",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Detonator",
+                            "2": "13.00"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Safe",
+                            "2": "50.00"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Sling",
+                            "2": "4.49"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "TNT (1 stick)",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "TNT (5 sticks)",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": ".5 ton anvil",
+                            "2": "5.99"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "1 ton anvil",
+                            "2": "9.99"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "2 ton anvil",
+                            "2": "14.99"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "JetPack 1000",
+                            "2": "35.00"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "JetPack 2000",
+                            "2": "55.00"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "Fuses",
+                            "2": "3.42"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "Oil can",
+                            "2": "8.99"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "vend_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "2",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 14 records retrieved in 1.476ms"
+                    },
+                    "totalRowCount": 14,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#15.2 创建连接\nSELECT vend_name,prod_name,prod_price\nFROM vendors,products\nWHERE vendors.vend_id=products.vend_id\nORDER BY vend_name,prod_name",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 11,
+                "end": 14,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "cb2108e8-f20c-4509-dd01-b21a43920649"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 127
+                        },
+                        "contentStart": 38,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "cb2108e8-f20c-4509-dd01-b21a43920649",
+                    "rows": [
+                        {
+                            "0": "ACME",
+                            "1": ".5 ton anvil",
+                            "2": "5.99"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "1 ton anvil",
+                            "2": "9.99"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "2 ton anvil",
+                            "2": "14.99"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Bird seed",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Carrots",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Detonator",
+                            "2": "13.00"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Fuses",
+                            "2": "3.42"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "JetPack 1000",
+                            "2": "35.00"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "JetPack 2000",
+                            "2": "55.00"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Oil can",
+                            "2": "8.99"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Safe",
+                            "2": "50.00"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Sling",
+                            "2": "4.49"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "TNT (1 stick)",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "TNT (5 sticks)",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": ".5 ton anvil",
+                            "2": "5.99"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "1 ton anvil",
+                            "2": "9.99"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "2 ton anvil",
+                            "2": "14.99"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "Bird seed",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "Carrots",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "Detonator",
+                            "2": "13.00"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "Fuses",
+                            "2": "3.42"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "JetPack 1000",
+                            "2": "35.00"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "JetPack 2000",
+                            "2": "55.00"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "Oil can",
+                            "2": "8.99"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "Safe",
+                            "2": "50.00"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "Sling",
+                            "2": "4.49"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "TNT (1 stick)",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "TNT (5 sticks)",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": ".5 ton anvil",
+                            "2": "5.99"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "1 ton anvil",
+                            "2": "9.99"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "2 ton anvil",
+                            "2": "14.99"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "Bird seed",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "Carrots",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "Detonator",
+                            "2": "13.00"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "Fuses",
+                            "2": "3.42"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "JetPack 1000",
+                            "2": "35.00"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "JetPack 2000",
+                            "2": "55.00"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "Oil can",
+                            "2": "8.99"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "Safe",
+                            "2": "50.00"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "Sling",
+                            "2": "4.49"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "TNT (1 stick)",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "Furball Inc.",
+                            "1": "TNT (5 sticks)",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": ".5 ton anvil",
+                            "2": "5.99"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "1 ton anvil",
+                            "2": "9.99"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "2 ton anvil",
+                            "2": "14.99"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "Bird seed",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "Carrots",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "Detonator",
+                            "2": "13.00"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "Fuses",
+                            "2": "3.42"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "JetPack 1000",
+                            "2": "35.00"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "JetPack 2000",
+                            "2": "55.00"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "Oil can",
+                            "2": "8.99"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "Safe",
+                            "2": "50.00"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "Sling",
+                            "2": "4.49"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "TNT (1 stick)",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "TNT (5 sticks)",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": ".5 ton anvil",
+                            "2": "5.99"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "1 ton anvil",
+                            "2": "9.99"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "2 ton anvil",
+                            "2": "14.99"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "Bird seed",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "Carrots",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "Detonator",
+                            "2": "13.00"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "Fuses",
+                            "2": "3.42"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "JetPack 1000",
+                            "2": "35.00"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "JetPack 2000",
+                            "2": "55.00"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "Oil can",
+                            "2": "8.99"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "Safe",
+                            "2": "50.00"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "Sling",
+                            "2": "4.49"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "TNT (1 stick)",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "Jouets Et Ours",
+                            "1": "TNT (5 sticks)",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": ".5 ton anvil",
+                            "2": "5.99"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "1 ton anvil",
+                            "2": "9.99"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "2 ton anvil",
+                            "2": "14.99"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "Bird seed",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "Carrots",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "Detonator",
+                            "2": "13.00"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "Fuses",
+                            "2": "3.42"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "JetPack 1000",
+                            "2": "35.00"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "JetPack 2000",
+                            "2": "55.00"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "Oil can",
+                            "2": "8.99"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "Safe",
+                            "2": "50.00"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "Sling",
+                            "2": "4.49"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "TNT (1 stick)",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "TNT (5 sticks)",
+                            "2": "10.00"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "vend_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "2",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 84 records retrieved in 5.205ms"
+                    },
+                    "totalRowCount": 84,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 一般来说,必须要有WHERE语句,否则结果会返回笛卡尔积,这是不对的\nSELECT vend_name,prod_name,prod_price\nFROM vendors,products\nORDER BY vend_name,prod_name",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 15,
+                "end": 20,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "71921eba-8bc8-45b9-9831-4813093b84b0"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 151
+                        },
+                        "contentStart": 44,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 151,
+                            "length": 1
+                        },
+                        "contentStart": 150,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "71921eba-8bc8-45b9-9831-4813093b84b0",
+                    "rows": [
+                        {
+                            "0": "Anvils R Us",
+                            "1": ".5 ton anvil",
+                            "2": "5.99"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "1 ton anvil",
+                            "2": "9.99"
+                        },
+                        {
+                            "0": "Anvils R Us",
+                            "1": "2 ton anvil",
+                            "2": "14.99"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "Fuses",
+                            "2": "3.42"
+                        },
+                        {
+                            "0": "LT Supplies",
+                            "1": "Oil can",
+                            "2": "8.99"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Detonator",
+                            "2": "13.00"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Bird seed",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Carrots",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Safe",
+                            "2": "50.00"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "Sling",
+                            "2": "4.49"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "TNT (1 stick)",
+                            "2": "2.50"
+                        },
+                        {
+                            "0": "ACME",
+                            "1": "TNT (5 sticks)",
+                            "2": "10.00"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "JetPack 1000",
+                            "2": "35.00"
+                        },
+                        {
+                            "0": "Jet Set",
+                            "1": "JetPack 2000",
+                            "2": "55.00"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "vend_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "2",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 14 records retrieved in 1.342ms"
+                    },
+                    "totalRowCount": 14,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "##15.2.2 内连接\n-- 前面用的是等值连接,也是内连接\n-- 下面来一个新用法\nSELECT vend_name,prod_name,prod_price\nFROM vendors INNER JOIN products\nON vendors.vend_id=products.vend_id",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 21,
+                "end": 26,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "d02bbe90-cf94-4fc7-dc52-0297fe9fa76e"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 199
+                        },
+                        "contentStart": 12,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "d02bbe90-cf94-4fc7-dc52-0297fe9fa76e",
+                    "rows": [
+                        {
+                            "0": ".5 ton anvil",
+                            "1": "Anvils R Us",
+                            "2": "5.99",
+                            "3": 10
+                        },
+                        {
+                            "0": "1 ton anvil",
+                            "1": "Anvils R Us",
+                            "2": "9.99",
+                            "3": 3
+                        },
+                        {
+                            "0": "TNT (5 sticks)",
+                            "1": "ACME",
+                            "2": "10.00",
+                            "3": 5
+                        },
+                        {
+                            "0": "Bird seed",
+                            "1": "ACME",
+                            "2": "10.00",
+                            "3": 1
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "vend_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "2",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "quantity",
+                            "field": "3",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 4 records retrieved in 1.655ms"
+                    },
+                    "totalRowCount": 4,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#15.3 连接多张表\nSELECT prod_name,vend_name,prod_price,quantity\nFROM orderitems,products,vendors\nWHERE products.vend_id=vendors.vend_id\n    AND orderitems.prod_id=products.prod_id\n    AND order_num=20005",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 27,
+                "end": 35,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "be7e08a3-4173-4a3b-c52b-55febe92f93d"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 246
+                        },
+                        "contentStart": 39,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "be7e08a3-4173-4a3b-c52b-55febe92f93d",
+                    "rows": [
+                        {
+                            "0": ".5 ton anvil",
+                            "1": "Anvils R Us",
+                            "2": "5.99",
+                            "3": 10
+                        },
+                        {
+                            "0": "1 ton anvil",
+                            "1": "Anvils R Us",
+                            "2": "9.99",
+                            "3": 3
+                        },
+                        {
+                            "0": "TNT (5 sticks)",
+                            "1": "ACME",
+                            "2": "10.00",
+                            "3": 5
+                        },
+                        {
+                            "0": "Bird seed",
+                            "1": "ACME",
+                            "2": "10.00",
+                            "3": 1
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "vend_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_price",
+                            "field": "2",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "quantity",
+                            "field": "3",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 4 records retrieved in 1.551ms"
+                    },
+                    "totalRowCount": 4,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 连接很耗资源,不要连接不必要的表\n-- 另一种INNER JOIN版本\nSELECT prod_name,vend_name,prod_price,quantity\nFROM vendors\nINNER JOIN products\n    ON vendors.vend_id=products.vend_id\nINNER JOIN orderitems\n    ON orderitems.prod_id=products.prod_id\nWHERE order_num=20005",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 36,
+                "end": 45,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "64bb5de9-b190-4192-a1e1-a0f491fe8398"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 361
+                        },
+                        "contentStart": 13,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "64bb5de9-b190-4192-a1e1-a0f491fe8398",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": "Y Lee"
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": "Y Sam"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_contact",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 22.747ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 对于第14章的代码\nSELECT cust_name,cust_contact\nFROM customers\nWHERE cust_id IN (SELECT cust_id\n                    FROM orders\n                    WHERE order_num IN (SELECT order_num\n                                        FROM orderitems\n                                        WHERE prod_id = 'TNT2'\n                                        )\n                  )",
+                    "updatable": true,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 46,
+                "end": 51,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "3dd892a1-1c81-44c5-8e98-5507d773c313"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 180
+                        },
+                        "contentStart": 9,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "3dd892a1-1c81-44c5-8e98-5507d773c313",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": "Y Lee"
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": "Y Sam"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_contact",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 1.2ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 可以这样写\nSELECT cust_name,cust_contact\nFROM customers,orders,orderitems\nWHERE customers.cust_id=orders.cust_id\n    AND orderitems.order_num=orders.order_num\n    AND prod_id='TNT2'",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 52,
+                "end": 59,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "839f4613-1fff-447a-8645-4ee1c57d327c"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 201
+                        },
+                        "contentStart": 10,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "839f4613-1fff-447a-8645-4ee1c57d327c",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": "Y Lee"
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": "Y Sam"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_contact",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 1.266ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 也可以这样写\nSELECT cust_name,cust_contact\nFROM customers\nINNER JOIN orders\n    ON customers.cust_id=orders.cust_id\nINNER JOIN orderitems\n    ON orderitems.order_num=orders.order_num\nWHERE prod_id='TNT2'",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 60,
+                "end": 66,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "cd248a3c-0419-4610-a377-86bdeff3e656"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 259
+                        },
+                        "contentStart": 142,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "cd248a3c-0419-4610-a377-86bdeff3e656",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": 20005
+                        },
+                        {
+                            "0": "Coyote Inc.",
+                            "1": 20009
+                        },
+                        {
+                            "0": "E Fudd",
+                            "1": 20008
+                        },
+                        {
+                            "0": "Wascals",
+                            "1": 20006
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": 20007
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "order_num",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 5 records retrieved in 1.758ms"
+                    },
+                    "totalRowCount": 5,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E1\n\n*/\nSELECT cust_name,order_num\nFROM customers,orders\nWHERE customers.cust_id=orders.cust_id\nORDER BY cust_name,order_num",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 67,
+                "end": 71,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "ccfc53ed-5e57-43f5-9a55-50626ea9104b"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 129
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "ccfc53ed-5e57-43f5-9a55-50626ea9104b",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": 20005
+                        },
+                        {
+                            "0": "Coyote Inc.",
+                            "1": 20009
+                        },
+                        {
+                            "0": "E Fudd",
+                            "1": 20008
+                        },
+                        {
+                            "0": "Wascals",
+                            "1": 20006
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": 20007
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "order_num",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 5 records retrieved in 1.284ms"
+                    },
+                    "totalRowCount": 5,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT cust_name,order_num\nFROM customers\nINNER JOIN orders\n    ON customers.cust_id=orders.cust_id\nORDER BY cust_name,order_num",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 72,
+                "end": 80,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "c5bc6b5c-85dd-4142-9528-2b9beddda0fd"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 440
+                        },
+                        "contentStart": 182,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "c5bc6b5c-85dd-4142-9528-2b9beddda0fd",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": 20005,
+                            "2": "149.87"
+                        },
+                        {
+                            "0": "Coyote Inc.",
+                            "1": 20009,
+                            "2": "38.47"
+                        },
+                        {
+                            "0": "E Fudd",
+                            "1": 20008,
+                            "2": "125.00"
+                        },
+                        {
+                            "0": "Wascals",
+                            "1": 20006,
+                            "2": "55.00"
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": 20007,
+                            "2": "1000.00"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "order_num",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "ordertotal",
+                            "field": "2",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 5 records retrieved in 3.393ms"
+                    },
+                    "totalRowCount": 5,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E2\n\n*/\nSELECT cust_name,orders.order_num,Sum(item_price * quantity) AS ordertotal\nFROM customers,orders,orderitems\nWHERE customers.cust_id=orders.cust_id\n    AND orderitems.order_num=orders.order_num\nGROUP BY cust_name,orders.order_num\nORDER BY cust_name,order_num",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 81,
+                "end": 89,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "06f9aee1-3b9f-4f6a-fbf4-480be98f1c90"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 246
+                        },
+                        "contentStart": 104,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 246,
+                            "length": 1
+                        },
+                        "contentStart": 245,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "06f9aee1-3b9f-4f6a-fbf4-480be98f1c90",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 0 records retrieved in 1.649ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E3\n让我们回顾一下第 14 课中的挑战 2。编写一个 SQL 语句，用于检索订购产品 BR01 的日期，但这次使用 join 和简单的 equijoin 语法。输出应与第 14 课中的输出相同。\n*/\nSELECT cust_id, order_date\nFROM orders, orderItems\nWHERE orders.order_num = orderItems.order_num\n    AND prod_id = 'BR01'\nORDER BY order_date",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 90,
+                "end": 97,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "3a226e1d-eb80-45b6-a25f-f0e6a9323fa4"
+                    ]
+                },
+                "currentHeight": 87.9375,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 343
+                        },
+                        "contentStart": 158,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "3a226e1d-eb80-45b6-a25f-f0e6a9323fa4",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 0 records retrieved in 1.602ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E4\n重新创建您为第14课挑战3编写的 SQL,这次使用 ANSI INNER JOIN 语法。您在此处编写的代码使用了两个嵌套的子查询，要重新创建它，您需要两个INNER JOIN 语句，每个语句的格式与本课前面的 INNER JOIN示例类似。别忘了使用WHERE子句来按 prod_id 进行筛选。\n*/\nSELECT cust_email\nFROM Customers\n    INNER JOIN Orders ON Customers.cust_id = Orders.cust_id\n    INNER JOIN OrderItems ON Orders.order_num = OrderItems.order_num\nWHERE prod_id = 'BR01'",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 98,
+                "end": 116,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "b24b480f-cef1-4f18-ceaf-29b0e3c6594f",
+                        "55eb15cb-73c9-4b35-aa36-ef482b751940"
+                    ]
+                },
+                "currentHeight": 129.1875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 597
+                        },
+                        "contentStart": 336,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 597,
+                            "length": 307
+                        },
+                        "contentStart": 624,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 904,
+                            "length": 0
+                        },
+                        "contentStart": 903,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "b24b480f-cef1-4f18-ceaf-29b0e3c6594f",
+                    "rows": [
+                        {
+                            "0": "Yosemite Place",
+                            "1": "1000.00"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "total_price",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 2.473ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E5\n我向您发出了一个挑战，以查找值为1000或更大的所有订单号。这些结果很有用，但更有用的是下了至少该金额订单的客户的姓名。因此，编写一个SQL语句，该语句使用联接从Customers表中返回客户名称 （cust_name），并从OrderItems表中返回所有订单的总价。这里有一个提示，要联接这些表，您还需要包括Orders表（因为Customers与OrderItems没有直接关系，Customers与Orders相关，而Orders与OrderItems相关）。不要忘记GROUP BY 和 HAVING，并按客户名称对结果进行排序。对于此函数，可以使用简单的等值连接或 ANSI INNER JOIN 语法。\n*/\n-- Equijoin syntax\nSELECT cust_name, SUM(item_price*quantity) AS total_price\nFROM Customers, Orders, OrderItems\nWHERE Customers.cust_id = Orders.cust_id\n    AND Orders.order_num = OrderItems.order_num\nGROUP BY cust_name \nHAVING SUM(item_price*quantity) >= 1000\nORDER BY cust_name",
+                    "updatable": false,
+                    "fullTableName": ""
+                },
+                {
+                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
+                    "resultId": "55eb15cb-73c9-4b35-aa36-ef482b751940",
+                    "rows": [
+                        {
+                            "0": "Yosemite Place",
+                            "1": "1000.00"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "total_price",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.395ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 1,
+                    "sql": "\n-- ANSI INNER JOIN syntax\nSELECT cust_name, SUM(item_price*quantity) AS total_price\nFROM Customers\n    INNER JOIN Orders ON Customers.cust_id = Orders.cust_id\n    INNER JOIN OrderItems ON Orders.order_num = OrderItems.order_num\nGROUP BY cust_name\nHAVING SUM(item_price*quantity) >= 1000\nORDER BY cust_name",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 117,
+                "end": 117,
+                "language": "mysql",
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 0
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        }
+    ]
+}
