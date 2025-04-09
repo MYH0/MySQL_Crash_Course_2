@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C18 全文搜索\n",
+    "content": "\\about\n#C18 全文搜索\n-- mysql主要用2种数据库引擎:MyISAM和InnoDB\n-- MyISAM支持全文搜索\n-- InnoDB从mysql 5.6开始支持全文搜索\n-- 通配符和正则表达式消耗较大，且不够智能\n#",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -13,13 +13,13 @@
     "viewState": {
         "cursorState": [
             {
-                "inSelectionMode": true,
+                "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 2,
-                    "column": 10
+                    "lineNumber": 7,
+                    "column": 2
                 },
                 "position": {
-                    "lineNumber": 2,
+                    "lineNumber": 7,
                     "column": 2
                 }
             }
@@ -72,7 +72,39 @@
         {
             "state": {
                 "start": 2,
-                "end": 3,
+                "end": 6,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "2db1fad3-2231-4b4c-a161-841368e15668",
+                            "content": "OK, 0 records retrieved in 1.272ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 109
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 7,
+                "end": 7,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
@@ -80,10 +112,10 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 10
+                            "length": 1
                         },
-                        "contentStart": -1,
-                        "state": 3
+                        "contentStart": 0,
+                        "state": 1
                     }
                 ]
             },
