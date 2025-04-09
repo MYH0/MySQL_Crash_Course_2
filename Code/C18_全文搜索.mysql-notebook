@@ -2,12 +2,12 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C18 全文搜索\n-- mysql主要用2种数据库引擎:MyISAM和InnoDB\n-- MyISAM支持全文搜索\n-- InnoDB从mysql 5.6开始支持全文搜索\n-- 通配符和正则表达式消耗较大，且不够智能\n#",
+    "content": "\\about\n#C18 全文搜索\n-- mysql主要用2种数据库引擎:MyISAM和InnoDB\n-- MyISAM支持全文搜索\n-- InnoDB从mysql 5.6开始支持全文搜索\n-- 通配符和正则表达式消耗较大，且不够智能\n#18.2 使用全文搜索\n-- 全文搜索只能在具有特定索引列的表上进行,通常在创表时即可构建索引\n##18.2.1 执行全文搜索\n-- 返回的结果按照匹配程度排序\n-- Match():指定被搜索的列\n-- Against():指定要使用的搜索表达式\nSELECT note_text\nFROM productnotes\nWHERE Match(note_text) Against('rabbit');\n-- 这样也可以\nSELECT note_text\nFROM productnotes\nWHERE note_text LIKE '%rabbit%';\n-- 查看返回结果的匹配度\n-- 所查文本在结果中的位置靠前的匹配度>位置靠后的匹配度\nSELECT note_text,\n        Match(note_text) Against('rabbit') AS match_rank\nFROM productnotes;\n#18.2.2 查询扩展 WITH QUERY EXPANSION\n-- 我不但想查询有ABC这个词的行,还想查询与ABC相关但不包括ABC的其他行\n-- 表中的行越多，使用查询扩展返回的结果越好\n-- 这个没有查询扩展\nSELECT note_text\nFROM productnotes\nWHERE Match(note_text) Against('anvils');\n-- 使用了查询扩展\nSELECT note_text\nFROM productnotes\nWHERE Match(note_text) Against('anvils' WITH QUERY EXPANSION);\n",
     "options": {
         "tabSize": 4,
-        "indentSize": 4,
         "insertSpaces": true,
-        "defaultEOL": "LF",
+        "indentSize": 4,
+        "defaultEOL": "CRLF",
         "trimAutoWhitespace": true
     },
     "viewState": {
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 7,
-                    "column": 2
+                    "lineNumber": 27,
+                    "column": 24
                 },
                 "position": {
-                    "lineNumber": 7,
-                    "column": 2
+                    "lineNumber": 27,
+                    "column": 24
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 1,
+                "lineNumber": 25,
                 "column": 1
             },
-            "firstPositionDeltaTop": 0
+            "firstPositionDeltaTop": 50
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -53,7 +53,7 @@
                         }
                     ]
                 },
-                "currentHeight": 151.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -80,12 +80,12 @@
                         {
                             "type": 2,
                             "index": 0,
-                            "resultId": "2db1fad3-2231-4b4c-a161-841368e15668",
-                            "content": "OK, 0 records retrieved in 1.272ms"
+                            "resultId": "f48aab52-a0d3-4f5a-bd19-0f429576a4b0",
+                            "content": "OK, 0 records retrieved in 0.854ms"
                         }
                     ]
                 },
-                "currentHeight": 31.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -104,7 +104,503 @@
         {
             "state": {
                 "start": 7,
-                "end": 7,
+                "end": 8,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "d7942115-ff09-43e3-f7a4-67065ffb1ec3",
+                            "content": "OK, 0 records retrieved in 0.823ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 48
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 9,
+                "end": 15,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "0baf9d95-add3-475a-eaac-34e5f9d3f7bd"
+                    ]
+                },
+                "currentHeight": 156.15625,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 153
+                        },
+                        "contentStart": 77,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
+                    "resultId": "0baf9d95-add3-475a-eaac-34e5f9d3f7bd",
+                    "rows": [
+                        {
+                            "0": "Customer complaint: rabbit has been able to detect trap, food apparently less effective now."
+                        },
+                        {
+                            "0": "Quantity varies, sold by the sack load.\nAll guaranteed to be bright and orange, and suitable for use as rabbit bait."
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "note_text",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 35.435ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "##18.2.1 执行全文搜索\n-- Match():指定被搜索的列\n-- Against():指定要使用的搜索表达式\nSELECT note_text\nFROM productnotes\nWHERE Match(note_text) Against('rabbit')",
+                    "updatable": false,
+                    "fullTableName": "productnotes"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 16,
+                "end": 19,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "83f035e6-1310-45ba-dbbb-0c6868387c04"
+                    ]
+                },
+                "currentHeight": 156.15625,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 76
+                        },
+                        "contentStart": 9,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
+                    "resultId": "83f035e6-1310-45ba-dbbb-0c6868387c04",
+                    "rows": [
+                        {
+                            "0": "Quantity varies, sold by the sack load.\nAll guaranteed to be bright and orange, and suitable for use as rabbit bait."
+                        },
+                        {
+                            "0": "Customer complaint: rabbit has been able to detect trap, food apparently less effective now."
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "note_text",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 1.823ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 这样也可以\nSELECT note_text\nFROM productnotes\nWHERE note_text LIKE '%rabbit%'",
+                    "updatable": false,
+                    "fullTableName": "productnotes"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 20,
+                "end": 24,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "cead3c1f-894f-4f39-c21a-a00ced41b8bf"
+                    ]
+                },
+                "currentHeight": 351.984375,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 137
+                        },
+                        "contentStart": 44,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
+                    "resultId": "cead3c1f-894f-4f39-c21a-a00ced41b8bf",
+                    "rows": [
+                        {
+                            "0": "Customer complaint:\nSticks not individually wrapped, too easy to mistakenly detonate all at once.\nRecommend individual wrapping.",
+                            "1": 0
+                        },
+                        {
+                            "0": "Can shipped full, refills not available.\nNeed to order new can if refill needed.",
+                            "1": 0
+                        },
+                        {
+                            "0": "Safe is combination locked, combination not provided with safe.\nThis is rarely a problem as safes are typically blown up or dropped by customers.",
+                            "1": 0
+                        },
+                        {
+                            "0": "Quantity varies, sold by the sack load.\nAll guaranteed to be bright and orange, and suitable for use as rabbit bait.",
+                            "1": 1.5905543565750122
+                        },
+                        {
+                            "0": "Included fuses are short and have been known to detonate too quickly for some customers.\nLonger fuses are available (item FU1) and should be recommended.",
+                            "1": 0
+                        },
+                        {
+                            "0": "Matches not included, recommend purchase of matches or detonator (item DTNTR).",
+                            "1": 0
+                        },
+                        {
+                            "0": "Please note that no returns will be accepted if safe opened using explosives.",
+                            "1": 0
+                        },
+                        {
+                            "0": "Multiple customer returns, anvils failing to drop fast enough or falling backwards on purchaser. Recommend that customer considers using heavier anvils.",
+                            "1": 0
+                        },
+                        {
+                            "0": "Item is extremely heavy. Designed for dropping, not recommended for use with slings, ropes, pulleys, or tightropes.",
+                            "1": 0
+                        },
+                        {
+                            "0": "Customer complaint: rabbit has been able to detect trap, food apparently less effective now.",
+                            "1": 1.6408053636550903
+                        },
+                        {
+                            "0": "Shipped unassembled, requires common tools (including oversized hammer).",
+                            "1": 0
+                        },
+                        {
+                            "0": "Customer complaint:\nCircular hole in safe floor can apparently be easily cut with handsaw.",
+                            "1": 0
+                        },
+                        {
+                            "0": "Customer complaint:\nNot heavy enough to generate flying stars around head of victim. If being purchased for dropping, recommend ANV02 or ANV03 instead.",
+                            "1": 0
+                        },
+                        {
+                            "0": "Call from individual trapped in safe plummeting to the ground, suggests an escape hatch be added.\nComment forwarded to vendor.",
+                            "1": 0
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "note_text",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "match_rank",
+                            "field": "1",
+                            "dataType": {
+                                "type": 9,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 53,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrZero",
+                                "synonyms": [
+                                    "FLOAT8"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 14 records retrieved in 0.924ms"
+                    },
+                    "totalRowCount": 14,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 查看返回结果的匹配度\n-- 所查文本在结果中的位置靠前的匹配度>位置靠后的匹配度\nSELECT note_text,\n        Match(note_text) Against('rabbit') AS match_rank\nFROM productnotes",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 25,
+                "end": 27,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "e3979fd3-a3de-43a4-c114-a6aef507fed1",
+                            "content": "OK, 0 records retrieved in 0.907ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 98
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 28,
+                "end": 31,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "1a3bae50-08a8-4bba-e8bc-f5a4360aa95d"
+                    ]
+                },
+                "currentHeight": 146.046875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 88
+                        },
+                        "contentStart": 12,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
+                    "resultId": "1a3bae50-08a8-4bba-e8bc-f5a4360aa95d",
+                    "rows": [
+                        {
+                            "0": "Multiple customer returns, anvils failing to drop fast enough or falling backwards on purchaser. Recommend that customer considers using heavier anvils."
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "note_text",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.204ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 这个没有查询扩展\nSELECT note_text\nFROM productnotes\nWHERE Match(note_text) Against('anvils')",
+                    "updatable": false,
+                    "fullTableName": "productnotes"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 32,
+                "end": 35,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "d84fb960-9d13-4a2e-fbcb-a13631a65764"
+                    ]
+                },
+                "currentHeight": 351.984375,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 108
+                        },
+                        "contentStart": 11,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "18c191d0-a5c2-4004-de73-a50a0450dcfb",
+                    "resultId": "d84fb960-9d13-4a2e-fbcb-a13631a65764",
+                    "rows": [
+                        {
+                            "0": "Multiple customer returns, anvils failing to drop fast enough or falling backwards on purchaser. Recommend that customer considers using heavier anvils."
+                        },
+                        {
+                            "0": "Customer complaint:\nSticks not individually wrapped, too easy to mistakenly detonate all at once.\nRecommend individual wrapping."
+                        },
+                        {
+                            "0": "Customer complaint:\nNot heavy enough to generate flying stars around head of victim. If being purchased for dropping, recommend ANV02 or ANV03 instead."
+                        },
+                        {
+                            "0": "Please note that no returns will be accepted if safe opened using explosives."
+                        },
+                        {
+                            "0": "Customer complaint: rabbit has been able to detect trap, food apparently less effective now."
+                        },
+                        {
+                            "0": "Customer complaint:\nCircular hole in safe floor can apparently be easily cut with handsaw."
+                        },
+                        {
+                            "0": "Matches not included, recommend purchase of matches or detonator (item DTNTR)."
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "note_text",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 7 records retrieved in 3.35ms"
+                    },
+                    "totalRowCount": 7,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 使用了查询扩展\nSELECT note_text\nFROM productnotes\nWHERE Match(note_text) Against('anvils' WITH QUERY EXPANSION)",
+                    "updatable": false,
+                    "fullTableName": "productnotes"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 36,
+                "end": 36,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
@@ -112,10 +608,10 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 1
+                            "length": 0
                         },
                         "contentStart": 0,
-                        "state": 1
+                        "state": 0
                     }
                 ]
             },
