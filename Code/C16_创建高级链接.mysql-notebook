@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C16 创建高级链接\n#16.1 使用表别名\n-- 表别名是DBMS独有的,只在查询中使用。与列别名不同,不会返回到客户端\nSELECT cust_name,cust_contact\nFROM customers AS c,orders AS O,orderitems AS oi\nWHERE c.cust_id =o.cust_id\n    AND oi.order_num=o.order_num\n    AND prod_id='TNT2';\n#16.2 自连接\n-- 我想先根据产品ID找到生产商,再找到生产商的其它的产品\n-- 几乎所有内连接都是自然连接\n-- 法一\nSELECT prod_id,prod_name\nFROM products \nWHERE vend_id=(\n                SELECT vend_id\n                FROM products\n                WHERE prod_id='DTNTR'\n              );\n-- 法二\nSELECT p1.prod_id,p1.prod_name\nFROM products AS p1,products AS p2\nWHERE p1.vend_id=p2.vend_id\n    AND p2.prod_id='DTNTR';\n",
+    "content": "\\about\n#C16 创建高级链接\n#16.1 使用表别名\n-- 表别名是DBMS独有的,只在查询中使用。与列别名不同,不会返回到客户端\nSELECT cust_name,cust_contact\nFROM customers AS c,orders AS O,orderitems AS oi\nWHERE c.cust_id =o.cust_id\n    AND oi.order_num=o.order_num\n    AND prod_id='TNT2';\n#16.2 自连接\n-- 我想先根据产品ID找到生产商,再找到生产商的其它的产品\n-- 法一\nSELECT prod_id,prod_name\nFROM products \nWHERE vend_id=(\n                SELECT vend_id\n                FROM products\n                WHERE prod_id='DTNTR'\n              );\n-- 法二\nSELECT p1.prod_id,p1.prod_name\nFROM products AS p1,products AS p2\nWHERE p1.vend_id=p2.vend_id\n    AND p2.prod_id='DTNTR';\n##16.2.2 自然连接\n-- 几乎所有内连接都是自然连接\n##16.2.3 外连接\n-- 连接包含了在相关表中没有关联的那些行就是外连接\n-- 有时候我们要包含没有关联行的那些行\n-- 比如在统计每个顾客的订单数时,也要包括没有下单的顾客\n-- OUTER JOIN必须要指定所在行左边的表(LEFT),还是右边的表(RIGHT)\nSELECT customers.cust_id,orders.order_num\nFROM customers LEFT OUTER JOIN orders\n    ON customers.cust_id=orders.cust_id;\n\n#16.3 带聚合函数的连接\nSELECT customers.cust_name,customers.cust_id,\n        Count(orders.order_num) AS num_ord\nFROM customers INNER JOIN orders\n    ON customers.cust_id=orders.cust_id\nGROUP BY customers.cust_id;\nSELECT customers.cust_name,customers.cust_id,\n        Count(orders.order_num) AS num_ord\nFROM customers LEFT OUTER JOIN orders\n    ON customers.cust_id=orders.cust_id \nGROUP BY customers.cust_id;\n/*E1\n使用 INNER JOIN 编写 SQL 语句，以检索客户名称（cust_name Customers（客户））和每个客户的所有订单号（order_num Orders（订单））。\n*/\nSELECT cust_name,order_num\nFROM customers INNER JOIN orders ON customers.cust_id=orders.cust_id\nORDER BY cust_name;\n/*E2\n修改您刚刚创建的 SQL 语句以列出所有客户，包括那些没有订单的客户。\n*/\nSELECT cust_name,order_num\nFROM customers LEFT OUTER JOIN orders ON customers.cust_id=orders.cust_id\nORDER BY cust_name;\n/*E3\n使用OUTER JOIN连接Products和OrderItems表，返回产品名称 （prod_name） 的排序列表以及与每个名称关联的订单号（order_num）。\n*/\nSELECT prod_name,order_num\nFROM products LEFT OUTER JOIN orderitems ON products.prod_id=orderitems.prod_id\nORDER BY prod_name;\n/*E4!!\n修改在上一个查询中创建的 SQL 语句，以便它返回每个项目的订单总数（而不是订单号）。\n*/\nSELECT prod_name,Count(order_num) AS prod_total\nFROM products LEFT OUTER JOIN orderitems ON products.prod_id=orderitems.prod_id\nGROUP BY prod_name\nORDER BY prod_name;\n/*E5\n编写SQL语句以列出供应商（vend_id Vendors（供应商））及其可用的产品数量，包括没有产品的供应商。您需要使用OUTER JOIN和COUNT（）聚合函数来计算Products表中每个产品的数量。请注意，vend_id列出现在多个表中，因此每次引用它时，都需要对其进行完全限定。\n*/\nSELECT vendors.vend_id,Count(prod_id) AS prod_num\nFROM vendors LEFT OUTER JOIN products ON vendors.vend_id=products.vend_id\nGROUP BY vendors.vend_id\nORDER BY vendors.vend_id;\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 12,
-                    "column": 17
+                    "lineNumber": 78,
+                    "column": 26
                 },
                 "position": {
-                    "lineNumber": 12,
-                    "column": 17
+                    "lineNumber": 78,
+                    "column": 26
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 7,
+                "lineNumber": 69,
                 "column": 1
             },
-            "firstPositionDeltaTop": -8
+            "firstPositionDeltaTop": -2
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -77,10 +77,10 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "e17c01b8-4d33-49f4-809f-1540f7e97f00"
+                        "55c5b2e7-d11c-47e0-f318-f5161117449d"
                     ]
                 },
-                "currentHeight": 132.46875,
+                "currentHeight": 36,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -96,8 +96,8 @@
             },
             "data": [
                 {
-                    "tabId": "2fd0f302-e7fb-4b3e-ca8c-7c90987abd5b",
-                    "resultId": "e17c01b8-4d33-49f4-809f-1540f7e97f00",
+                    "tabId": "508363aa-f63d-46ef-d78e-46419fcd65a4",
+                    "resultId": "55c5b2e7-d11c-47e0-f318-f5161117449d",
                     "rows": [
                         {
                             "0": "Coyote Inc.",
@@ -162,12 +162,12 @@
         {
             "state": {
                 "start": 10,
-                "end": 20,
+                "end": 19,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "6aab4575-689c-47ef-b885-a7534329a634"
+                        "d83037ec-17c3-4803-91ed-f514c13ff467"
                     ]
                 },
                 "currentHeight": 283.828125,
@@ -177,17 +177,17 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 235
+                            "length": 218
                         },
-                        "contentStart": 64,
+                        "contentStart": 47,
                         "state": 0
                     }
                 ]
             },
             "data": [
                 {
-                    "tabId": "2fd0f302-e7fb-4b3e-ca8c-7c90987abd5b",
-                    "resultId": "6aab4575-689c-47ef-b885-a7534329a634",
+                    "tabId": "508363aa-f63d-46ef-d78e-46419fcd65a4",
+                    "resultId": "d83037ec-17c3-4803-91ed-f514c13ff467",
                     "rows": [
                         {
                             "0": "DTNTR",
@@ -257,13 +257,13 @@
                         }
                     ],
                     "executionInfo": {
-                        "text": "OK, 7 records retrieved in 2.129ms"
+                        "text": "OK, 7 records retrieved in 1.466ms"
                     },
                     "totalRowCount": 7,
                     "hasMoreRows": false,
                     "currentPage": 0,
                     "index": 0,
-                    "sql": "#16.2 自连接\n-- 我想先根据产品ID找到生产商,再找到生产商的其它的产品\n-- 法一\nSELECT prod_id,prod_name\nFROM products \nWHERE vend_id=(\n                SELECT vend_id\n                FROM products\n                WHERE prod_id='DTNTR'\n              )",
+                    "sql": "#16.2 自连接\n-- 我想先根据产品ID找到生产商,再找到生产商的其它的产品\n-- 几乎所有内连接都是自然连接\n-- 法一\nSELECT prod_id,prod_name\nFROM products \nWHERE vend_id=(\n                SELECT vend_id\n                FROM products\n                WHERE prod_id='DTNTR'\n              )",
                     "updatable": true,
                     "fullTableName": ""
                 }
@@ -271,13 +271,13 @@
         },
         {
             "state": {
-                "start": 21,
-                "end": 25,
+                "start": 20,
+                "end": 24,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "eb253746-c4e5-4abe-a40a-98f23f9cadcf"
+                        "b9c57528-f171-4bef-efae-ba4d9e26541b"
                     ]
                 },
                 "currentHeight": 283.828125,
@@ -296,8 +296,8 @@
             },
             "data": [
                 {
-                    "tabId": "2fd0f302-e7fb-4b3e-ca8c-7c90987abd5b",
-                    "resultId": "eb253746-c4e5-4abe-a40a-98f23f9cadcf",
+                    "tabId": "508363aa-f63d-46ef-d78e-46419fcd65a4",
+                    "resultId": "b9c57528-f171-4bef-efae-ba4d9e26541b",
                     "rows": [
                         {
                             "0": "DTNTR",
@@ -367,7 +367,7 @@
                         }
                     ],
                     "executionInfo": {
-                        "text": "OK, 7 records retrieved in 2.479ms"
+                        "text": "OK, 7 records retrieved in 1.481ms"
                     },
                     "totalRowCount": 7,
                     "hasMoreRows": false,
@@ -381,8 +381,1022 @@
         },
         {
             "state": {
-                "start": 26,
+                "start": 25,
                 "end": 26,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "d43365fa-f8cd-45ef-edd5-0321db8cc86f",
+                            "content": "OK, 0 records retrieved in 0.514ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 30
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 27,
+                "end": 35,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "96b5556a-a818-444a-d8a7-569915419f4c"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 257
+                        },
+                        "contentStart": 137,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 257,
+                            "length": 1
+                        },
+                        "contentStart": 256,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "508363aa-f63d-46ef-d78e-46419fcd65a4",
+                    "resultId": "96b5556a-a818-444a-d8a7-569915419f4c",
+                    "rows": [
+                        {
+                            "0": 10001,
+                            "1": 20005
+                        },
+                        {
+                            "0": 10001,
+                            "1": 20009
+                        },
+                        {
+                            "0": 10002,
+                            "1": null
+                        },
+                        {
+                            "0": 10003,
+                            "1": 20006
+                        },
+                        {
+                            "0": 10004,
+                            "1": 20007
+                        },
+                        {
+                            "0": 10005,
+                            "1": 20008
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "order_num",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 10.65ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#16.2.3 外连接\n-- 连接包含了在相关表中没有关联的那些行就是外连接\n-- 有时候我们要包含没有关联行的那些行\n-- 比如在统计每个顾客的订单数时,也要包括没有下单的顾客\nSELECT customers.cust_id,orders.order_num\nFROM customers LEFT OUTER JOIN orders\n    ON customers.cust_id=orders.cust_id",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 36,
+                "end": 41,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "de14265b-8333-4f14-cb10-8f43f6d25dc6"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 204
+                        },
+                        "contentStart": 15,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "508363aa-f63d-46ef-d78e-46419fcd65a4",
+                    "resultId": "de14265b-8333-4f14-cb10-8f43f6d25dc6",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": 10001,
+                            "2": 2
+                        },
+                        {
+                            "0": "Wascals",
+                            "1": 10003,
+                            "2": 1
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": 10004,
+                            "2": 1
+                        },
+                        {
+                            "0": "E Fudd",
+                            "1": 10005,
+                            "2": 1
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_id",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "num_ord",
+                            "field": "2",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 4 records retrieved in 5.931ms"
+                    },
+                    "totalRowCount": 4,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#16.3 带聚合函数的连接\nSELECT customers.cust_name,customers.cust_id,\n        Count(orders.order_num) AS num_ord\nFROM customers INNER JOIN orders\n    ON customers.cust_id=orders.cust_id\nGROUP BY customers.cust_id",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 42,
+                "end": 46,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "bff61084-755b-4adb-9feb-1b9c4431a3bd"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 195
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "508363aa-f63d-46ef-d78e-46419fcd65a4",
+                    "resultId": "bff61084-755b-4adb-9feb-1b9c4431a3bd",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": 10001,
+                            "2": 2
+                        },
+                        {
+                            "0": "Mouse House",
+                            "1": 10002,
+                            "2": 0
+                        },
+                        {
+                            "0": "Wascals",
+                            "1": 10003,
+                            "2": 1
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": 10004,
+                            "2": 1
+                        },
+                        {
+                            "0": "E Fudd",
+                            "1": 10005,
+                            "2": 1
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_id",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "num_ord",
+                            "field": "2",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 5 records retrieved in 2.737ms"
+                    },
+                    "totalRowCount": 5,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT customers.cust_name,customers.cust_id,\n        Count(orders.order_num) AS num_ord\nFROM customers LEFT OUTER JOIN orders\n    ON customers.cust_id=orders.cust_id \nGROUP BY customers.cust_id",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 47,
+                "end": 52,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "6ee9595c-9ad5-4cb1-b2d8-db66606757e4"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 214
+                        },
+                        "contentStart": 99,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "508363aa-f63d-46ef-d78e-46419fcd65a4",
+                    "resultId": "6ee9595c-9ad5-4cb1-b2d8-db66606757e4",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": 20005
+                        },
+                        {
+                            "0": "Coyote Inc.",
+                            "1": 20009
+                        },
+                        {
+                            "0": "E Fudd",
+                            "1": 20008
+                        },
+                        {
+                            "0": "Wascals",
+                            "1": 20006
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": 20007
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "order_num",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 5 records retrieved in 2.181ms"
+                    },
+                    "totalRowCount": 5,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E1\n\n*/\nSELECT cust_name,order_num\nFROM customers INNER JOIN orders ON customers.cust_id=orders.cust_id\nORDER BY cust_name",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 53,
+                "end": 58,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "c670f731-2549-4cfe-f279-4b5032a2152b"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 164
+                        },
+                        "contentStart": 44,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "508363aa-f63d-46ef-d78e-46419fcd65a4",
+                    "resultId": "c670f731-2549-4cfe-f279-4b5032a2152b",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": 20005
+                        },
+                        {
+                            "0": "Coyote Inc.",
+                            "1": 20009
+                        },
+                        {
+                            "0": "E Fudd",
+                            "1": 20008
+                        },
+                        {
+                            "0": "Mouse House",
+                            "1": null
+                        },
+                        {
+                            "0": "Wascals",
+                            "1": 20006
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": 20007
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "order_num",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 1.079ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E2\n修改您刚刚创建的 SQL 语句以列出所有客户，包括那些没有订单的客户。\n*/\nSELECT cust_name,order_num\nFROM customers LEFT OUTER JOIN orders ON customers.cust_id=orders.cust_id\nORDER BY cust_name",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 59,
+                "end": 64,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "084ffa28-899f-4dc3-8864-b5826e707f9c"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 219
+                        },
+                        "contentStart": 93,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "508363aa-f63d-46ef-d78e-46419fcd65a4",
+                    "resultId": "084ffa28-899f-4dc3-8864-b5826e707f9c",
+                    "rows": [
+                        {
+                            "0": ".5 ton anvil",
+                            "1": 20005
+                        },
+                        {
+                            "0": "1 ton anvil",
+                            "1": 20005
+                        },
+                        {
+                            "0": "2 ton anvil",
+                            "1": 20009
+                        },
+                        {
+                            "0": "Bird seed",
+                            "1": 20005
+                        },
+                        {
+                            "0": "Bird seed",
+                            "1": 20009
+                        },
+                        {
+                            "0": "Carrots",
+                            "1": 20008
+                        },
+                        {
+                            "0": "Detonator",
+                            "1": null
+                        },
+                        {
+                            "0": "Fuses",
+                            "1": null
+                        },
+                        {
+                            "0": "JetPack 1000",
+                            "1": null
+                        },
+                        {
+                            "0": "JetPack 2000",
+                            "1": 20006
+                        },
+                        {
+                            "0": "Oil can",
+                            "1": 20009
+                        },
+                        {
+                            "0": "Safe",
+                            "1": null
+                        },
+                        {
+                            "0": "Sling",
+                            "1": 20009
+                        },
+                        {
+                            "0": "TNT (1 stick)",
+                            "1": null
+                        },
+                        {
+                            "0": "TNT (5 sticks)",
+                            "1": 20005
+                        },
+                        {
+                            "0": "TNT (5 sticks)",
+                            "1": 20007
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "order_num",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 16 records retrieved in 1.568ms"
+                    },
+                    "totalRowCount": 16,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E3\n使用OUTER JOIN连接Products和OrderItems表，返回产品名称 （prod_name） 的排序列表以及与每个名称关联的订单号（order_num）。\n*/\nSELECT prod_name,order_num\nFROM products LEFT OUTER JOIN orderitems ON products.prod_id=orderitems.prod_id\nORDER BY prod_name",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 65,
+                "end": 71,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "0ebd9c77-f69c-4354-f077-33c57299b441"
+                    ]
+                },
+                "currentHeight": 351.984375,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 220
+                        },
+                        "contentStart": 54,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "508363aa-f63d-46ef-d78e-46419fcd65a4",
+                    "resultId": "0ebd9c77-f69c-4354-f077-33c57299b441",
+                    "rows": [
+                        {
+                            "0": ".5 ton anvil",
+                            "1": 1
+                        },
+                        {
+                            "0": "1 ton anvil",
+                            "1": 1
+                        },
+                        {
+                            "0": "2 ton anvil",
+                            "1": 1
+                        },
+                        {
+                            "0": "Bird seed",
+                            "1": 2
+                        },
+                        {
+                            "0": "Carrots",
+                            "1": 1
+                        },
+                        {
+                            "0": "Detonator",
+                            "1": 0
+                        },
+                        {
+                            "0": "Fuses",
+                            "1": 0
+                        },
+                        {
+                            "0": "JetPack 1000",
+                            "1": 0
+                        },
+                        {
+                            "0": "JetPack 2000",
+                            "1": 1
+                        },
+                        {
+                            "0": "Oil can",
+                            "1": 1
+                        },
+                        {
+                            "0": "Safe",
+                            "1": 0
+                        },
+                        {
+                            "0": "Sling",
+                            "1": 1
+                        },
+                        {
+                            "0": "TNT (1 stick)",
+                            "1": 0
+                        },
+                        {
+                            "0": "TNT (5 sticks)",
+                            "1": 2
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "prod_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_total",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 14 records retrieved in 3.582ms"
+                    },
+                    "totalRowCount": 14,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E4\n\n*/\nSELECT prod_name,Count(order_num) AS prod_total\nFROM products LEFT OUTER JOIN orderitems ON products.prod_id=orderitems.prod_id\nGROUP BY prod_name\nORDER BY prod_name",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 72,
+                "end": 78,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "1aed5134-a563-4bbf-af60-4bbb07f706ba"
+                    ]
+                },
+                "currentHeight": 253.546875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 328
+                        },
+                        "contentStart": 154,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "508363aa-f63d-46ef-d78e-46419fcd65a4",
+                    "resultId": "1aed5134-a563-4bbf-af60-4bbb07f706ba",
+                    "rows": [
+                        {
+                            "0": 1001,
+                            "1": 3
+                        },
+                        {
+                            "0": 1002,
+                            "1": 2
+                        },
+                        {
+                            "0": 1003,
+                            "1": 7
+                        },
+                        {
+                            "0": 1004,
+                            "1": 0
+                        },
+                        {
+                            "0": 1005,
+                            "1": 2
+                        },
+                        {
+                            "0": 1006,
+                            "1": 0
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "vend_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_num",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 6.018ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E5\n\n*/\nSELECT vendors.vend_id,Count(prod_id) AS prod_num\nFROM vendors LEFT OUTER JOIN products ON vendors.vend_id=products.vend_id\nGROUP BY vendors.vend_id\nORDER BY vendors.vend_id",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 79,
+                "end": 79,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
