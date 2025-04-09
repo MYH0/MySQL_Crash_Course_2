@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C21 创建和操作表",
+    "content": "\\about\n#C21 创建和操作表\n#21.1 创建表\n-- 指定的表名必须不存在\n-- 为了防止意外覆盖已有的表,SQL要求先删除,再重建\n-- 如果只想在一张表不存在时创建,可在表名后加上IF NO EXISTS,如\n-- CREATE TABLE XXX IF NOT EXISTS\n\n-- NOT NULL:要求填入的数据不能是空值NULL\n-- AUTO_INCREMENT:每增加一行,该列自动递增.每张表只允许有一列使用AUTO_INCREMENT,而且必须被索引(比如使其成为主键)\n-- PRIMARY KEY:指定主键.单列的值或者多列组合值只能出现一次\n-- ENGINE:指定使用的引擎,mysql默认是InnoDB.外键不能跨引擎使用\n\n-- 常用的引擎有InnoDB,MyISAM,MEMORY\n-- InnoDB:可处理事务,建议默认使用\n-- MyISAM:高性能,支持全文搜索,但不支持事务处理\n-- MEMORY:功能等同于MyISAM,但数据存储在内存\nCREATE TABLE customers1 \n(\n    cust_id     int       NOT NULL    AUTO_INCREMENT,\n    cust_name   char(50)  NOT NULL,\n    cust_email  char(255) NULL,\n    PRIMARY KEY (cust_id,cust_name)   \n)ENGINE=InnoDB;\n-- DEFAULT:指定默认值\nCREATE TABLE IF NOT EXISTS customers2  \n(\n    cust_id     int       NOT NULL    AUTO_INCREMENT,\n    cust_name   char(50)  NOT NULL,\n    cust_wealth decimal(8,2) NOT NULL DEFAULT 0.00,\n    PRIMARY KEY (cust_id)   \n);\n#21.2 变更表 ALTER TABLE\n-- 表名必须存在\n-- 要指定列名和数据类型\n-- 给表新增一列\nALTER TABLE vendors\nADD vend_phone char(20);\n-- 删除刚添加的列\nALTER TABLE vendors\nDROP COLUMN vend_phone;\n-- 定义外键,见P173\n#21.3 删除整张表\nDROP TABLE customers2;\n#21.4 重命名表\nRENAME TABLE customers1 TO customers3;\n-- 重命名多张表\n/*\nRENAME TABLE XXX TO XXX,\n            XXX TO XXX,\n            XXX TO XXX;\n*/\n/*E1\n将网站列 （vend_web） 添加到 Vendors 表中。您需要一个足够大的文本字段来容纳 URL。\n*/\nALTER TABLE vendors\nADD vend_web char(255);\n/*E2\n使用 UPDATE 语句更新 Vendors 记录以包含网站（您可以编造任何地址）。\n*/\nUPDATE Vendors\nSET vend_web = 'www.hao123.com'\nWHERE vend_id = '1001';\nSELECT vend_id,vend_web\nFROM vendors\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 2,
-                    "column": 12
+                    "lineNumber": 64,
+                    "column": 24
                 },
                 "position": {
-                    "lineNumber": 2,
-                    "column": 12
+                    "lineNumber": 64,
+                    "column": 24
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 1,
+                "lineNumber": 46,
                 "column": 1
             },
-            "firstPositionDeltaTop": 0
+            "firstPositionDeltaTop": -15
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -53,7 +53,7 @@
                         }
                     ]
                 },
-                "currentHeight": 151.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -72,7 +72,477 @@
         {
             "state": {
                 "start": 2,
-                "end": 2,
+                "end": 24,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "80014ef0-f50d-4442-8852-4b14a92c97a0",
+                            "content": "OK, 0 records retrieved in 128.684ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 643
+                        },
+                        "contentStart": 440,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 25,
+                "end": 32,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "826dc909-69fc-485e-d4c2-0813b7820547",
+                            "content": "OK, 0 records retrieved in 15.923ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 232
+                        },
+                        "contentStart": 17,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 33,
+                "end": 35,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "47f3ce7a-a75a-4458-be6a-97f4154f7754",
+                            "content": "OK, 0 records retrieved in 1.179ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 45
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 36,
+                "end": 38,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "6de79d0b-bd37-4f4f-b70a-01e93d99e3ae",
+                            "content": "OK, 0 records retrieved in 65.669ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 54
+                        },
+                        "contentStart": 10,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 39,
+                "end": 41,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "7e46100c-15e5-4e25-aeb4-5efa3747fd1a",
+                            "content": "OK, 0 records retrieved in 34.13ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 54
+                        },
+                        "contentStart": 11,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 42,
+                "end": 42,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "6c8c2b54-76e0-4473-f052-14df4819c051",
+                            "content": "OK, 0 records retrieved in 0.628ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 13
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 43,
+                "end": 44,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "7c6abc68-cd58-4fdc-994d-e8857262a812",
+                            "content": "OK, 0 records retrieved in 55.916ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 34
+                        },
+                        "contentStart": 13,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 45,
+                "end": 46,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "c811ebf4-0c8f-465a-f029-296704f54274",
+                            "content": "OK, 0 records retrieved in 32.15ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 49
+                        },
+                        "contentStart": 11,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 47,
+                "end": 52,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "4c8093a0-d694-4abc-f330-951d976318fa",
+                            "content": "OK, 0 records retrieved in 0.797ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 88
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 53,
+                "end": 57,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "6467478d-dae5-4e65-cc3a-765c3c1cdd67",
+                            "content": "OK, 0 records retrieved in 27.411ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 104
+                        },
+                        "contentStart": 61,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 58,
+                "end": 63,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "f706878b-68c1-486a-ef93-fde09196e0c3",
+                            "content": "OK, 1 row affected in 5.787ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 121
+                        },
+                        "contentStart": 51,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 121,
+                            "length": 0
+                        },
+                        "contentStart": 120,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 64,
+                "end": 65,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "966ff134-02c0-414c-da2c-6e7d3ef03173"
+                    ]
+                },
+                "currentHeight": 253.546875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 36
+                        },
+                        "contentStart": 0,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "5b8225f6-e9c6-47f5-a423-db0adc9dd85d",
+                    "resultId": "966ff134-02c0-414c-da2c-6e7d3ef03173",
+                    "rows": [
+                        {
+                            "0": 1001,
+                            "1": "www.hao123.com"
+                        },
+                        {
+                            "0": 1002,
+                            "1": null
+                        },
+                        {
+                            "0": 1003,
+                            "1": null
+                        },
+                        {
+                            "0": 1004,
+                            "1": null
+                        },
+                        {
+                            "0": 1005,
+                            "1": null
+                        },
+                        {
+                            "0": 1006,
+                            "1": null
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "vend_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": true,
+                            "nullable": false,
+                            "autoIncrement": true
+                        },
+                        {
+                            "title": "vend_web",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": null
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 1.101ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT vend_id,vend_web\nFROM vendors",
+                    "updatable": true,
+                    "fullTableName": "vendors"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 66,
+                "end": 66,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
@@ -80,10 +550,10 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 11
+                            "length": 0
                         },
                         "contentStart": 0,
-                        "state": 1
+                        "state": 0
                     }
                 ]
             },
