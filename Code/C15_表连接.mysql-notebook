@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C15 表连接\n#15.1 连接\n-- 把数据分解为多张表可高效存储、方便处理、更大的伸缩性\n-- 连接不是物理实体,由mysql根据需要建立,存在于查询操作中\n#15.2 创建连接\nSELECT vend_name,prod_name,prod_price\nFROM vendors,products\nWHERE vendors.vend_id=products.vend_id\nORDER BY vend_name,prod_name;\n-- 一般来说,必须要有WHERE语句,否则结果会返回笛卡尔积,这是不对的\nSELECT vend_name,prod_name,prod_price\nFROM vendors,products\nORDER BY vend_name,prod_name;\n##15.2.2 内连接\n-- 前面用的是等值连接,也是内连接\n-- 下面来一个新用法\nSELECT vend_name,prod_name,prod_price\nFROM vendors INNER JOIN products\nON vendors.vend_id=products.vend_id; \n#15.3 连接多张表\nSELECT prod_name,vend_name,prod_price,quantity\nFROM orderitems,products,vendors\nWHERE products.vend_id=vendors.vend_id\n    AND orderitems.prod_id=products.prod_id\n    AND order_num=20005;\n-- 连接很耗资源,不要连接不必要的表\n-- 另一种INNER JOIN版本\nSELECT prod_name,vend_name,prod_price,quantity\nFROM vendors\nINNER JOIN products\n    ON vendors.vend_id=products.vend_id\nINNER JOIN orderitems\n    ON orderitems.prod_id=products.prod_id\nWHERE order_num=20005;\n-- 对于第14章的代码\nSELECT cust_name,cust_contact\nFROM customers\nWHERE cust_id IN (SELECT cust_id\n                    FROM orders\n                    WHERE order_num IN (SELECT order_num\n                                        FROM orderitems\n                                        WHERE prod_id = 'TNT2'\n                                        )\n                  );\n-- 可以这样写\nSELECT cust_name,cust_contact\nFROM customers,orders,orderitems\nWHERE customers.cust_id=orders.cust_id\n    AND orderitems.order_num=orders.order_num\n    AND prod_id='TNT2';\n-- 也可以这样写\nSELECT cust_name,cust_contact\nFROM customers\nINNER JOIN orders\n    ON customers.cust_id=orders.cust_id\nINNER JOIN orderitems\n    ON orderitems.order_num=orders.order_num\nWHERE prod_id='TNT2';\n/*E1\n从 Customers 表中返回客户名称 （cust_name），从 Orders 表中返回相关订单号 （order_num），然后按客户名称排序，然后按订单号对结果进行排序。实际上，尝试两次，一次使用简单的 equijoin 语法，一次使用 INNER JOIN。\n*/\nSELECT cust_name,order_num\nFROM customers,orders\nWHERE customers.cust_id=orders.cust_id\nORDER BY cust_name,order_num;\nSELECT cust_name,order_num\nFROM customers\nINNER JOIN orders\n    ON customers.cust_id=orders.cust_id\nORDER BY cust_name,order_num;\n/*E2\n让我们让前面的挑战更有用。除了返回客户名称和订单号之外，还添加名为 OrderTotal 的第三列，其中包含每个订单的总价。有两种方法可以执行此作：可以使用 OrderItems 表上的子查询创建 OrderTotal 列，或者可以将 OrderItems 表联接到现有表并使用聚合函数。这里有一个提示，请注意您需要在哪些地方使用完全限定的列名。\n*/\nSELECT cust_name,orders.order_num,Sum(item_price * quantity) AS ordertotal\nFROM customers,orders,orderitems\nWHERE customers.cust_id=orders.cust_id\n    AND orderitems.order_num=orders.order_num\nGROUP BY cust_name,orders.order_num\nORDER BY cust_name,order_num;\n/*E3\n让我们回顾一下第 14 课中的挑战 2。编写一个 SQL 语句，用于检索订购产品 BR01 的日期，但这次使用 join 和简单的 equijoin 语法。输出应与第 14 课中的输出相同。\n*/\nSELECT cust_id, order_date\nFROM orders, orderItems\nWHERE orders.order_num = orderItems.order_num\n    AND prod_id = 'BR01'\nORDER BY order_date;\n\n/*E4\n重新创建您为第14课挑战3编写的 SQL,这次使用 ANSI INNER JOIN 语法。您在此处编写的代码使用了两个嵌套的子查询，要重新创建它，您需要两个INNER JOIN 语句，每个语句的格式与本课前面的 INNER JOIN示例类似。别忘了使用WHERE子句来按 prod_id 进行筛选。\n*/\nSELECT cust_email\nFROM Customers\n    INNER JOIN Orders ON Customers.cust_id = Orders.cust_id\n    INNER JOIN OrderItems ON Orders.order_num = OrderItems.order_num\nWHERE prod_id = 'BR01';\n/*E5\n我向您发出了一个挑战，以查找值为1000或更大的所有订单号。这些结果很有用，但更有用的是下了至少该金额订单的客户的姓名。因此，编写一个SQL语句，该语句使用联接从Customers表中返回客户名称 （cust_name），并从OrderItems表中返回所有订单的总价。这里有一个提示，要联接这些表，您还需要包括Orders表（因为Customers与OrderItems没有直接关系，Customers与Orders相关，而Orders与OrderItems相关）。不要忘记GROUP BY 和 HAVING，并按客户名称对结果进行排序。对于此函数，可以使用简单的等值连接或 ANSI INNER JOIN 语法。\n*/\n-- Equijoin syntax\nSELECT cust_name, SUM(item_price*quantity) AS total_price\nFROM Customers, Orders, OrderItems\nWHERE Customers.cust_id = Orders.cust_id\n    AND Orders.order_num = OrderItems.order_num\nGROUP BY cust_name \nHAVING SUM(item_price*quantity) >= 1000\nORDER BY cust_name;\n-- ANSI INNER JOIN syntax\nSELECT cust_name, SUM(item_price*quantity) AS total_price\nFROM Customers\n    INNER JOIN Orders ON Customers.cust_id = Orders.cust_id\n    INNER JOIN OrderItems ON Orders.order_num = OrderItems.order_num\nGROUP BY cust_name\nHAVING SUM(item_price*quantity) >= 1000\nORDER BY cust_name;\n",
+    "content": "\\about\n#C15 表连接\n#15.1 连接\n-- 把数据分解为多张表可高效存储、方便处理、更大的伸缩性\n-- 连接不是物理实体,由mysql根据需要建立,存在于查询操作中\n#15.2 创建连接\nSELECT vend_name,prod_name,prod_price\nFROM vendors,products\nWHERE vendors.vend_id=products.vend_id\nORDER BY vend_name,prod_name;\n-- 一般来说,必须要有WHERE语句,否则结果会返回笛卡尔积,这是不对的\nSELECT vend_name,prod_name,prod_price\nFROM vendors,products\nORDER BY vend_name,prod_name;\n##15.2.2 内连接\n-- 前面用的是等值连接,也是内连接\n-- 如果是内连接,使用INNER JOIN或JOIN都可以 \n-- 下面来一个新用法\nSELECT vend_name,prod_name,prod_price\nFROM vendors INNER JOIN products\nON vendors.vend_id=products.vend_id; \n#15.3 连接多张表\nSELECT prod_name,vend_name,prod_price,quantity\nFROM orderitems,products,vendors\nWHERE products.vend_id=vendors.vend_id\n    AND orderitems.prod_id=products.prod_id\n    AND order_num=20005;\n-- 连接很耗资源,不要连接不必要的表\n-- 另一种INNER JOIN版本\nSELECT prod_name,vend_name,prod_price,quantity\nFROM vendors\nINNER JOIN products\n    ON vendors.vend_id=products.vend_id\nINNER JOIN orderitems\n    ON orderitems.prod_id=products.prod_id\nWHERE order_num=20005;\n-- 对于第14章的代码\nSELECT cust_name,cust_contact\nFROM customers\nWHERE cust_id IN (SELECT cust_id\n                    FROM orders\n                    WHERE order_num IN (SELECT order_num\n                                        FROM orderitems\n                                        WHERE prod_id = 'TNT2'\n                                        )\n                  );\n-- 可以这样写\nSELECT cust_name,cust_contact\nFROM customers,orders,orderitems\nWHERE customers.cust_id=orders.cust_id\n    AND orderitems.order_num=orders.order_num\n    AND prod_id='TNT2';\n-- 也可以这样写\nSELECT cust_name,cust_contact\nFROM customers\nINNER JOIN orders\n    ON customers.cust_id=orders.cust_id\nINNER JOIN orderitems\n    ON orderitems.order_num=orders.order_num\nWHERE prod_id='TNT2';\n/*E1\n从 Customers 表中返回客户名称 （cust_name），从 Orders 表中返回相关订单号 （order_num），然后按客户名称排序，然后按订单号对结果进行排序。实际上，尝试两次，一次使用简单的 equijoin 语法，一次使用 INNER JOIN。\n*/\nSELECT cust_name,order_num\nFROM customers,orders\nWHERE customers.cust_id=orders.cust_id\nORDER BY cust_name,order_num;\nSELECT cust_name,order_num\nFROM customers\nINNER JOIN orders\n    ON customers.cust_id=orders.cust_id\nORDER BY cust_name,order_num;\n/*E2\n让我们让前面的挑战更有用。除了返回客户名称和订单号之外，还添加名为 OrderTotal 的第三列，其中包含每个订单的总价。有两种方法可以执行此作：可以使用 OrderItems 表上的子查询创建 OrderTotal 列，或者可以将 OrderItems 表联接到现有表并使用聚合函数。这里有一个提示，请注意您需要在哪些地方使用完全限定的列名。\n*/\nSELECT cust_name,orders.order_num,Sum(item_price * quantity) AS ordertotal\nFROM customers,orders,orderitems\nWHERE customers.cust_id=orders.cust_id\n    AND orderitems.order_num=orders.order_num\nGROUP BY cust_name,orders.order_num\nORDER BY cust_name,order_num;\n/*E3\n让我们回顾一下第 14 课中的挑战 2。编写一个 SQL 语句，用于检索订购产品 BR01 的日期，但这次使用 join 和简单的 equijoin 语法。输出应与第 14 课中的输出相同。\n*/\nSELECT cust_id, order_date\nFROM orders, orderItems\nWHERE orders.order_num = orderItems.order_num\n    AND prod_id = 'BR01'\nORDER BY order_date;\n\n/*E4\n重新创建您为第14课挑战3编写的 SQL,这次使用 ANSI INNER JOIN 语法。您在此处编写的代码使用了两个嵌套的子查询，要重新创建它，您需要两个INNER JOIN 语句，每个语句的格式与本课前面的 INNER JOIN示例类似。别忘了使用WHERE子句来按 prod_id 进行筛选。\n*/\nSELECT cust_email\nFROM Customers\n    INNER JOIN Orders ON Customers.cust_id = Orders.cust_id\n    INNER JOIN OrderItems ON Orders.order_num = OrderItems.order_num\nWHERE prod_id = 'BR01';\n/*E5\n我向您发出了一个挑战，以查找值为1000或更大的所有订单号。这些结果很有用，但更有用的是下了至少该金额订单的客户的姓名。因此，编写一个SQL语句，该语句使用联接从Customers表中返回客户名称 （cust_name），并从OrderItems表中返回所有订单的总价。这里有一个提示，要联接这些表，您还需要包括Orders表（因为Customers与OrderItems没有直接关系，Customers与Orders相关，而Orders与OrderItems相关）。不要忘记GROUP BY 和 HAVING，并按客户名称对结果进行排序。对于此函数，可以使用简单的等值连接或 ANSI INNER JOIN 语法。\n*/\n-- Equijoin syntax\nSELECT cust_name, SUM(item_price*quantity) AS total_price\nFROM Customers, Orders, OrderItems\nWHERE Customers.cust_id = Orders.cust_id\n    AND Orders.order_num = OrderItems.order_num\nGROUP BY cust_name \nHAVING SUM(item_price*quantity) >= 1000\nORDER BY cust_name;\n-- ANSI INNER JOIN syntax\nSELECT cust_name, SUM(item_price*quantity) AS total_price\nFROM Customers\n    INNER JOIN Orders ON Customers.cust_id = Orders.cust_id\n    INNER JOIN OrderItems ON Orders.order_num = OrderItems.order_num\nGROUP BY cust_name\nHAVING SUM(item_price*quantity) >= 1000\nORDER BY cust_name;\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 108,
-                    "column": 20
+                    "lineNumber": 19,
+                    "column": 38
                 },
                 "position": {
-                    "lineNumber": 108,
-                    "column": 20
+                    "lineNumber": 19,
+                    "column": 38
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 93,
+                "lineNumber": 7,
                 "column": 1
             },
-            "firstPositionDeltaTop": -22
+            "firstPositionDeltaTop": -16
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -109,7 +109,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "1757a702-1018-4f97-f186-50711615b3bc"
+                        "bc77e050-972a-4aae-be13-0f616fddf08e"
                     ]
                 },
                 "currentHeight": 36,
@@ -128,8 +128,8 @@
             },
             "data": [
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "1757a702-1018-4f97-f186-50711615b3bc",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "bc77e050-972a-4aae-be13-0f616fddf08e",
                     "rows": [
                         {
                             "0": "ACME",
@@ -283,7 +283,7 @@
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "cb2108e8-f20c-4509-dd01-b21a43920649"
+                        "9fff7c92-64a1-4f60-e69e-2825b1c9cab5"
                     ]
                 },
                 "currentHeight": 36,
@@ -302,8 +302,8 @@
             },
             "data": [
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "cb2108e8-f20c-4509-dd01-b21a43920649",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "9fff7c92-64a1-4f60-e69e-2825b1c9cab5",
                     "rows": [
                         {
                             "0": "ACME",
@@ -802,12 +802,12 @@
         {
             "state": {
                 "start": 15,
-                "end": 20,
+                "end": 21,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "71921eba-8bc8-45b9-9831-4813093b84b0"
+                        "55c868e1-40a2-4d75-b2ec-5b1a23785b09"
                     ]
                 },
                 "currentHeight": 36,
@@ -817,26 +817,26 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 151
+                            "length": 183
                         },
-                        "contentStart": 44,
+                        "contentStart": 76,
                         "state": 0
                     },
                     {
                         "delimiter": ";",
                         "span": {
-                            "start": 151,
+                            "start": 183,
                             "length": 1
                         },
-                        "contentStart": 150,
+                        "contentStart": 182,
                         "state": 3
                     }
                 ]
             },
             "data": [
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "71921eba-8bc8-45b9-9831-4813093b84b0",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "55c868e1-40a2-4d75-b2ec-5b1a23785b09",
                     "rows": [
                         {
                             "0": "Anvils R Us",
@@ -984,13 +984,13 @@
         },
         {
             "state": {
-                "start": 21,
-                "end": 26,
+                "start": 22,
+                "end": 27,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "d02bbe90-cf94-4fc7-dc52-0297fe9fa76e"
+                        "89cd7d40-a219-483d-b95f-cad47f7581d6"
                     ]
                 },
                 "currentHeight": 36,
@@ -1009,8 +1009,8 @@
             },
             "data": [
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "d02bbe90-cf94-4fc7-dc52-0297fe9fa76e",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "89cd7d40-a219-483d-b95f-cad47f7581d6",
                     "rows": [
                         {
                             "0": ".5 ton anvil",
@@ -1132,13 +1132,13 @@
         },
         {
             "state": {
-                "start": 27,
-                "end": 35,
+                "start": 28,
+                "end": 36,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "be7e08a3-4173-4a3b-c52b-55febe92f93d"
+                        "ae2bd7de-f6c7-4202-b546-d74c57ac2e88"
                     ]
                 },
                 "currentHeight": 36,
@@ -1157,8 +1157,8 @@
             },
             "data": [
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "be7e08a3-4173-4a3b-c52b-55febe92f93d",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "ae2bd7de-f6c7-4202-b546-d74c57ac2e88",
                     "rows": [
                         {
                             "0": ".5 ton anvil",
@@ -1280,13 +1280,13 @@
         },
         {
             "state": {
-                "start": 36,
-                "end": 45,
+                "start": 37,
+                "end": 46,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "64bb5de9-b190-4192-a1e1-a0f491fe8398"
+                        "1524708b-39df-412c-d81e-57a060fa02a3"
                     ]
                 },
                 "currentHeight": 36,
@@ -1305,8 +1305,8 @@
             },
             "data": [
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "64bb5de9-b190-4192-a1e1-a0f491fe8398",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "1524708b-39df-412c-d81e-57a060fa02a3",
                     "rows": [
                         {
                             "0": "Coyote Inc.",
@@ -1370,13 +1370,13 @@
         },
         {
             "state": {
-                "start": 46,
-                "end": 51,
+                "start": 47,
+                "end": 52,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "3dd892a1-1c81-44c5-8e98-5507d773c313"
+                        "d64fd336-2bb1-48da-9109-c5d6ca914da1"
                     ]
                 },
                 "currentHeight": 36,
@@ -1395,8 +1395,8 @@
             },
             "data": [
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "3dd892a1-1c81-44c5-8e98-5507d773c313",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "d64fd336-2bb1-48da-9109-c5d6ca914da1",
                     "rows": [
                         {
                             "0": "Coyote Inc.",
@@ -1460,13 +1460,13 @@
         },
         {
             "state": {
-                "start": 52,
-                "end": 59,
+                "start": 53,
+                "end": 60,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "839f4613-1fff-447a-8645-4ee1c57d327c"
+                        "fc4ec94c-37c0-434f-abbc-ab6938b6cc48"
                     ]
                 },
                 "currentHeight": 36,
@@ -1485,8 +1485,8 @@
             },
             "data": [
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "839f4613-1fff-447a-8645-4ee1c57d327c",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "fc4ec94c-37c0-434f-abbc-ab6938b6cc48",
                     "rows": [
                         {
                             "0": "Coyote Inc.",
@@ -1550,13 +1550,13 @@
         },
         {
             "state": {
-                "start": 60,
-                "end": 66,
+                "start": 61,
+                "end": 67,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "cd248a3c-0419-4610-a377-86bdeff3e656"
+                        "495d5f44-5797-4530-d556-381b554506bc"
                     ]
                 },
                 "currentHeight": 36,
@@ -1575,8 +1575,8 @@
             },
             "data": [
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "cd248a3c-0419-4610-a377-86bdeff3e656",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "495d5f44-5797-4530-d556-381b554506bc",
                     "rows": [
                         {
                             "0": "Coyote Inc.",
@@ -1654,13 +1654,13 @@
         },
         {
             "state": {
-                "start": 67,
-                "end": 71,
+                "start": 68,
+                "end": 72,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "ccfc53ed-5e57-43f5-9a55-50626ea9104b"
+                        "220f9743-4e59-4d70-9ec2-4c51c1955988"
                     ]
                 },
                 "currentHeight": 36,
@@ -1679,8 +1679,8 @@
             },
             "data": [
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "ccfc53ed-5e57-43f5-9a55-50626ea9104b",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "220f9743-4e59-4d70-9ec2-4c51c1955988",
                     "rows": [
                         {
                             "0": "Coyote Inc.",
@@ -1758,13 +1758,13 @@
         },
         {
             "state": {
-                "start": 72,
-                "end": 80,
+                "start": 73,
+                "end": 81,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "c5bc6b5c-85dd-4142-9528-2b9beddda0fd"
+                        "4cfa1e31-ea49-4142-977f-6bf66ea29cbf"
                     ]
                 },
                 "currentHeight": 36,
@@ -1783,8 +1783,8 @@
             },
             "data": [
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "c5bc6b5c-85dd-4142-9528-2b9beddda0fd",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "4cfa1e31-ea49-4142-977f-6bf66ea29cbf",
                     "rows": [
                         {
                             "0": "Coyote Inc.",
@@ -1889,16 +1889,13 @@
         },
         {
             "state": {
-                "start": 81,
-                "end": 89,
+                "start": 82,
+                "end": 90,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
-                    "list": [
-                        "06f9aee1-3b9f-4f6a-fbf4-480be98f1c90"
-                    ]
+                    "list": []
                 },
-                "currentHeight": 36,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -1921,36 +1918,17 @@
                     }
                 ]
             },
-            "data": [
-                {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "06f9aee1-3b9f-4f6a-fbf4-480be98f1c90",
-                    "rows": [],
-                    "executionInfo": {
-                        "text": "OK, 0 records retrieved in 1.649ms"
-                    },
-                    "totalRowCount": 0,
-                    "hasMoreRows": false,
-                    "currentPage": 0,
-                    "index": 0,
-                    "sql": "/*E3\n让我们回顾一下第 14 课中的挑战 2。编写一个 SQL 语句，用于检索订购产品 BR01 的日期，但这次使用 join 和简单的 equijoin 语法。输出应与第 14 课中的输出相同。\n*/\nSELECT cust_id, order_date\nFROM orders, orderItems\nWHERE orders.order_num = orderItems.order_num\n    AND prod_id = 'BR01'\nORDER BY order_date",
-                    "updatable": false,
-                    "fullTableName": ""
-                }
-            ]
+            "data": []
         },
         {
             "state": {
-                "start": 90,
-                "end": 97,
+                "start": 91,
+                "end": 98,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
-                    "list": [
-                        "3a226e1d-eb80-45b6-a25f-f0e6a9323fa4"
-                    ]
+                    "list": []
                 },
-                "currentHeight": 87.9375,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -1964,34 +1942,18 @@
                     }
                 ]
             },
-            "data": [
-                {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "3a226e1d-eb80-45b6-a25f-f0e6a9323fa4",
-                    "rows": [],
-                    "executionInfo": {
-                        "text": "OK, 0 records retrieved in 1.602ms"
-                    },
-                    "totalRowCount": 0,
-                    "hasMoreRows": false,
-                    "currentPage": 0,
-                    "index": 0,
-                    "sql": "/*E4\n重新创建您为第14课挑战3编写的 SQL,这次使用 ANSI INNER JOIN 语法。您在此处编写的代码使用了两个嵌套的子查询，要重新创建它，您需要两个INNER JOIN 语句，每个语句的格式与本课前面的 INNER JOIN示例类似。别忘了使用WHERE子句来按 prod_id 进行筛选。\n*/\nSELECT cust_email\nFROM Customers\n    INNER JOIN Orders ON Customers.cust_id = Orders.cust_id\n    INNER JOIN OrderItems ON Orders.order_num = OrderItems.order_num\nWHERE prod_id = 'BR01'",
-                    "updatable": false,
-                    "fullTableName": ""
-                }
-            ]
+            "data": []
         },
         {
             "state": {
-                "start": 98,
-                "end": 116,
+                "start": 99,
+                "end": 117,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "b24b480f-cef1-4f18-ceaf-29b0e3c6594f",
-                        "55eb15cb-73c9-4b35-aa36-ef482b751940"
+                        "0aa9b088-ddba-4209-d986-9820fe172dc7",
+                        "b26c6e36-1ab7-45ee-8e53-f87c95b442d9"
                     ]
                 },
                 "currentHeight": 129.1875,
@@ -2028,8 +1990,8 @@
             },
             "data": [
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "b24b480f-cef1-4f18-ceaf-29b0e3c6594f",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "0aa9b088-ddba-4209-d986-9820fe172dc7",
                     "rows": [
                         {
                             "0": "Yosemite Place",
@@ -2090,8 +2052,8 @@
                     "fullTableName": ""
                 },
                 {
-                    "tabId": "e29dbe53-6518-4084-e9d4-328f172738ab",
-                    "resultId": "55eb15cb-73c9-4b35-aa36-ef482b751940",
+                    "tabId": "4201cf15-900d-466c-e309-90ddaefaee9f",
+                    "resultId": "b26c6e36-1ab7-45ee-8e53-f87c95b442d9",
                     "rows": [
                         {
                             "0": "Yosemite Place",
@@ -2155,8 +2117,8 @@
         },
         {
             "state": {
-                "start": 117,
-                "end": 117,
+                "start": 118,
+                "end": 118,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
