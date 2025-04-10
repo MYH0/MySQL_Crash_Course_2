@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C23 使用存储过程\n#23.1 存储过程\n-- 存储过程可视为函数\n#23.2 为什么要使用存储过程\n-- 简化操作,安全,高性能\n#23.3 使用存储过程\n##23.3.1 执行(调用)\n-- 代码还不能执行,只作为示范\n-- productpricing为存储过程的名字,后面的是参数\nCALL productpricing(@pricelow,@pricehigh,@priceaverage);\n##23.3.2 创建存储过程\n-- 不能反复创建,如果事先存在,要先删除\n-- DELIMITER // 表示用//代替分号;作为语句结束的分隔符,\n-- 当然,在执行完语句后,把分号;的作用改回来,也就是说DILIMITER ;\n\nDELIMITER //\nCREATE PROCEDURE productpricing()\nBEGIN\n    SELECT AVG(prod_price) AS priceaverage\n    FROM products;\nEND//\n\nDELIMITER ;\n-- 现在来使用这个存储过程\nCALL productpricing();\n##23.3.3 DELIMITER\n##23.3.4 删除存储过程\n-- 注意函数名后不加括号!!\nDROP PROCEDURE productpricing;\n-- 如果指定删除的函数不存在,可以使用IF EXISTS\nDROP PROCEDURE IF EXISTS productpricing;\n##23.3.5 使用参数\n-- IN:传递给存储过程\n-- OUT:传出给用户\n-- INOUT:两者兼备\nDELIMITER //\nCREATE PROCEDURE productpricing\n(\n    OUT pl DECIMAL(8,2),\n    OUT ph DECIMAL(8,2),\n    OUT pa DECIMAL(8,2)\n)\nBEGIN\n    SELECT MIN(prod_price)\n    INTO pl\n    FROM products;\n    SELECT MAX(prod_price)\n    INTO ph\n    FROM products;\n    SELECT AVG(prod_price)\n    INTO pa\n    FROM products;\nEND//\nDELIMITER ;\n-- 现在调用\nCALL productpricing(@pricelow,@pricehigh,@priceaverage);\n-- 检索这3个值\nSELECT @pricelow,@pricehigh,@priceaverage;\n-- 这次使用IN和OUT参数,ordertotal接受订单号,并返回订单总额\nDELIMITER //\nCREATE PROCEDURE ordertotal\n(\n    IN onum INT,\n    OUT ototal DECIMAL(8,2)\n)\nBEGIN\n    SELECT SUM(quantity*item_price)\n    FROM orderitems\n    WHERE order_num=onum\n    INTO ototal;\nEND//\nDELIMITER ;\nCALL ordertotal(20005,@total);\nSELECT @total;\n",
+    "content": "\\about\n#C23 使用存储过程\n#23.1 存储过程\n-- 存储过程可视为函数\n#23.2 为什么要使用存储过程\n-- 简化操作,安全,高性能\n#23.3 使用存储过程\n##23.3.1 执行(调用)\n-- 代码还不能执行,只作为示范\n-- productpricing为存储过程的名字,后面的是参数\nCALL productpricing(@pricelow,@pricehigh,@priceaverage);\n##23.3.2 创建存储过程\n-- 不能反复创建,如果事先存在,要先删除\n-- DELIMITER // 表示用//代替分号;作为语句结束的分隔符,\n-- 当然,在执行完语句后,把分号;的作用改回来,也就是说DILIMITER ;\n\nDELIMITER //\nCREATE PROCEDURE productpricing()\nBEGIN\n    SELECT AVG(prod_price) AS priceaverage\n    FROM products;\nEND//\n\nDELIMITER ;\n-- 现在来使用这个存储过程\nCALL productpricing();\n##23.3.3 DELIMITER\n##23.3.4 删除存储过程\n-- 注意函数名后不加括号!!\nDROP PROCEDURE productpricing;\n-- 如果指定删除的函数不存在,可以使用IF EXISTS\nDROP PROCEDURE IF EXISTS productpricing;\n##23.3.5 使用参数\n-- 不能通过一个参数返回多行或多列\n-- IN:传递给存储过程\n-- OUT:传出给用户\n-- INOUT:两者兼备\nDELIMITER //\nCREATE PROCEDURE productpricing\n(\n    OUT pl DECIMAL(8,2),\n    OUT ph DECIMAL(8,2),\n    OUT pa DECIMAL(8,2)\n)\nBEGIN\n    SELECT MIN(prod_price)\n    INTO pl\n    FROM products;\n    SELECT MAX(prod_price)\n    INTO ph\n    FROM products;\n    SELECT AVG(prod_price)\n    INTO pa\n    FROM products;\nEND//\nDELIMITER ;\n-- 现在调用\nCALL productpricing(@pricelow,@pricehigh,@priceaverage);\n-- 检索这3个值\nSELECT @pricelow,@pricehigh,@priceaverage;\n-- 这次使用IN和OUT参数,ordertotal接受订单号,并返回订单总额\nDELIMITER //\nCREATE PROCEDURE ordertotal\n(\n    IN onum INT,\n    OUT ototal DECIMAL(8,2)\n)\nBEGIN\n    SELECT SUM(quantity*item_price)\n    FROM orderitems\n    WHERE order_num=onum\n    INTO ototal;\nEND//\nDELIMITER ;\nCALL ordertotal(20005,@total);\nSELECT @total;\n-- INTO的位置可以调整\nDELIMITER //\nCREATE PROCEDURE productpricing4\n(\n    OUT pa DECIMAL(8,2)\n)\nBEGIN\n    SELECT AVG(prod_price)\n    FROM products\n    INTO pa;\nEND//\nDELIMITER ;\nCALL productpricing4(@pavg);\nSELECT @pavg;\n##23.3.6 有控制条件IF的存储过程\n-- DECLARE 定义局部变量\n-- IF XXX THEN XXXX;\n-- END IF;\n-- 这次我们加入营业额是否有关税的判定\n-- COMMENT不是必须得,它的值的值会在SHOW PROCEDURE STATUS的结果中显示\nDELIMITER //\nCREATE PROCEDURE ordertotal2\n(\n    IN onum INT,\n    IN tax_able BOOLEAN,\n    OUT ototal DECIMAL(8,2)\n)COMMENT ' Obtain order total,optionally adding tax'\nBEGIN\n    DECLARE total DECIMAL(8,2);\n    DECLARE tax_rate INT DEFAULT 5;\n    -- 获得总额\n    SELECT SUM(quantity*item_price)\n    FROM orderitems\n    WHERE order_num=onum\n    INTO total;\n    -- 计算是否收税\n    IF tax_able THEN\n        SELECT total*(1-tax_rate/100) INTO total;\n    END IF;\n    -- 最后，输出\n    SELECT total INTO ototal;\nEND//\nDELIMITER ;\nCALL ordertotal2(20005,0,@total);\nSELECT @total;\nCALL ordertotal2(20005,1,@total);\nSELECT @total;\n##23.3.7 显示创建存储过程的CREATE语句\nSHOW CREATE PROCEDURE ordertotal2;\n-- 如果想知道是何时、由谁创建.这将列出所有的存储过程\nSHOW PROCEDURE STATUS;\n-- 如果只想知道一部分,可以用LIKE过滤\nSHOW PROCEDURE STATUS LIKE 'ordertotal2';\n/*E1!!\n创建一个存储过程，该存储过程接受客户 ID 并返回该客户下的所有订单。\n*/\nDELIMITER //\nCREATE PROCEDURE orderlist\n(\n    IN cid INT\n)\nBEGIN\n    SELECT order_num\n    FROM orders\n    WHERE cust_id=cid;\nEND//\nDELIMITER ;\n/*E2\n不同地点的税率不同。ordertotal存储过程将税率硬编码为6%。更新该存储过程，以便它接受要使用的税率（如果需要）。这里有一个提示：你实际上不需要另一个参数，你可以替换taxable标志来接受税率，其中0表示没有税\n*/\nDELIMITER //\nCREATE PROCEDURE ordertotal3\n(\n    IN onum INT,\n    IN tax_rate INT,\n    OUT ototal DECIMAL(8,2)\n)COMMENT ' Obtain order total,optionally adding tax'\nBEGIN\n    DECLARE total DECIMAL(8,2);\n    -- 获得总额\n    SELECT SUM(quantity*item_price)\n    FROM orderitems\n    WHERE order_num=onum\n    INTO total;\n    -- 计算税后\n    SELECT total*(1-tax_rate/100) INTO total;\n    -- 最后，输出\n    SELECT total INTO ototal;\nEND //\nDELIMITER ;\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 76,
-                    "column": 1
+                    "lineNumber": 150,
+                    "column": 17
                 },
                 "position": {
-                    "lineNumber": 76,
-                    "column": 1
+                    "lineNumber": 150,
+                    "column": 17
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 55,
+                "lineNumber": 135,
                 "column": 1
             },
-            "firstPositionDeltaTop": -14
+            "firstPositionDeltaTop": -12
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -419,7 +419,7 @@
         {
             "state": {
                 "start": 33,
-                "end": 55,
+                "end": 56,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -438,14 +438,14 @@
                         }
                     ]
                 },
-                "currentHeight": 55.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 55
+                            "length": 74
                         },
                         "contentStart": -1,
                         "state": 3
@@ -453,28 +453,28 @@
                     {
                         "delimiter": "//",
                         "span": {
-                            "start": 55,
+                            "start": 74,
                             "length": 12
                         },
-                        "contentStart": 55,
+                        "contentStart": 74,
                         "state": 4
                     },
                     {
                         "delimiter": "//",
                         "span": {
-                            "start": 67,
+                            "start": 86,
                             "length": 296
                         },
-                        "contentStart": 68,
+                        "contentStart": 87,
                         "state": 0
                     },
                     {
                         "delimiter": ";",
                         "span": {
-                            "start": 363,
+                            "start": 382,
                             "length": 12
                         },
-                        "contentStart": 364,
+                        "contentStart": 383,
                         "state": 4
                     }
                 ]
@@ -483,8 +483,8 @@
         },
         {
             "state": {
-                "start": 56,
-                "end": 57,
+                "start": 57,
+                "end": 58,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -498,7 +498,7 @@
                         }
                     ]
                 },
-                "currentHeight": 31.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -516,8 +516,8 @@
         },
         {
             "state": {
-                "start": 58,
-                "end": 59,
+                "start": 59,
+                "end": 60,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
@@ -525,7 +525,7 @@
                         "4b526f32-1d96-4437-a75b-669f53c83bb9"
                     ]
                 },
-                "currentHeight": 102.203125,
+                "currentHeight": 36,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -633,8 +633,8 @@
         },
         {
             "state": {
-                "start": 60,
-                "end": 73,
+                "start": 61,
+                "end": 74,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -647,7 +647,7 @@
                         }
                     ]
                 },
-                "currentHeight": 31.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -683,8 +683,8 @@
         },
         {
             "state": {
-                "start": 74,
-                "end": 74,
+                "start": 75,
+                "end": 75,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -698,7 +698,7 @@
                         }
                     ]
                 },
-                "currentHeight": 31.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -716,8 +716,8 @@
         },
         {
             "state": {
-                "start": 75,
-                "end": 75,
+                "start": 76,
+                "end": 76,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
@@ -725,7 +725,7 @@
                         "241d1aea-975a-47e0-85da-0b176adb11ce"
                     ]
                 },
-                "currentHeight": 102.203125,
+                "currentHeight": 36,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -787,8 +787,1706 @@
         },
         {
             "state": {
-                "start": 76,
-                "end": 76,
+                "start": 77,
+                "end": 90,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "5c427d93-3b23-473b-ff1f-deef2b1152e5",
+                        "b995c5fe-6588-481f-8b89-ecc423539139",
+                        "c5ebeb8c-58bc-4454-e58a-24e9e77d0c3d"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 15
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    },
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 15,
+                            "length": 12
+                        },
+                        "contentStart": 15,
+                        "state": 4
+                    },
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 27,
+                            "length": 131
+                        },
+                        "contentStart": 28,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 158,
+                            "length": 12
+                        },
+                        "contentStart": 159,
+                        "state": 4
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 170,
+                            "length": 29
+                        },
+                        "contentStart": 171,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 199,
+                            "length": 14
+                        },
+                        "contentStart": 200,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "5c427d93-3b23-473b-ff1f-deef2b1152e5",
+                    "rows": [
+                        {
+                            "0": "16.13"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "@pavg",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 0.744ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 4,
+                    "sql": "\nSELECT @pavg",
+                    "updatable": false,
+                    "fullTableName": ""
+                },
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "b995c5fe-6588-481f-8b89-ecc423539139",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 0 records retrieved in 8.459ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 1,
+                    "sql": "\nCREATE PROCEDURE productpricing4\n(\n    OUT pa DECIMAL(8,2)\n)\nBEGIN\n    SELECT AVG(prod_price)\n    FROM products\n    INTO pa;\nEND",
+                    "updatable": false
+                },
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "c5ebeb8c-58bc-4454-e58a-24e9e77d0c3d",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 1 row affected in 2.813ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 3,
+                    "subIndex": 0,
+                    "sql": "\nCALL productpricing4(@pavg)",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 91,
+                "end": 94,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "fdacd6ce-677c-468a-ebb6-cc453b052615",
+                            "content": "OK, 0 records retrieved in 1.272ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 71
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 95,
+                "end": 119,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "0769e355-ec4e-4f90-970a-b08e509ec2cf",
+                            "content": "OK, 0 records retrieved in 0.689ms"
+                        },
+                        {
+                            "type": 2,
+                            "index": 2,
+                            "resultId": "143c6e04-0a66-4930-8841-dadec8ca15f7",
+                            "content": "OK, 0 records retrieved in 15.238ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 72
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    },
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 72,
+                            "length": 12
+                        },
+                        "contentStart": 72,
+                        "state": 4
+                    },
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 84,
+                            "length": 483
+                        },
+                        "contentStart": 85,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 567,
+                            "length": 12
+                        },
+                        "contentStart": 568,
+                        "state": 4
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 120,
+                "end": 121,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "227cc936-7810-47fb-dfdc-d1203aebfbb2",
+                        "daa97d4a-1e0d-4303-e97c-1a7876d873b6"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 33
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 33,
+                            "length": 15
+                        },
+                        "contentStart": 34,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "227cc936-7810-47fb-dfdc-d1203aebfbb2",
+                    "rows": [
+                        {
+                            "0": "149.87"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "@total",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 0.852ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 1,
+                    "sql": "\nSELECT @total",
+                    "updatable": false,
+                    "fullTableName": ""
+                },
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "daa97d4a-1e0d-4303-e97c-1a7876d873b6",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 1 row affected in 9.03ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "subIndex": 0,
+                    "sql": "CALL ordertotal2(20005,0,@total)",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 122,
+                "end": 123,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "e561440c-a33d-42ab-f67d-234bcb7c87f1",
+                        "bac7964c-0bad-49bb-85e2-fb8814b85cb1"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 33
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 33,
+                            "length": 15
+                        },
+                        "contentStart": 34,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "e561440c-a33d-42ab-f67d-234bcb7c87f1",
+                    "rows": [
+                        {
+                            "0": "142.38"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "@total",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 0.701ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 1,
+                    "sql": "\nSELECT @total",
+                    "updatable": false,
+                    "fullTableName": ""
+                },
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "bac7964c-0bad-49bb-85e2-fb8814b85cb1",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 1 row affected in 1.243ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "subIndex": 0,
+                    "sql": "CALL ordertotal2(20005,1,@total)",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 124,
+                "end": 125,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "a5ee3341-31d5-47aa-b388-b77c59e0ddc0"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 61
+                        },
+                        "contentStart": 27,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "a5ee3341-31d5-47aa-b388-b77c59e0ddc0",
+                    "rows": [
+                        {
+                            "0": "ordertotal2",
+                            "1": "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION",
+                            "2": "CREATE DEFINER=`root`@`localhost` PROCEDURE `ordertotal2`(\n    IN onum INT,\n    IN tax_able BOOLEAN,\n    OUT ototal DECIMAL(8,2)\n)\n    COMMENT ' Obtain order total,optionally adding tax'\nBEGIN\n    DECLARE total DECIMAL(8,2);\n    DECLARE tax_rate INT DEFAULT 5;\n    -- 获得总额\n    SELECT SUM(quantity*item_price)\n    FROM orderitems\n    WHERE order_num=onum\n    INTO total;\n    -- 计算是否收税\n    IF tax_able THEN\n        SELECT total*(1-tax_rate/100) INTO total;\n    END IF;\n    -- 最后，输出\n    SELECT total INTO ototal;\nEND",
+                            "3": "utf8mb4",
+                            "4": "utf8mb4_0900_ai_ci",
+                            "5": "utf8mb4_0900_ai_ci"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Procedure",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "sql_mode",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Create Procedure",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "character_set_client",
+                            "field": "3",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "collation_connection",
+                            "field": "4",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Database Collation",
+                            "field": "5",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 3.168ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "##23.3.7 显示创建存储过程的CREATE语句\nSHOW CREATE PROCEDURE ordertotal2",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 126,
+                "end": 127,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "716d2a2b-1b98-4c7f-e628-18822d00007e"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 51
+                        },
+                        "contentStart": 29,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "716d2a2b-1b98-4c7f-e628-18822d00007e",
+                    "rows": [
+                        {
+                            "0": "crashcourse",
+                            "1": "ordertotal",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "root@localhost",
+                            "5": "2025-04-10 11:52:11",
+                            "6": "2025-04-10 11:52:11",
+                            "7": "DEFINER",
+                            "8": "",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "crashcourse",
+                            "1": "ordertotal2",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "root@localhost",
+                            "5": "2025-04-10 14:46:33",
+                            "6": "2025-04-10 14:46:33",
+                            "7": "DEFINER",
+                            "8": " Obtain order total,optionally adding tax",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "crashcourse",
+                            "1": "productpricing",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "root@localhost",
+                            "5": "2025-04-10 11:45:41",
+                            "6": "2025-04-10 11:45:41",
+                            "7": "DEFINER",
+                            "8": "",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "crashcourse",
+                            "1": "productpricing2",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "root@localhost",
+                            "5": "2025-04-10 14:21:08",
+                            "6": "2025-04-10 14:21:08",
+                            "7": "DEFINER",
+                            "8": "",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "crashcourse",
+                            "1": "productpricing3",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "root@localhost",
+                            "5": "2025-04-10 14:21:49",
+                            "6": "2025-04-10 14:21:49",
+                            "7": "DEFINER",
+                            "8": "",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "crashcourse",
+                            "1": "productpricing4",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "root@localhost",
+                            "5": "2025-04-10 14:22:32",
+                            "6": "2025-04-10 14:22:32",
+                            "7": "DEFINER",
+                            "8": "",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "crashcourse",
+                            "1": "productprocing",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "root@localhost",
+                            "5": "2025-04-10 11:42:21",
+                            "6": "2025-04-10 11:42:21",
+                            "7": "DEFINER",
+                            "8": "",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sakila",
+                            "1": "film_in_stock",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "root@localhost",
+                            "5": "2025-03-31 09:07:16",
+                            "6": "2025-03-31 09:07:16",
+                            "7": "DEFINER",
+                            "8": "",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sakila",
+                            "1": "film_not_in_stock",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "root@localhost",
+                            "5": "2025-03-31 09:07:16",
+                            "6": "2025-03-31 09:07:16",
+                            "7": "DEFINER",
+                            "8": "",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sakila",
+                            "1": "rewards_report",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "root@localhost",
+                            "5": "2025-03-31 09:07:16",
+                            "6": "2025-03-31 09:07:16",
+                            "7": "DEFINER",
+                            "8": "Provides a customizable report on best customers",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "create_synonym_db",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nTakes a source database name and synonym name, and then creates the \nsynonym database with views that point to all of the tables within\nthe source database.\n\nUseful for creating a \"ps\" synonym for \"performance_schema\",\nor \"is\" instead of \"information_schema\", for example.\n\nParameters\n-----------\n\nin_db_name (VARCHAR(64)):\n  The database name that you would like to create a synonym for.\nin_synonym (VARCHAR(64)):\n  The database synonym name.\n\nExample\n-----------\n\nmysql> SHOW DATABASES;\n+--------------------+\n| Database           |\n+--------------------+\n| information_schema |\n| mysql              |\n| performance_schema |\n| sys                |\n| test               |\n+--------------------+\n5 rows in set (0.00 sec)\n\nmysql> CALL sys.create_synonym_db('performance_schema', 'ps');\n+---------------------------------------+\n| summary                               |\n+---------------------------------------+\n| Created 74 views in the `ps` database |\n+---------------------------------------+\n1 row in set (8.57 sec)\n\nQuery OK, 0 rows affected (8.57 sec)\n\nmysql> SHOW DATABASES;\n+--------------------+\n| Database           |\n+--------------------+\n| information_schema |\n| mysql              |\n| performance_schema |\n| ps                 |\n| sys                |\n| test               |\n+--------------------+\n6 rows in set (0.00 sec)\n\nmysql> SHOW FULL TABLES FROM ps;\n+------------------------------------------------------+------------+\n| Tables_in_ps                                         | Table_type |\n+------------------------------------------------------+------------+\n| accounts                                             | VIEW       |\n| cond_instances                                       | VIEW       |\n| events_stages_current                                | VIEW       |\n| events_stages_history                                | VIEW       |\n...\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "diagnostics",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nCreate a report of the current status of the server for diagnostics purposes. Data collected includes (some items depends on versions and settings):\n\n   * The GLOBAL VARIABLES\n   * Several sys schema views including metrics or equivalent (depending on version and settings)\n   * Queries in the 95th percentile\n   * Several ndbinfo views for MySQL Cluster\n   * Replication (both master and slave) information.\n\nSome of the sys schema views are calculated as initial (optional), overall, delta:\n\n   * The initial view is the content of the view at the start of this procedure.\n     This output will be the same as the the start values used for the delta view.\n     The initial view is included if @sys.diagnostics.include_raw = 'ON'.\n   * The overall view is the content of the view at the end of this procedure.\n     This output is the same as the end values used for the delta view.\n     The overall view is always included.\n   * The delta view is the difference from the beginning to the end. Note that for min and max values\n     they are simply the min or max value from the end view respectively, so does not necessarily reflect\n     the minimum/maximum value in the monitored period.\n     Note: except for the metrics views the delta is only calculation between the first and last outputs.\n\nRequires the SUPER privilege for \"SET sql_log_bin = 0;\".\n\nParameters\n-----------\n\nin_max_runtime (INT UNSIGNED):\n  The maximum time to keep collecting data.\n  Use NULL to get the default which is 60 seconds, otherwise enter a value greater than 0.\nin_interval (INT UNSIGNED):\n  How long to sleep between data collections.\n  Use NULL to get the default which is 30 seconds, otherwise enter a value greater than 0.\nin_auto_config (ENUM('current', 'medium', 'full'))\n  Automatically enable Performance Schema instruments and consumers.\n  NOTE: The more that are enabled, the more impact on the performance.\n  Supported values are:\n     * current - use the current settings.\n     * medium - enable some settings. This requires the SUPER privilege.\n     * full - enables all settings. This will have a big impact on the\n              performance - be careful using this option. This requires\n              the SUPER privilege.\n  If another setting the 'current' is chosen, the current settings\n  are restored at the end of the procedure.\n\n\nConfiguration Options\n----------------------\n\nsys.diagnostics.allow_i_s_tables\n  Specifies whether it is allowed to do table scan queries on information_schema.TABLES. This can be expensive if there\n  are many tables. Set to 'ON' to allow, 'OFF' to not allow.\n  Default is 'OFF'.\n\nsys.diagnostics.include_raw\n  Set to 'ON' to include the raw data (e.g. the original output of \"SELECT * FROM sys.metrics\").\n  Use this to get the initial values of the various views.\n  Default is 'OFF'.\n\nsys.statement_truncate_len\n  How much of queries in the process list output to include.\n  Default is 64.\n\nsys.debug\n  Whether to provide debugging output.\n  Default is 'OFF'. Set to 'ON' to include.\n\n\nExample\n--------\n\nTo create a report and append it to the file diag.out:\n\nmysql> TEE diag.out;\nmysql> CALL sys.diagnostics(120, 30, 'current');\n...\nmysql> NOTEE;\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "execute_prepared_stmt",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nTakes the query in the argument and executes it using a prepared statement. The prepared statement is deallocated,\nso the procedure is mainly useful for executing one off dynamically created queries.\n\nThe sys_execute_prepared_stmt prepared statement name is used for the query and is required not to exist.\n\n\nParameters\n-----------\n\nin_query (longtext CHARACTER SET UTF8MB4):\n  The query to execute.\n\n\nConfiguration Options\n----------------------\n\nsys.debug\n  Whether to provide debugging output.\n  Default is 'OFF'. Set to 'ON' to include.\n\n\nExample\n--------\n\nmysql> CALL sys.execute_prepared_stmt('SELECT * FROM sys.sys_config');\n+------------------------+-------+---------------------+--------+\n| variable               | value | set_time            | set_by |\n+------------------------+-------+---------------------+--------+\n| statement_truncate_len | 64    | 2015-06-30 13:06:00 | NULL   |\n+------------------------+-------+---------------------+--------+\n1 row in set (0.00 sec)\n\nQuery OK, 0 rows affected (0.00 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_disable_background_threads",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nDisable all background thread instrumentation within Performance Schema.\n\nParameters\n-----------\n\nNone.\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_disable_background_threads();\n+--------------------------------+\n| summary                        |\n+--------------------------------+\n| Disabled 18 background threads |\n+--------------------------------+\n1 row in set (0.00 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_disable_consumer",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nDisables consumers within Performance Schema \nmatching the input pattern.\n\nParameters\n-----------\n\nconsumer (VARCHAR(128)):\n  A LIKE pattern match (using \"%consumer%\") of consumers to disable\n\nExample\n-----------\n\nTo disable all consumers:\n\nmysql> CALL sys.ps_setup_disable_consumer('');\n+--------------------------+\n| summary                  |\n+--------------------------+\n| Disabled 15 consumers    |\n+--------------------------+\n1 row in set (0.02 sec)\n\nTo disable just the event_stage consumers:\n\nmysql> CALL sys.ps_setup_disable_comsumers('stage');\n+------------------------+\n| summary                |\n+------------------------+\n| Disabled 3 consumers   |\n+------------------------+\n1 row in set (0.00 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_disable_instrument",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nDisables instruments within Performance Schema \nmatching the input pattern.\n\nParameters\n-----------\n\nin_pattern (VARCHAR(128)):\n  A LIKE pattern match (using \"%in_pattern%\") of events to disable\n\nExample\n-----------\n\nTo disable all mutex instruments:\n\nmysql> CALL sys.ps_setup_disable_instrument('wait/synch/mutex');\n+--------------------------+\n| summary                  |\n+--------------------------+\n| Disabled 155 instruments |\n+--------------------------+\n1 row in set (0.02 sec)\n\nTo disable just a specific TCP/IP based network IO instrument:\n\nmysql> CALL sys.ps_setup_disable_instrument('wait/io/socket/sql/server_tcpip_socket');\n+------------------------+\n| summary                |\n+------------------------+\n| Disabled 1 instruments |\n+------------------------+\n1 row in set (0.00 sec)\n\nTo disable all instruments:\n\nmysql> CALL sys.ps_setup_disable_instrument('');\n+--------------------------+\n| summary                  |\n+--------------------------+\n| Disabled 547 instruments |\n+--------------------------+\n1 row in set (0.01 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_disable_thread",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nDisable the given connection/thread in Performance Schema.\n\nParameters\n-----------\n\nin_connection_id (BIGINT):\n  The connection ID (PROCESSLIST_ID from performance_schema.threads\n  or the ID shown within SHOW PROCESSLIST)\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_disable_thread(3);\n+-------------------+\n| summary           |\n+-------------------+\n| Disabled 1 thread |\n+-------------------+\n1 row in set (0.01 sec)\n\nTo disable the current connection:\n\nmysql> CALL sys.ps_setup_disable_thread(CONNECTION_ID());\n+-------------------+\n| summary           |\n+-------------------+\n| Disabled 1 thread |\n+-------------------+\n1 row in set (0.00 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_enable_background_threads",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nEnable all background thread instrumentation within Performance Schema.\n\nParameters\n-----------\n\nNone.\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_enable_background_threads();\n+-------------------------------+\n| summary                       |\n+-------------------------------+\n| Enabled 18 background threads |\n+-------------------------------+\n1 row in set (0.00 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_enable_consumer",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nEnables consumers within Performance Schema \nmatching the input pattern.\n\nParameters\n-----------\n\nconsumer (VARCHAR(128)):\n  A LIKE pattern match (using \"%consumer%\") of consumers to enable\n\nExample\n-----------\n\nTo enable all consumers:\n\nmysql> CALL sys.ps_setup_enable_consumer('');\n+-------------------------+\n| summary                 |\n+-------------------------+\n| Enabled 10 consumers    |\n+-------------------------+\n1 row in set (0.02 sec)\n\nQuery OK, 0 rows affected (0.02 sec)\n\nTo enable just \"waits\" consumers:\n\nmysql> CALL sys.ps_setup_enable_consumer('waits');\n+-----------------------+\n| summary               |\n+-----------------------+\n| Enabled 3 consumers   |\n+-----------------------+\n1 row in set (0.00 sec)\n\nQuery OK, 0 rows affected (0.00 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_enable_instrument",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nEnables instruments within Performance Schema \nmatching the input pattern.\n\nParameters\n-----------\n\nin_pattern (VARCHAR(128)):\n  A LIKE pattern match (using \"%in_pattern%\") of events to enable\n\nExample\n-----------\n\nTo enable all mutex instruments:\n\nmysql> CALL sys.ps_setup_enable_instrument('wait/synch/mutex');\n+-------------------------+\n| summary                 |\n+-------------------------+\n| Enabled 155 instruments |\n+-------------------------+\n1 row in set (0.02 sec)\n\nQuery OK, 0 rows affected (0.02 sec)\n\nTo enable just a specific TCP/IP based network IO instrument:\n\nmysql> CALL sys.ps_setup_enable_instrument('wait/io/socket/sql/server_tcpip_socket');\n+-----------------------+\n| summary               |\n+-----------------------+\n| Enabled 1 instruments |\n+-----------------------+\n1 row in set (0.00 sec)\n\nQuery OK, 0 rows affected (0.00 sec)\n\nTo enable all instruments:\n\nmysql> CALL sys.ps_setup_enable_instrument('');\n+-------------------------+\n| summary                 |\n+-------------------------+\n| Enabled 547 instruments |\n+-------------------------+\n1 row in set (0.01 sec)\n\nQuery OK, 0 rows affected (0.01 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_enable_thread",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nEnable the given connection/thread in Performance Schema.\n\nParameters\n-----------\n\nin_connection_id (BIGINT):\n  The connection ID (PROCESSLIST_ID from performance_schema.threads\n  or the ID shown within SHOW PROCESSLIST)\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_enable_thread(3);\n+------------------+\n| summary          |\n+------------------+\n| Enabled 1 thread |\n+------------------+\n1 row in set (0.01 sec)\n\nTo enable the current connection:\n\nmysql> CALL sys.ps_setup_enable_thread(CONNECTION_ID());\n+------------------+\n| summary          |\n+------------------+\n| Enabled 1 thread |\n+------------------+\n1 row in set (0.00 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_reload_saved",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nReloads a saved Performance Schema configuration,\nso that you can alter the setup for debugging purposes, \nbut restore it to a previous state.\n\nUse the companion procedure - ps_setup_save(), to \nsave a configuration.\n\nRequires the SUPER privilege for \"SET sql_log_bin = 0;\".\n\nParameters\n-----------\n\nNone.\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_save();\nQuery OK, 0 rows affected (0.08 sec)\n\nmysql> UPDATE performance_schema.setup_instruments SET enabled = 'YES', timed = 'YES';\nQuery OK, 547 rows affected (0.40 sec)\nRows matched: 784  Changed: 547  Warnings: 0\n\n/* Run some tests that need more detailed instrumentation here */\n\nmysql> CALL sys.ps_setup_reload_saved();\nQuery OK, 0 rows affected (0.32 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_reset_to_default",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nResets the Performance Schema setup to the default settings.\n\nParameters\n-----------\n\nin_verbose (BOOLEAN):\n  Whether to print each setup stage (including the SQL) whilst running.\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_reset_to_default(true)\\G\n*************************** 1. row ***************************\nstatus: Resetting: setup_actors\nDELETE\nFROM performance_schema.setup_actors\n WHERE NOT (HOST = '%' AND USER = '%' AND `ROLE` = '%')\n1 row in set (0.00 sec)\n\n*************************** 1. row ***************************\nstatus: Resetting: setup_actors\nINSERT IGNORE INTO performance_schema.setup_actors\nVALUES ('%', '%', '%')\n1 row in set (0.00 sec)\n...\n\nmysql> CALL sys.ps_setup_reset_to_default(false)\\G\nQuery OK, 0 rows affected (0.00 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_save",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nSaves the current configuration of Performance Schema, \nso that you can alter the setup for debugging purposes, \nbut restore it to a previous state.\n\nUse the companion procedure - ps_setup_reload_saved(), to \nrestore the saved config.\n\nThe named lock \"sys.ps_setup_save\" is taken before the\ncurrent configuration is saved. If the attempt to get the named\nlock times out, an error occurs.\n\nThe lock is released after the settings have been restored by\ncalling ps_setup_reload_saved().\n\nRequires the SUPER privilege for \"SET sql_log_bin = 0;\".\n\nParameters\n-----------\n\nin_timeout INT\n  The timeout in seconds used when trying to obtain the lock.\n  A negative timeout means infinite timeout.\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_save(-1);\nQuery OK, 0 rows affected (0.08 sec)\n\nmysql> UPDATE performance_schema.setup_instruments \n    ->    SET enabled = 'YES', timed = 'YES';\nQuery OK, 547 rows affected (0.40 sec)\nRows matched: 784  Changed: 547  Warnings: 0\n\n/* Run some tests that need more detailed instrumentation here */\n\nmysql> CALL sys.ps_setup_reload_saved();\nQuery OK, 0 rows affected (0.32 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_show_disabled",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nShows all currently disable Performance Schema configuration.\n\nDisabled users is only available for MySQL 5.7.6 and later.\nIn earlier versions it was only possible to enable users.\n\nParameters\n-----------\n\nin_show_instruments (BOOLEAN):\n  Whether to print disabled instruments (can print many items)\n\nin_show_threads (BOOLEAN):\n  Whether to print disabled threads\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_show_disabled(TRUE, TRUE);\n+----------------------------+\n| performance_schema_enabled |\n+----------------------------+\n|                          1 |\n+----------------------------+\n1 row in set (0.00 sec)\n\n+--------------------+\n| disabled_users     |\n+--------------------+\n| 'mark'@'localhost' |\n+--------------------+\n1 row in set (0.00 sec)\n\n+-------------+----------------------+---------+-------+\n| object_type | objects              | enabled | timed |\n+-------------+----------------------+---------+-------+\n| EVENT       | mysql.%              | NO      | NO    |\n| EVENT       | performance_schema.% | NO      | NO    |\n| EVENT       | information_schema.% | NO      | NO    |\n| FUNCTION    | mysql.%              | NO      | NO    |\n| FUNCTION    | performance_schema.% | NO      | NO    |\n| FUNCTION    | information_schema.% | NO      | NO    |\n| PROCEDURE   | mysql.%              | NO      | NO    |\n| PROCEDURE   | performance_schema.% | NO      | NO    |\n| PROCEDURE   | information_schema.% | NO      | NO    |\n| TABLE       | mysql.%              | NO      | NO    |\n| TABLE       | performance_schema.% | NO      | NO    |\n| TABLE       | information_schema.% | NO      | NO    |\n| TRIGGER     | mysql.%              | NO      | NO    |\n| TRIGGER     | performance_schema.% | NO      | NO    |\n| TRIGGER     | information_schema.% | NO      | NO    |\n+-------------+----------------------+---------+-------+\n15 rows in set (0.00 sec)\n\n+----------------------------------+\n| disabled_consumers               |\n+----------------------------------+\n| events_stages_current            |\n| events_stages_history            |\n| events_stages_history_long       |\n| events_statements_history        |\n| events_statements_history_long   |\n| events_transactions_history      |\n| events_transactions_history_long |\n| events_waits_current             |\n| events_waits_history             |\n| events_waits_history_long        |\n+----------------------------------+\n10 rows in set (0.00 sec)\n\nEmpty set (0.00 sec)\n\n+---------------------------------------------------------------------------------------+-------+\n| disabled_instruments                                                                  | timed |\n+---------------------------------------------------------------------------------------+-------+\n| wait/synch/mutex/sql/TC_LOG_MMAP::LOCK_tc                                             | NO    |\n| wait/synch/mutex/sql/LOCK_des_key_file                                                | NO    |\n| wait/synch/mutex/sql/MYSQL_BIN_LOG::LOCK_commit                                       | NO    |\n...\n| memory/sql/servers_cache                                                              | NO    |\n| memory/sql/udf_mem                                                                    | NO    |\n| wait/lock/metadata/sql/mdl                                                            | NO    |\n+---------------------------------------------------------------------------------------+-------+\n547 rows in set (0.00 sec)\n\nQuery OK, 0 rows affected (0.01 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_show_disabled_consumers",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nShows all currently disabled consumers.\n\nParameters\n-----------\n\nNone\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_show_disabled_consumers();\n\n+---------------------------+\n| disabled_consumers        |\n+---------------------------+\n| events_statements_current |\n| global_instrumentation    |\n| thread_instrumentation    |\n| statements_digest         |\n+---------------------------+\n4 rows in set (0.05 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_show_disabled_instruments",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nShows all currently disabled instruments.\n\nParameters\n-----------\n\nNone\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_show_disabled_instruments();\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_show_enabled",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nShows all currently enabled Performance Schema configuration.\n\nParameters\n-----------\n\nin_show_instruments (BOOLEAN):\n  Whether to print enabled instruments (can print many items)\n\nin_show_threads (BOOLEAN):\n  Whether to print enabled threads\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_show_enabled(TRUE, TRUE);\n+----------------------------+\n| performance_schema_enabled |\n+----------------------------+\n|                          1 |\n+----------------------------+\n1 row in set (0.00 sec)\n\n+---------------+\n| enabled_users |\n+---------------+\n| '%'@'%'       |\n+---------------+\n1 row in set (0.01 sec)\n\n+-------------+---------+---------+-------+\n| object_type | objects | enabled | timed |\n+-------------+---------+---------+-------+\n| EVENT       | %.%     | YES     | YES   |\n| FUNCTION    | %.%     | YES     | YES   |\n| PROCEDURE   | %.%     | YES     | YES   |\n| TABLE       | %.%     | YES     | YES   |\n| TRIGGER     | %.%     | YES     | YES   |\n+-------------+---------+---------+-------+\n5 rows in set (0.01 sec)\n\n+---------------------------+\n| enabled_consumers         |\n+---------------------------+\n| events_statements_current |\n| global_instrumentation    |\n| thread_instrumentation    |\n| statements_digest         |\n+---------------------------+\n4 rows in set (0.05 sec)\n\n+---------------------------------+-------------+\n| enabled_threads                 | thread_type |\n+---------------------------------+-------------+\n| sql/main                        | BACKGROUND  |\n| sql/thread_timer_notifier       | BACKGROUND  |\n| innodb/io_ibuf_thread           | BACKGROUND  |\n| innodb/io_log_thread            | BACKGROUND  |\n| innodb/io_read_thread           | BACKGROUND  |\n| innodb/io_read_thread           | BACKGROUND  |\n| innodb/io_write_thread          | BACKGROUND  |\n| innodb/io_write_thread          | BACKGROUND  |\n| innodb/page_cleaner_thread      | BACKGROUND  |\n| innodb/srv_lock_timeout_thread  | BACKGROUND  |\n| innodb/srv_error_monitor_thread | BACKGROUND  |\n| innodb/srv_monitor_thread       | BACKGROUND  |\n| innodb/srv_master_thread        | BACKGROUND  |\n| innodb/srv_purge_thread         | BACKGROUND  |\n| innodb/srv_worker_thread        | BACKGROUND  |\n| innodb/srv_worker_thread        | BACKGROUND  |\n| innodb/srv_worker_thread        | BACKGROUND  |\n| innodb/buf_dump_thread          | BACKGROUND  |\n| innodb/dict_stats_thread        | BACKGROUND  |\n| sql/signal_handler              | BACKGROUND  |\n| sql/compress_gtid_table         | FOREGROUND  |\n| root@localhost                  | FOREGROUND  |\n+---------------------------------+-------------+\n22 rows in set (0.01 sec)\n\n+-------------------------------------+-------+\n| enabled_instruments                 | timed |\n+-------------------------------------+-------+\n| wait/io/file/sql/map                | YES   |\n| wait/io/file/sql/binlog             | YES   |\n...\n| statement/com/Error                 | YES   |\n| statement/com/                      | YES   |\n| idle                                | YES   |\n+-------------------------------------+-------+\n210 rows in set (0.08 sec)\n\nQuery OK, 0 rows affected (0.89 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_show_enabled_consumers",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nShows all currently enabled consumers.\n\nParameters\n-----------\n\nNone\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_show_enabled_consumers();\n\n+---------------------------+\n| enabled_consumers         |\n+---------------------------+\n| events_statements_current |\n| global_instrumentation    |\n| thread_instrumentation    |\n| statements_digest         |\n+---------------------------+\n4 rows in set (0.05 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_setup_show_enabled_instruments",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nShows all currently enabled instruments.\n\nParameters\n-----------\n\nNone\n\nExample\n-----------\n\nmysql> CALL sys.ps_setup_show_enabled_instruments();\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_statement_avg_latency_histogram",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nOutputs a textual histogram graph of the average latency values\nacross all normalized queries tracked within the Performance Schema\nevents_statements_summary_by_digest table.\n\nCan be used to show a very high level picture of what kind of \nlatency distribution statements running within this instance have.\n\nParameters\n-----------\n\nNone.\n\nExample\n-----------\n\nmysql> CALL sys.ps_statement_avg_latency_histogram()\\G\n*************************** 1. row ***************************\nPerformance Schema Statement Digest Average Latency Histogram:\n\n  . = 1 unit\n  * = 2 units\n  # = 3 units\n\n(0 - 38ms)     240 | ################################################################################\n(38 - 77ms)    38  | ......................................\n(77 - 115ms)   3   | ...\n(115 - 154ms)  62  | *******************************\n(154 - 192ms)  3   | ...\n(192 - 231ms)  0   |\n(231 - 269ms)  0   |\n(269 - 307ms)  0   |\n(307 - 346ms)  0   |\n(346 - 384ms)  1   | .\n(384 - 423ms)  1   | .\n(423 - 461ms)  0   |\n(461 - 499ms)  0   |\n(499 - 538ms)  0   |\n(538 - 576ms)  0   |\n(576 - 615ms)  1   | .\n\n  Total Statements: 350; Buckets: 16; Bucket Size: 38 ms;\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_trace_statement_digest",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nTraces all instrumentation within Performance Schema for a specific\nStatement Digest.\n\nWhen finding a statement of interest within the\nperformance_schema.events_statements_summary_by_digest table, feed\nthe DIGEST value in to this procedure, set how long to poll for,\nand at what interval to poll, and it will generate a report of all\nstatistics tracked within Performance Schema for that digest for the\ninterval.\n\nIt will also attempt to generate an EXPLAIN for the longest running\nexample of the digest during the interval. Note this may fail, as:\n\n   * Performance Schema truncates long SQL_TEXT values (and hence the\n     EXPLAIN will fail due to parse errors)\n   * the default schema is sys (so tables that are not fully qualified\n     in the query may not be found)\n   * some queries such as SHOW are not supported in EXPLAIN.\n\nWhen the EXPLAIN fails, the error will be ignored and no EXPLAIN\noutput generated.\n\nRequires the SUPER privilege for \"SET sql_log_bin = 0;\".\n\nParameters\n-----------\n\nin_digest (VARCHAR(64)):\n  The statement digest identifier you would like to analyze\nin_runtime (INT):\n  The number of seconds to run analysis for\nin_interval (DECIMAL(2,2)):\n  The interval (in seconds, may be fractional) at which to try\n  and take snapshots\nin_start_fresh (BOOLEAN):\n  Whether to TRUNCATE the events_statements_history_long and\n  events_stages_history_long tables before starting\nin_auto_enable (BOOLEAN):\n  Whether to automatically turn on required consumers\n\nExample\n-----------\n\nmysql> call ps_trace_statement_digest('891ec6860f98ba46d89dd20b0c03652c', 10, 0.1, true, true);\n+--------------------+\n| SUMMARY STATISTICS |\n+--------------------+\n| SUMMARY STATISTICS |\n+--------------------+\n1 row in set (9.11 sec)\n\n+------------+-----------+-----------+-----------+---------------+------------+------------+\n| executions | exec_time | lock_time | rows_sent | rows_examined | tmp_tables | full_scans |\n+------------+-----------+-----------+-----------+---------------+------------+------------+\n|         21 | 4.11 ms   | 2.00 ms   |         0 |            21 |          0 |          0 |\n+------------+-----------+-----------+-----------+---------------+------------+------------+\n1 row in set (9.11 sec)\n\n+------------------------------------------+-------+-----------+\n| event_name                               | count | latency   |\n+------------------------------------------+-------+-----------+\n| stage/sql/checking query cache for query |    16 | 724.37 us |\n| stage/sql/statistics                     |    16 | 546.92 us |\n| stage/sql/freeing items                  |    18 | 520.11 us |\n| stage/sql/init                           |    51 | 466.80 us |\n...\n| stage/sql/cleaning up                    |    18 | 11.92 us  |\n| stage/sql/executing                      |    16 | 6.95 us   |\n+------------------------------------------+-------+-----------+\n17 rows in set (9.12 sec)\n\n+---------------------------+\n| LONGEST RUNNING STATEMENT |\n+---------------------------+\n| LONGEST RUNNING STATEMENT |\n+---------------------------+\n1 row in set (9.16 sec)\n\n+-----------+-----------+-----------+-----------+---------------+------------+-----------+\n| thread_id | exec_time | lock_time | rows_sent | rows_examined | tmp_tables | full_scan |\n+-----------+-----------+-----------+-----------+---------------+------------+-----------+\n|    166646 | 618.43 us | 1.00 ms   |         0 |             1 |          0 |         0 |\n+-----------+-----------+-----------+-----------+---------------+------------+-----------+\n1 row in set (9.16 sec)\n\n// Truncated for clarity...\n+-----------------------------------------------------------------+\n| sql_text                                                        |\n+-----------------------------------------------------------------+\n| select hibeventhe0_.id as id1382_, hibeventhe0_.createdTime ... |\n+-----------------------------------------------------------------+\n1 row in set (9.17 sec)\n\n+------------------------------------------+-----------+\n| event_name                               | latency   |\n+------------------------------------------+-----------+\n| stage/sql/init                           | 8.61 us   |\n| stage/sql/Waiting for query cache lock   | 453.23 us |\n| stage/sql/init                           | 331.07 ns |\n| stage/sql/checking query cache for query | 43.04 us  |\n...\n| stage/sql/freeing items                  | 30.46 us  |\n| stage/sql/cleaning up                    | 662.13 ns |\n+------------------------------------------+-----------+\n18 rows in set (9.23 sec)\n\n+----+-------------+--------------+-------+---------------+-----------+---------+-------------+------+-------+\n| id | select_type | table        | type  | possible_keys | key       | key_len | ref         | rows | Extra |\n+----+-------------+--------------+-------+---------------+-----------+---------+-------------+------+-------+\n|  1 | SIMPLE      | hibeventhe0_ | const | fixedTime     | fixedTime | 775     | const,const |    1 | NULL  |\n+----+-------------+--------------+-------+---------------+-----------+---------+-------------+------+-------+\n1 row in set (9.27 sec)\n\nQuery OK, 0 rows affected (9.28 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_trace_thread",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nDumps all data within Performance Schema for an instrumented thread,\nto create a DOT formatted graph file. \n\nEach resultset returned from the procedure should be used for a complete graph\n\nRequires the SUPER privilege for \"SET sql_log_bin = 0;\".\n\nParameters\n-----------\n\nin_thread_id (BIGINT UNSIGNED):\n  The thread that you would like a stack trace for\nin_outfile  (VARCHAR(255)):\n  The filename the dot file will be written to\nin_max_runtime (DECIMAL(20,2)):\n  The maximum time to keep collecting data.\n  Use NULL to get the default which is 60 seconds.\nin_interval (DECIMAL(20,2)): \n  How long to sleep between data collections. \n  Use NULL to get the default which is 1 second.\nin_start_fresh (BOOLEAN):\n  Whether to reset all Performance Schema data before tracing.\nin_auto_setup (BOOLEAN):\n  Whether to disable all other threads and enable all consumers/instruments. \n  This will also reset the settings at the end of the run.\nin_debug (BOOLEAN):\n  Whether you would like to include file:lineno in the graph\n\nExample\n-----------\n\nmysql> CALL sys.ps_trace_thread(25, CONCAT('/tmp/stack-', REPLACE(NOW(), ' ', '-'), '.dot'), NULL, NULL, TRUE, TRUE, TRUE);\n+-------------------+\n| summary           |\n+-------------------+\n| Disabled 1 thread |\n+-------------------+\n1 row in set (0.00 sec)\n\n+---------------------------------------------+\n| Info                                        |\n+---------------------------------------------+\n| Data collection starting for THREAD_ID = 25 |\n+---------------------------------------------+\n1 row in set (0.03 sec)\n\n+-----------------------------------------------------------+\n| Info                                                      |\n+-----------------------------------------------------------+\n| Stack trace written to /tmp/stack-2014-02-16-21:18:41.dot |\n+-----------------------------------------------------------+\n1 row in set (60.07 sec)\n\n+-------------------------------------------------------------------+\n| Convert to PDF                                                    |\n+-------------------------------------------------------------------+\n| dot -Tpdf -o /tmp/stack_25.pdf /tmp/stack-2014-02-16-21:18:41.dot |\n+-------------------------------------------------------------------+\n1 row in set (60.07 sec)\n\n+-------------------------------------------------------------------+\n| Convert to PNG                                                    |\n+-------------------------------------------------------------------+\n| dot -Tpng -o /tmp/stack_25.png /tmp/stack-2014-02-16-21:18:41.dot |\n+-------------------------------------------------------------------+\n1 row in set (60.07 sec)\n\n+------------------+\n| summary          |\n+------------------+\n| Enabled 1 thread |\n+------------------+\n1 row in set (60.32 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "ps_truncate_all_tables",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nTruncates all summary tables within Performance Schema, \nresetting all aggregated instrumentation as a snapshot.\n\nParameters\n-----------\n\nin_verbose (BOOLEAN):\n  Whether to print each TRUNCATE statement before running\n\nExample\n-----------\n\nmysql> CALL sys.ps_truncate_all_tables(false);\n+---------------------+\n| summary             |\n+---------------------+\n| Truncated 44 tables |\n+---------------------+\n1 row in set (0.10 sec)\n\nQuery OK, 0 rows affected (0.10 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "statement_performance_analyzer",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nCreate a report of the statements running on the server.\n\nThe views are calculated based on the overall and/or delta activity.\n\nRequires the SUPER privilege for \"SET sql_log_bin = 0;\".\n\nParameters\n-----------\n\nin_action (ENUM('snapshot', 'overall', 'delta', 'create_tmp', 'create_table', 'save', 'cleanup')):\n  The action to take. Supported actions are:\n    * snapshot      Store a snapshot. The default is to make a snapshot of the current content of\n                    performance_schema.events_statements_summary_by_digest, but by setting in_table\n                    this can be overwritten to copy the content of the specified table.\n                    The snapshot is stored in the sys.tmp_digests temporary table.\n    * overall       Generate analyzis based on the content specified by in_table. For the overall analyzis,\n                    in_table can be NOW() to use a fresh snapshot. This will overwrite an existing snapshot.\n                    Use NULL for in_table to use the existing snapshot. If in_table IS NULL and no snapshot\n                    exists, a new will be created.\n                    See also in_views and @sys.statement_performance_analyzer.limit.\n    * delta         Generate a delta analysis. The delta will be calculated between the reference table in\n                    in_table and the snapshot. An existing snapshot must exist.\n                    The action uses the sys.tmp_digests_delta temporary table.\n                    See also in_views and @sys.statement_performance_analyzer.limit.\n    * create_table  Create a regular table suitable for storing the snapshot for later use, e.g. for\n                    calculating deltas.\n    * create_tmp    Create a temporary table suitable for storing the snapshot for later use, e.g. for\n                    calculating deltas.\n    * save          Save the snapshot in the table specified by in_table. The table must exists and have\n                    the correct structure.\n                    If no snapshot exists, a new is created.\n    * cleanup       Remove the temporary tables used for the snapshot and delta.\n\nin_table (VARCHAR(129)):\n  The table argument used for some actions. Use the format 'db1.t1' or 't1' without using any backticks (`)\n  for quoting. Periods (.) are not supported in the database and table names.\n\n  The meaning of the table for each action supporting the argument is:\n\n    * snapshot      The snapshot is created based on the specified table. Set to NULL or NOW() to use\n                    the current content of performance_schema.events_statements_summary_by_digest.\n    * overall       The table with the content to create the overall analyzis for. The following values\n                    can be used:\n                      - A table name - use the content of that table.\n                      - NOW()        - create a fresh snapshot and overwrite the existing snapshot.\n                      - NULL         - use the last stored snapshot.\n    * delta         The table name is mandatory and specified the reference view to compare the currently\n                    stored snapshot against. If no snapshot exists, a new will be created.\n    * create_table  The name of the regular table to create.\n    * create_tmp    The name of the temporary table to create.\n    * save          The name of the table to save the currently stored snapshot into.\n\nin_views (SET ('with_runtimes_in_95th_percentile', 'analysis', 'with_errors_or_warnings',\n               'with_full_table_scans', 'with_sorting', 'with_temp_tables', 'custom'))\n  Which views to include:\n\n    * with_runtimes_in_95th_percentile  Based on the sys.statements_with_runtimes_in_95th_percentile view\n    * analysis                          Based on the sys.statement_analysis view\n    * with_errors_or_warnings           Based on the sys.statements_with_errors_or_warnings view\n    * with_full_table_scans             Based on the sys.statements_with_full_table_scans view\n    * with_sorting                      Based on the sys.statements_with_sorting view\n    * with_temp_tables                  Based on the sys.statements_with_temp_tables view\n    * custom                            Use a custom view. This view must be specified in @sys.statement_performance_analyzer.view to an existing view or a query\n\nDefault is to include all except 'custom'.\n\n\nConfiguration Options\n----------------------\n\nsys.statement_performance_analyzer.limit\n  The maximum number of rows to include for the views that does not have a built-in limit (e.g. the 95th percentile view).\n  If not set the limit is 100.\n\nsys.statement_performance_analyzer.view\n  Used together with the 'custom' view. If the value contains a space, it is considered a query, otherwise it must be\n  an existing view querying the performance_schema.events_statements_summary_by_digest table. There cannot be any limit\n  clause including in the query or view definition if @sys.statement_performance_analyzer.limit > 0.\n  If specifying a view, use the same format as for in_table.\n\nsys.debug\n  Whether to provide debugging output.\n  Default is 'OFF'. Set to 'ON' to include.\n\n\nExample\n--------\n\nTo create a report with the queries in the 95th percentile since last truncate of performance_schema.events_statements_summary_by_digest\nand the delta for a 1 minute period:\n\n   1. Create a temporary table to store the initial snapshot.\n   2. Create the initial snapshot.\n   3. Save the initial snapshot in the temporary table.\n   4. Wait one minute.\n   5. Create a new snapshot.\n   6. Perform analyzis based on the new snapshot.\n   7. Perform analyzis based on the delta between the initial and new snapshots.\n\nmysql> CALL sys.statement_performance_analyzer('create_tmp', 'mydb.tmp_digests_ini', NULL);\nQuery OK, 0 rows affected (0.08 sec)\n\nmysql> CALL sys.statement_performance_analyzer('snapshot', NULL, NULL);\nQuery OK, 0 rows affected (0.02 sec)\n\nmysql> CALL sys.statement_performance_analyzer('save', 'mydb.tmp_digests_ini', NULL);\nQuery OK, 0 rows affected (0.00 sec)\n\nmysql> DO SLEEP(60);\nQuery OK, 0 rows affected (1 min 0.00 sec)\n\nmysql> CALL sys.statement_performance_analyzer('snapshot', NULL, NULL);\nQuery OK, 0 rows affected (0.02 sec)\n\nmysql> CALL sys.statement_performance_analyzer('overall', NULL, 'with_runtimes_in_95th_percentile');\n+-----------------------------------------+\n| Next Output                             |\n+-----------------------------------------+\n| Queries with Runtime in 95th Percentile |\n+-----------------------------------------+\n1 row in set (0.05 sec)\n\n...\n\nmysql> CALL sys.statement_performance_analyzer('delta', 'mydb.tmp_digests_ini', 'with_runtimes_in_95th_percentile');\n+-----------------------------------------+\n| Next Output                             |\n+-----------------------------------------+\n| Queries with Runtime in 95th Percentile |\n+-----------------------------------------+\n1 row in set (0.03 sec)\n\n...\n\n\nTo create an overall report of the 95th percentile queries and the top 10 queries with full table scans:\n\nmysql> CALL sys.statement_performance_analyzer('snapshot', NULL, NULL);\nQuery OK, 0 rows affected (0.01 sec)\n\nmysql> SET @sys.statement_performance_analyzer.limit = 10;\nQuery OK, 0 rows affected (0.00 sec)\n\nmysql> CALL sys.statement_performance_analyzer('overall', NULL, 'with_runtimes_in_95th_percentile,with_full_table_scans');\n+-----------------------------------------+\n| Next Output                             |\n+-----------------------------------------+\n| Queries with Runtime in 95th Percentile |\n+-----------------------------------------+\n1 row in set (0.01 sec)\n\n...\n\n+-------------------------------------+\n| Next Output                         |\n+-------------------------------------+\n| Top 10 Queries with Full Table Scan |\n+-------------------------------------+\n1 row in set (0.09 sec)\n\n...\n\n\nUse a custom view showing the top 10 query sorted by total execution time refreshing the view every minute using\nthe watch command in Linux.\n\nmysql> CREATE OR REPLACE VIEW mydb.my_statements AS\n    -> SELECT sys.format_statement(DIGEST_TEXT) AS query,\n    ->        SCHEMA_NAME AS db,\n    ->        COUNT_STAR AS exec_count,\n    ->        format_pico_time(SUM_TIMER_WAIT) AS total_latency,\n    ->        format_pico_time(AVG_TIMER_WAIT) AS avg_latency,\n    ->        ROUND(IFNULL(SUM_ROWS_SENT / NULLIF(COUNT_STAR, 0), 0)) AS rows_sent_avg,\n    ->        ROUND(IFNULL(SUM_ROWS_EXAMINED / NULLIF(COUNT_STAR, 0), 0)) AS rows_examined_avg,\n    ->        ROUND(IFNULL(SUM_ROWS_AFFECTED / NULLIF(COUNT_STAR, 0), 0)) AS rows_affected_avg,\n    ->        DIGEST AS digest\n    ->   FROM performance_schema.events_statements_summary_by_digest\n    -> ORDER BY SUM_TIMER_WAIT DESC;\nQuery OK, 0 rows affected (0.01 sec)\n\nmysql> CALL sys.statement_performance_analyzer('create_table', 'mydb.digests_prev', NULL);\nQuery OK, 0 rows affected (0.10 sec)\n\nshell$ watch -n 60 \"mysql sys --table -e \"\n> SET @sys.statement_performance_analyzer.view = 'mydb.my_statements';\n> SET @sys.statement_performance_analyzer.limit = 10;\n> CALL statement_performance_analyzer('snapshot', NULL, NULL);\n> CALL statement_performance_analyzer('delta', 'mydb.digests_prev', 'custom');\n> CALL statement_performance_analyzer('save', 'mydb.digests_prev', NULL);\n> \"\"\n\nEvery 60.0s: mysql sys --table -e \"                                                                                                   ...  Mon Dec 22 10:58:51 2014\n\n+----------------------------------+\n| Next Output                      |\n+----------------------------------+\n| Top 10 Queries Using Custom View |\n+----------------------------------+\n+-------------------+-------+------------+---------------+-------------+---------------+-------------------+-------------------+----------------------------------+\n| query             | db    | exec_count | total_latency | avg_latency | rows_sent_avg | rows_examined_avg | rows_affected_avg | digest                           |\n+-------------------+-------+------------+---------------+-------------+---------------+-------------------+-------------------+----------------------------------+\n...\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "sys",
+                            "1": "table_exists",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "mysql.sys@localhost",
+                            "5": "2025-03-19 22:56:08",
+                            "6": "2025-03-19 22:56:08",
+                            "7": "INVOKER",
+                            "8": "\nDescription\n-----------\n\nTests whether the table specified in in_db and in_table exists either as a regular\ntable, or as a temporary table. The returned value corresponds to the table that\nwill be used, so if there's both a temporary and a permanent table with the given\nname, then 'TEMPORARY' will be returned.\n\nParameters\n-----------\n\nin_db (VARCHAR(64)):\n  The database name to check for the existance of the table in.\n\nin_table (VARCHAR(64)):\n  The name of the table to check the existance of.\n\nout_exists ENUM('', 'BASE TABLE', 'VIEW', 'TEMPORARY'):\n  The return value: whether the table exists. The value is one of:\n    * ''           - the table does not exist neither as a base table, view, nor temporary table.\n    * 'BASE TABLE' - the table name exists as a permanent base table table.\n    * 'VIEW'       - the table name exists as a view.\n    * 'TEMPORARY'  - the table name exists as a temporary table.\n\nExample\n--------\n\nmysql> CREATE DATABASE db1;\nQuery OK, 1 row affected (0.07 sec)\n\nmysql> use db1;\nDatabase changed\nmysql> CREATE TABLE t1 (id INT PRIMARY KEY);\nQuery OK, 0 rows affected (0.08 sec)\n\nmysql> CREATE TABLE t2 (id INT PRIMARY KEY);\nQuery OK, 0 rows affected (0.08 sec)\n\nmysql> CREATE view v_t1 AS SELECT * FROM t1;\nQuery OK, 0 rows affected (0.00 sec)\n\nmysql> CREATE TEMPORARY TABLE t1 (id INT PRIMARY KEY);\nQuery OK, 0 rows affected (0.00 sec)\n\nmysql> CALL sys.table_exists('db1', 't1', @exists); SELECT @exists;\nQuery OK, 0 rows affected (0.00 sec)\n\n+------------+\n| @exists    |\n+------------+\n| TEMPORARY  |\n+------------+\n1 row in set (0.00 sec)\n\nmysql> CALL sys.table_exists('db1', 't2', @exists); SELECT @exists;\nQuery OK, 0 rows affected (0.00 sec)\n\n+------------+\n| @exists    |\n+------------+\n| BASE TABLE |\n+------------+\n1 row in set (0.01 sec)\n\nmysql> CALL sys.table_exists('db1', 'v_t1', @exists); SELECT @exists;\nQuery OK, 0 rows affected (0.00 sec)\n\n+---------+\n| @exists |\n+---------+\n| VIEW    |\n+---------+\n1 row in set (0.00 sec)\n\nmysql> CALL sys.table_exists('db1', 't3', @exists); SELECT @exists;\nQuery OK, 0 rows affected (0.01 sec)\n\n+---------+\n| @exists |\n+---------+\n|         |\n+---------+\n1 row in set (0.00 sec)\n",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Db",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Type",
+                            "field": "2",
+                            "dataType": {
+                                "type": 43,
+                                "needsQuotes": true
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Language",
+                            "field": "3",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Definer",
+                            "field": "4",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Modified",
+                            "field": "5",
+                            "dataType": {
+                                "type": 26,
+                                "dateTimePrecision": 8,
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Created",
+                            "field": "6",
+                            "dataType": {
+                                "type": 26,
+                                "dateTimePrecision": 8,
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Security_type",
+                            "field": "7",
+                            "dataType": {
+                                "type": 43,
+                                "needsQuotes": true
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Comment",
+                            "field": "8",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "character_set_client",
+                            "field": "9",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "collation_connection",
+                            "field": "10",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Database Collation",
+                            "field": "11",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 36 records retrieved in 22.051ms"
+                    },
+                    "totalRowCount": 36,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 如果想知道是何时、由谁创建\nSHOW PROCEDURE STATUS",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 128,
+                "end": 129,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "a68abb85-e9a9-46d9-b8a6-c6601736ebdb"
+                    ]
+                },
+                "currentHeight": 122.359375,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 64
+                        },
+                        "contentStart": 23,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "a68abb85-e9a9-46d9-b8a6-c6601736ebdb",
+                    "rows": [
+                        {
+                            "0": "crashcourse",
+                            "1": "ordertotal2",
+                            "2": "PROCEDURE",
+                            "3": "SQL",
+                            "4": "root@localhost",
+                            "5": "2025-04-10 14:46:33",
+                            "6": "2025-04-10 14:46:33",
+                            "7": "DEFINER",
+                            "8": " Obtain order total,optionally adding tax",
+                            "9": "utf8mb4",
+                            "10": "utf8mb4_0900_ai_ci",
+                            "11": "utf8mb4_0900_ai_ci"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Db",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Type",
+                            "field": "2",
+                            "dataType": {
+                                "type": 43,
+                                "needsQuotes": true
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Language",
+                            "field": "3",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Definer",
+                            "field": "4",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Modified",
+                            "field": "5",
+                            "dataType": {
+                                "type": 26,
+                                "dateTimePrecision": 8,
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Created",
+                            "field": "6",
+                            "dataType": {
+                                "type": 26,
+                                "dateTimePrecision": 8,
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Security_type",
+                            "field": "7",
+                            "dataType": {
+                                "type": 43,
+                                "needsQuotes": true
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Comment",
+                            "field": "8",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "character_set_client",
+                            "field": "9",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "collation_connection",
+                            "field": "10",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Database Collation",
+                            "field": "11",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 2.237ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 如果只想知道一部分,可以用LIKE过滤\nSHOW PROCEDURE STATUS LIKE 'ordertotal2'",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 130,
+                "end": 143,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 1,
+                            "resultId": "d5cb3861-32ed-42b0-a13e-2a5a78ea007d",
+                            "content": "OK, 0 records retrieved in 16.685ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 0,
+                            "length": 58
+                        },
+                        "contentStart": 46,
+                        "state": 4
+                    },
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 58,
+                            "length": 118
+                        },
+                        "contentStart": 59,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 176,
+                            "length": 1
+                        },
+                        "contentStart": 175,
+                        "state": 3
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 177,
+                            "length": 11
+                        },
+                        "contentStart": 177,
+                        "state": 4
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 144,
+                "end": 166,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 1,
+                            "resultId": "b3322aad-e18d-41a5-bd56-e4abbd26818e",
+                            "content": "OK, 0 records retrieved in 18.557ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 0,
+                            "length": 130
+                        },
+                        "contentStart": 118,
+                        "state": 4
+                    },
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 130,
+                            "length": 405
+                        },
+                        "contentStart": 131,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 535,
+                            "length": 12
+                        },
+                        "contentStart": 536,
+                        "state": 4
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 167,
+                "end": 167,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
