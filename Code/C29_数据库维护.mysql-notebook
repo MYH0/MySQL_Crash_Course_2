@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C29 数据库维护",
+    "content": "\\about\n#C29 数据库维护\n#29.1 备份数据\n/*\n1.用命令行工具mysqldump,把所有数据库内容导出到外部文件\n2.使用SELECT INTO OUTFILE语句,把所有数据存到外部文件,这个文件事先不能存在\n恢复数据可用LOAD DATA\n*/\n#29.2 数据库维护\n-- 更新表的状态信息\nANALYZE TABLE orders;\n/*\n1.CHECK TABLE用于检查表中的各种问题\n2.CHECK TABLE支持一系列用于MyISAM的模式,见P233\n3.如果从一张表删除大量数据,应使用OPTIMIZE TABLE来回收所用空间,从而优化表的性能\n*/\nUSE crashcourse;\nCHECK TABLE orderitems,orders;\n#29.3 诊断启动问题\n-- 见P233\n#29.4 查看日志文件\n-- 见P234\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -13,24 +13,24 @@
     "viewState": {
         "cursorState": [
             {
-                "inSelectionMode": true,
+                "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 2,
-                    "column": 11
+                    "lineNumber": 23,
+                    "column": 1
                 },
                 "position": {
-                    "lineNumber": 2,
-                    "column": 2
+                    "lineNumber": 23,
+                    "column": 1
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 1,
+                "lineNumber": 2,
                 "column": 1
             },
-            "firstPositionDeltaTop": 0
+            "firstPositionDeltaTop": -16
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -53,7 +53,7 @@
                         }
                     ]
                 },
-                "currentHeight": 151.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -72,7 +72,379 @@
         {
             "state": {
                 "start": 2,
-                "end": 2,
+                "end": 8,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "6138c128-9e7c-464e-ae2e-4ac328a76220",
+                            "content": "OK, 0 records retrieved in 0.981ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 126
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 9,
+                "end": 11,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "d59ec14e-4bc5-4d2c-b3dd-1ce24a5cc028"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 45
+                        },
+                        "contentStart": 24,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "242a8e45-e2dd-472f-f6e6-74454dedd105",
+                    "resultId": "d59ec14e-4bc5-4d2c-b3dd-1ce24a5cc028",
+                    "rows": [
+                        {
+                            "0": "crashcourse.orders",
+                            "1": "analyze",
+                            "2": "status",
+                            "3": "OK"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Table",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Op",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Msg_type",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Msg_text",
+                            "field": "3",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 52.271ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#29.2 数据库维护\n-- 更新表的状态信息\nANALYZE TABLE orders",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 12,
+                "end": 18,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "8a4ed758-f49b-4d9b-e673-fc60e51872f0",
+                        "8fbbcd15-e5af-4c4f-e079-bf7423cdbd8c"
+                    ]
+                },
+                "currentHeight": 159.453125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 132
+                        },
+                        "contentStart": 116,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 132,
+                            "length": 31
+                        },
+                        "contentStart": 133,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "242a8e45-e2dd-472f-f6e6-74454dedd105",
+                    "resultId": "8a4ed758-f49b-4d9b-e673-fc60e51872f0",
+                    "rows": [
+                        {
+                            "0": "crashcourse.orderitems",
+                            "1": "check",
+                            "2": "status",
+                            "3": "OK"
+                        },
+                        {
+                            "0": "crashcourse.orders",
+                            "1": "check",
+                            "2": "status",
+                            "3": "OK"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Table",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Op",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Msg_type",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Msg_text",
+                            "field": "3",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 61.881ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 1,
+                    "sql": "\nCHECK TABLE orderitems,orders",
+                    "updatable": false
+                },
+                {
+                    "tabId": "242a8e45-e2dd-472f-f6e6-74454dedd105",
+                    "resultId": "8fbbcd15-e5af-4c4f-e079-bf7423cdbd8c",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 0 records retrieved in 1.391ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*\n1.CHECK TABLE用于检查表中的各种问题\n2.CHECK TABLE支持一系列用于MyISAM的模式,见P233\n3.如果从一张表删除大量数据,应使用OPTIMIZE TABLE来回收所用空间,从而优化表的性能\n*/\nUSE crashcourse",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 19,
+                "end": 20,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "eaa3931b-70f9-49e8-9ff7-d56e38e4d370",
+                            "content": "OK, 0 records retrieved in 1.804ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 21
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 21,
+                "end": 22,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "165a83ba-5389-44c6-e192-af5fd44081a9",
+                            "content": "OK, 0 records retrieved in 0.998ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 21
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 23,
+                "end": 23,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
@@ -80,10 +452,10 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 10
+                            "length": 0
                         },
                         "contentStart": 0,
-                        "state": 1
+                        "state": 0
                     }
                 ]
             },
