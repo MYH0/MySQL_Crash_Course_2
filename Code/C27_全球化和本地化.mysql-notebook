@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C27 全球化和本地化\n#27.1 字符集\n-- 字符集:字母和符号的集合\n-- 编码:某个字符集成员的内部表示\n-- 校对:规定字符如何比较",
+    "content": "\\about\n#C27 全球化和本地化\n#27.1 字符集\n-- 字符集:字母和符号的集合\n-- 编码:某个字符集成员的内部表示\n-- 校对:规定字符如何比较、排序的指令\n#27.2 使用字符集和校对顺序\n-- 查看mysql支持的字符集和其默认使用的校对\nSHOW CHARACTER SET;\n-- 查看支持的校对\nSHOW COLLATION;\n-- 确定所用的字符集和校对\nSHOW VARIABLES LIKE '%character%';\nSHOW VARIABLES LIKE '%collation%';\n-- 给表指定字符集和校对\n-- 如果没指定校对,就按照字符集默认的校对方式来\nCREATE TABLE mmtable\n(\n    col1 INT,\n    col2 VARCHAR(10)\n)DEFAULT CHARACTER SET utf8mb4\nCOLLATE utf8mb4_0900_bin;\n-- 也可以对每一列指定字符集和校对\nCREATE TABLE mmtable1\n(\n    col1 INT,\n    col2 VARCHAR(10) CHARACTER SET utf8mb4\n                     COLLATE utf8mb4_0900_as_ci\n)DEFAULT CHARACTER SET utf8mb4\nCOLLATE utf8mb4_0900_bin;\n-- 还可以改变ORDER BY的排序方式(校对顺序),以此来支持区分大小写排序\nSELECT * FROM customers\nORDER BY cust_name\n    COLLATE utf8mb4_0900_bin;\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 6,
-                    "column": 15
+                    "lineNumber": 32,
+                    "column": 24
                 },
                 "position": {
-                    "lineNumber": 6,
-                    "column": 15
+                    "lineNumber": 32,
+                    "column": 24
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 1,
+                "lineNumber": 17,
                 "column": 1
             },
-            "firstPositionDeltaTop": 0
+            "firstPositionDeltaTop": -3
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -53,7 +53,7 @@
                         }
                     ]
                 },
-                "currentHeight": 151.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -74,16 +74,3738 @@
                 "start": 2,
                 "end": 6,
                 "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "ad4967e9-ccf9-4900-f467-77cb58de3a9f",
+                            "content": "OK, 0 records retrieved in 0.929ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 72
+                            "length": 78
                         },
                         "contentStart": 0,
                         "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 7,
+                "end": 9,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "84dfd51b-9ea5-41b0-8e6e-5e38058a0f78"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 62
+                        },
+                        "contentStart": 43,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "ac5c98cc-3839-4143-fbc8-83209b5768c2",
+                    "resultId": "84dfd51b-9ea5-41b0-8e6e-5e38058a0f78",
+                    "rows": [
+                        {
+                            "0": "armscii8",
+                            "1": "ARMSCII-8 Armenian",
+                            "2": "armscii8_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "ascii",
+                            "1": "US ASCII",
+                            "2": "ascii_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "big5",
+                            "1": "Big5 Traditional Chinese",
+                            "2": "big5_chinese_ci",
+                            "3": 2
+                        },
+                        {
+                            "0": "binary",
+                            "1": "Binary pseudo charset",
+                            "2": "binary",
+                            "3": 1
+                        },
+                        {
+                            "0": "cp1250",
+                            "1": "Windows Central European",
+                            "2": "cp1250_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "cp1251",
+                            "1": "Windows Cyrillic",
+                            "2": "cp1251_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "cp1256",
+                            "1": "Windows Arabic",
+                            "2": "cp1256_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "cp1257",
+                            "1": "Windows Baltic",
+                            "2": "cp1257_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "cp850",
+                            "1": "DOS West European",
+                            "2": "cp850_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "cp852",
+                            "1": "DOS Central European",
+                            "2": "cp852_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "cp866",
+                            "1": "DOS Russian",
+                            "2": "cp866_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "cp932",
+                            "1": "SJIS for Windows Japanese",
+                            "2": "cp932_japanese_ci",
+                            "3": 2
+                        },
+                        {
+                            "0": "dec8",
+                            "1": "DEC West European",
+                            "2": "dec8_swedish_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "eucjpms",
+                            "1": "UJIS for Windows Japanese",
+                            "2": "eucjpms_japanese_ci",
+                            "3": 3
+                        },
+                        {
+                            "0": "euckr",
+                            "1": "EUC-KR Korean",
+                            "2": "euckr_korean_ci",
+                            "3": 2
+                        },
+                        {
+                            "0": "gb18030",
+                            "1": "China National Standard GB18030",
+                            "2": "gb18030_chinese_ci",
+                            "3": 4
+                        },
+                        {
+                            "0": "gb2312",
+                            "1": "GB2312 Simplified Chinese",
+                            "2": "gb2312_chinese_ci",
+                            "3": 2
+                        },
+                        {
+                            "0": "gbk",
+                            "1": "GBK Simplified Chinese",
+                            "2": "gbk_chinese_ci",
+                            "3": 2
+                        },
+                        {
+                            "0": "geostd8",
+                            "1": "GEOSTD8 Georgian",
+                            "2": "geostd8_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "greek",
+                            "1": "ISO 8859-7 Greek",
+                            "2": "greek_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "hebrew",
+                            "1": "ISO 8859-8 Hebrew",
+                            "2": "hebrew_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "hp8",
+                            "1": "HP West European",
+                            "2": "hp8_english_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "keybcs2",
+                            "1": "DOS Kamenicky Czech-Slovak",
+                            "2": "keybcs2_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "koi8r",
+                            "1": "KOI8-R Relcom Russian",
+                            "2": "koi8r_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "koi8u",
+                            "1": "KOI8-U Ukrainian",
+                            "2": "koi8u_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "latin1",
+                            "1": "cp1252 West European",
+                            "2": "latin1_swedish_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "latin2",
+                            "1": "ISO 8859-2 Central European",
+                            "2": "latin2_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "latin5",
+                            "1": "ISO 8859-9 Turkish",
+                            "2": "latin5_turkish_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "latin7",
+                            "1": "ISO 8859-13 Baltic",
+                            "2": "latin7_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "macce",
+                            "1": "Mac Central European",
+                            "2": "macce_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "macroman",
+                            "1": "Mac West European",
+                            "2": "macroman_general_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "sjis",
+                            "1": "Shift-JIS Japanese",
+                            "2": "sjis_japanese_ci",
+                            "3": 2
+                        },
+                        {
+                            "0": "swe7",
+                            "1": "7bit Swedish",
+                            "2": "swe7_swedish_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "tis620",
+                            "1": "TIS620 Thai",
+                            "2": "tis620_thai_ci",
+                            "3": 1
+                        },
+                        {
+                            "0": "ucs2",
+                            "1": "UCS-2 Unicode",
+                            "2": "ucs2_general_ci",
+                            "3": 2
+                        },
+                        {
+                            "0": "ujis",
+                            "1": "EUC-JP Japanese",
+                            "2": "ujis_japanese_ci",
+                            "3": 3
+                        },
+                        {
+                            "0": "utf16",
+                            "1": "UTF-16 Unicode",
+                            "2": "utf16_general_ci",
+                            "3": 4
+                        },
+                        {
+                            "0": "utf16le",
+                            "1": "UTF-16LE Unicode",
+                            "2": "utf16le_general_ci",
+                            "3": 4
+                        },
+                        {
+                            "0": "utf32",
+                            "1": "UTF-32 Unicode",
+                            "2": "utf32_general_ci",
+                            "3": 4
+                        },
+                        {
+                            "0": "utf8mb3",
+                            "1": "UTF-8 Unicode",
+                            "2": "utf8mb3_general_ci",
+                            "3": 3
+                        },
+                        {
+                            "0": "utf8mb4",
+                            "1": "UTF-8 Unicode",
+                            "2": "utf8mb4_0900_ai_ci",
+                            "3": 4
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Charset",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Description",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Default collation",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Maxlen",
+                            "field": "3",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 41 records retrieved in 5.348ms"
+                    },
+                    "totalRowCount": 41,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "#27.2 使用字符集和校对顺序\n-- 查看mysql支持的字符集\nSHOW CHARACTER SET",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 10,
+                "end": 11,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "c7f666ad-d3c8-4483-f680-44d04638f1c0"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 26
+                        },
+                        "contentStart": 11,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "ac5c98cc-3839-4143-fbc8-83209b5768c2",
+                    "resultId": "c7f666ad-d3c8-4483-f680-44d04638f1c0",
+                    "rows": [
+                        {
+                            "0": "armscii8_bin",
+                            "1": "armscii8",
+                            "2": 64,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "armscii8_general_ci",
+                            "1": "armscii8",
+                            "2": 32,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ascii_bin",
+                            "1": "ascii",
+                            "2": 65,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ascii_general_ci",
+                            "1": "ascii",
+                            "2": 11,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "big5_bin",
+                            "1": "big5",
+                            "2": 84,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "big5_chinese_ci",
+                            "1": "big5",
+                            "2": 1,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "binary",
+                            "1": "binary",
+                            "2": 63,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "cp1250_bin",
+                            "1": "cp1250",
+                            "2": 66,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1250_croatian_ci",
+                            "1": "cp1250",
+                            "2": 44,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1250_czech_cs",
+                            "1": "cp1250",
+                            "2": 34,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 2,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1250_general_ci",
+                            "1": "cp1250",
+                            "2": 26,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1250_polish_ci",
+                            "1": "cp1250",
+                            "2": 99,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1251_bin",
+                            "1": "cp1251",
+                            "2": 50,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1251_bulgarian_ci",
+                            "1": "cp1251",
+                            "2": 14,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1251_general_ci",
+                            "1": "cp1251",
+                            "2": 51,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1251_general_cs",
+                            "1": "cp1251",
+                            "2": 52,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1251_ukrainian_ci",
+                            "1": "cp1251",
+                            "2": 23,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1256_bin",
+                            "1": "cp1256",
+                            "2": 67,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1256_general_ci",
+                            "1": "cp1256",
+                            "2": 57,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1257_bin",
+                            "1": "cp1257",
+                            "2": 58,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1257_general_ci",
+                            "1": "cp1257",
+                            "2": 59,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp1257_lithuanian_ci",
+                            "1": "cp1257",
+                            "2": 29,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp850_bin",
+                            "1": "cp850",
+                            "2": 80,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp850_general_ci",
+                            "1": "cp850",
+                            "2": 4,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp852_bin",
+                            "1": "cp852",
+                            "2": 81,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp852_general_ci",
+                            "1": "cp852",
+                            "2": 40,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp866_bin",
+                            "1": "cp866",
+                            "2": 68,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp866_general_ci",
+                            "1": "cp866",
+                            "2": 36,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp932_bin",
+                            "1": "cp932",
+                            "2": 96,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "cp932_japanese_ci",
+                            "1": "cp932",
+                            "2": 95,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "dec8_bin",
+                            "1": "dec8",
+                            "2": 69,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "dec8_swedish_ci",
+                            "1": "dec8",
+                            "2": 3,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "eucjpms_bin",
+                            "1": "eucjpms",
+                            "2": 98,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "eucjpms_japanese_ci",
+                            "1": "eucjpms",
+                            "2": 97,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "euckr_bin",
+                            "1": "euckr",
+                            "2": 85,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "euckr_korean_ci",
+                            "1": "euckr",
+                            "2": 19,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "gb18030_bin",
+                            "1": "gb18030",
+                            "2": 249,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "gb18030_chinese_ci",
+                            "1": "gb18030",
+                            "2": 248,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 2,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "gb18030_unicode_520_ci",
+                            "1": "gb18030",
+                            "2": 250,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "gb2312_bin",
+                            "1": "gb2312",
+                            "2": 86,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "gb2312_chinese_ci",
+                            "1": "gb2312",
+                            "2": 24,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "gbk_bin",
+                            "1": "gbk",
+                            "2": 87,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "gbk_chinese_ci",
+                            "1": "gbk",
+                            "2": 28,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "geostd8_bin",
+                            "1": "geostd8",
+                            "2": 93,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "geostd8_general_ci",
+                            "1": "geostd8",
+                            "2": 92,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "greek_bin",
+                            "1": "greek",
+                            "2": 70,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "greek_general_ci",
+                            "1": "greek",
+                            "2": 25,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "hebrew_bin",
+                            "1": "hebrew",
+                            "2": 71,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "hebrew_general_ci",
+                            "1": "hebrew",
+                            "2": 16,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "hp8_bin",
+                            "1": "hp8",
+                            "2": 72,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "hp8_english_ci",
+                            "1": "hp8",
+                            "2": 6,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "keybcs2_bin",
+                            "1": "keybcs2",
+                            "2": 73,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "keybcs2_general_ci",
+                            "1": "keybcs2",
+                            "2": 37,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "koi8r_bin",
+                            "1": "koi8r",
+                            "2": 74,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "koi8r_general_ci",
+                            "1": "koi8r",
+                            "2": 7,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "koi8u_bin",
+                            "1": "koi8u",
+                            "2": 75,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "koi8u_general_ci",
+                            "1": "koi8u",
+                            "2": 22,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin1_bin",
+                            "1": "latin1",
+                            "2": 47,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin1_danish_ci",
+                            "1": "latin1",
+                            "2": 15,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin1_general_ci",
+                            "1": "latin1",
+                            "2": 48,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin1_general_cs",
+                            "1": "latin1",
+                            "2": 49,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin1_german1_ci",
+                            "1": "latin1",
+                            "2": 5,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin1_german2_ci",
+                            "1": "latin1",
+                            "2": 31,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 2,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin1_spanish_ci",
+                            "1": "latin1",
+                            "2": 94,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin1_swedish_ci",
+                            "1": "latin1",
+                            "2": 8,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin2_bin",
+                            "1": "latin2",
+                            "2": 77,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin2_croatian_ci",
+                            "1": "latin2",
+                            "2": 27,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin2_czech_cs",
+                            "1": "latin2",
+                            "2": 2,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 4,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin2_general_ci",
+                            "1": "latin2",
+                            "2": 9,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin2_hungarian_ci",
+                            "1": "latin2",
+                            "2": 21,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin5_bin",
+                            "1": "latin5",
+                            "2": 78,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin5_turkish_ci",
+                            "1": "latin5",
+                            "2": 30,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin7_bin",
+                            "1": "latin7",
+                            "2": 79,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin7_estonian_cs",
+                            "1": "latin7",
+                            "2": 20,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin7_general_ci",
+                            "1": "latin7",
+                            "2": 41,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "latin7_general_cs",
+                            "1": "latin7",
+                            "2": 42,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "macce_bin",
+                            "1": "macce",
+                            "2": 43,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "macce_general_ci",
+                            "1": "macce",
+                            "2": 38,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "macroman_bin",
+                            "1": "macroman",
+                            "2": 53,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "macroman_general_ci",
+                            "1": "macroman",
+                            "2": 39,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "sjis_bin",
+                            "1": "sjis",
+                            "2": 88,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "sjis_japanese_ci",
+                            "1": "sjis",
+                            "2": 13,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "swe7_bin",
+                            "1": "swe7",
+                            "2": 82,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "swe7_swedish_ci",
+                            "1": "swe7",
+                            "2": 10,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "tis620_bin",
+                            "1": "tis620",
+                            "2": 89,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "tis620_thai_ci",
+                            "1": "tis620",
+                            "2": 18,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 4,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_bin",
+                            "1": "ucs2",
+                            "2": 90,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_croatian_ci",
+                            "1": "ucs2",
+                            "2": 149,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_czech_ci",
+                            "1": "ucs2",
+                            "2": 138,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_danish_ci",
+                            "1": "ucs2",
+                            "2": 139,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_esperanto_ci",
+                            "1": "ucs2",
+                            "2": 145,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_estonian_ci",
+                            "1": "ucs2",
+                            "2": 134,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_general_ci",
+                            "1": "ucs2",
+                            "2": 35,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_general_mysql500_ci",
+                            "1": "ucs2",
+                            "2": 159,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_german2_ci",
+                            "1": "ucs2",
+                            "2": 148,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_hungarian_ci",
+                            "1": "ucs2",
+                            "2": 146,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_icelandic_ci",
+                            "1": "ucs2",
+                            "2": 129,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_latvian_ci",
+                            "1": "ucs2",
+                            "2": 130,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_lithuanian_ci",
+                            "1": "ucs2",
+                            "2": 140,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_persian_ci",
+                            "1": "ucs2",
+                            "2": 144,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_polish_ci",
+                            "1": "ucs2",
+                            "2": 133,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_romanian_ci",
+                            "1": "ucs2",
+                            "2": 131,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_roman_ci",
+                            "1": "ucs2",
+                            "2": 143,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_sinhala_ci",
+                            "1": "ucs2",
+                            "2": 147,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_slovak_ci",
+                            "1": "ucs2",
+                            "2": 141,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_slovenian_ci",
+                            "1": "ucs2",
+                            "2": 132,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_spanish2_ci",
+                            "1": "ucs2",
+                            "2": 142,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_spanish_ci",
+                            "1": "ucs2",
+                            "2": 135,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_swedish_ci",
+                            "1": "ucs2",
+                            "2": 136,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_turkish_ci",
+                            "1": "ucs2",
+                            "2": 137,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_unicode_520_ci",
+                            "1": "ucs2",
+                            "2": 150,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_unicode_ci",
+                            "1": "ucs2",
+                            "2": 128,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ucs2_vietnamese_ci",
+                            "1": "ucs2",
+                            "2": 151,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ujis_bin",
+                            "1": "ujis",
+                            "2": 91,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "ujis_japanese_ci",
+                            "1": "ujis",
+                            "2": 12,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16le_bin",
+                            "1": "utf16le",
+                            "2": 62,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16le_general_ci",
+                            "1": "utf16le",
+                            "2": 56,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_bin",
+                            "1": "utf16",
+                            "2": 55,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_croatian_ci",
+                            "1": "utf16",
+                            "2": 122,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_czech_ci",
+                            "1": "utf16",
+                            "2": 111,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_danish_ci",
+                            "1": "utf16",
+                            "2": 112,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_esperanto_ci",
+                            "1": "utf16",
+                            "2": 118,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_estonian_ci",
+                            "1": "utf16",
+                            "2": 107,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_general_ci",
+                            "1": "utf16",
+                            "2": 54,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_german2_ci",
+                            "1": "utf16",
+                            "2": 121,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_hungarian_ci",
+                            "1": "utf16",
+                            "2": 119,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_icelandic_ci",
+                            "1": "utf16",
+                            "2": 102,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_latvian_ci",
+                            "1": "utf16",
+                            "2": 103,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_lithuanian_ci",
+                            "1": "utf16",
+                            "2": 113,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_persian_ci",
+                            "1": "utf16",
+                            "2": 117,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_polish_ci",
+                            "1": "utf16",
+                            "2": 106,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_romanian_ci",
+                            "1": "utf16",
+                            "2": 104,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_roman_ci",
+                            "1": "utf16",
+                            "2": 116,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_sinhala_ci",
+                            "1": "utf16",
+                            "2": 120,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_slovak_ci",
+                            "1": "utf16",
+                            "2": 114,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_slovenian_ci",
+                            "1": "utf16",
+                            "2": 105,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_spanish2_ci",
+                            "1": "utf16",
+                            "2": 115,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_spanish_ci",
+                            "1": "utf16",
+                            "2": 108,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_swedish_ci",
+                            "1": "utf16",
+                            "2": 109,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_turkish_ci",
+                            "1": "utf16",
+                            "2": 110,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_unicode_520_ci",
+                            "1": "utf16",
+                            "2": 123,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_unicode_ci",
+                            "1": "utf16",
+                            "2": 101,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf16_vietnamese_ci",
+                            "1": "utf16",
+                            "2": 124,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_bin",
+                            "1": "utf32",
+                            "2": 61,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_croatian_ci",
+                            "1": "utf32",
+                            "2": 181,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_czech_ci",
+                            "1": "utf32",
+                            "2": 170,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_danish_ci",
+                            "1": "utf32",
+                            "2": 171,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_esperanto_ci",
+                            "1": "utf32",
+                            "2": 177,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_estonian_ci",
+                            "1": "utf32",
+                            "2": 166,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_general_ci",
+                            "1": "utf32",
+                            "2": 60,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_german2_ci",
+                            "1": "utf32",
+                            "2": 180,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_hungarian_ci",
+                            "1": "utf32",
+                            "2": 178,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_icelandic_ci",
+                            "1": "utf32",
+                            "2": 161,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_latvian_ci",
+                            "1": "utf32",
+                            "2": 162,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_lithuanian_ci",
+                            "1": "utf32",
+                            "2": 172,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_persian_ci",
+                            "1": "utf32",
+                            "2": 176,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_polish_ci",
+                            "1": "utf32",
+                            "2": 165,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_romanian_ci",
+                            "1": "utf32",
+                            "2": 163,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_roman_ci",
+                            "1": "utf32",
+                            "2": 175,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_sinhala_ci",
+                            "1": "utf32",
+                            "2": 179,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_slovak_ci",
+                            "1": "utf32",
+                            "2": 173,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_slovenian_ci",
+                            "1": "utf32",
+                            "2": 164,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_spanish2_ci",
+                            "1": "utf32",
+                            "2": 174,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_spanish_ci",
+                            "1": "utf32",
+                            "2": 167,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_swedish_ci",
+                            "1": "utf32",
+                            "2": 168,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_turkish_ci",
+                            "1": "utf32",
+                            "2": 169,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_unicode_520_ci",
+                            "1": "utf32",
+                            "2": 182,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_unicode_ci",
+                            "1": "utf32",
+                            "2": 160,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf32_vietnamese_ci",
+                            "1": "utf32",
+                            "2": 183,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_bin",
+                            "1": "utf8mb3",
+                            "2": 83,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_croatian_ci",
+                            "1": "utf8mb3",
+                            "2": 213,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_czech_ci",
+                            "1": "utf8mb3",
+                            "2": 202,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_danish_ci",
+                            "1": "utf8mb3",
+                            "2": 203,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_esperanto_ci",
+                            "1": "utf8mb3",
+                            "2": 209,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_estonian_ci",
+                            "1": "utf8mb3",
+                            "2": 198,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_general_ci",
+                            "1": "utf8mb3",
+                            "2": 33,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_general_mysql500_ci",
+                            "1": "utf8mb3",
+                            "2": 223,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_german2_ci",
+                            "1": "utf8mb3",
+                            "2": 212,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_hungarian_ci",
+                            "1": "utf8mb3",
+                            "2": 210,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_icelandic_ci",
+                            "1": "utf8mb3",
+                            "2": 193,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_latvian_ci",
+                            "1": "utf8mb3",
+                            "2": 194,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_lithuanian_ci",
+                            "1": "utf8mb3",
+                            "2": 204,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_persian_ci",
+                            "1": "utf8mb3",
+                            "2": 208,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_polish_ci",
+                            "1": "utf8mb3",
+                            "2": 197,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_romanian_ci",
+                            "1": "utf8mb3",
+                            "2": 195,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_roman_ci",
+                            "1": "utf8mb3",
+                            "2": 207,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_sinhala_ci",
+                            "1": "utf8mb3",
+                            "2": 211,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_slovak_ci",
+                            "1": "utf8mb3",
+                            "2": 205,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_slovenian_ci",
+                            "1": "utf8mb3",
+                            "2": 196,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_spanish2_ci",
+                            "1": "utf8mb3",
+                            "2": 206,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_spanish_ci",
+                            "1": "utf8mb3",
+                            "2": 199,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_swedish_ci",
+                            "1": "utf8mb3",
+                            "2": 200,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_tolower_ci",
+                            "1": "utf8mb3",
+                            "2": 76,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_turkish_ci",
+                            "1": "utf8mb3",
+                            "2": 201,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_unicode_520_ci",
+                            "1": "utf8mb3",
+                            "2": 214,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_unicode_ci",
+                            "1": "utf8mb3",
+                            "2": 192,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb3_vietnamese_ci",
+                            "1": "utf8mb3",
+                            "2": 215,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 255,
+                            "3": "Yes",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_0900_as_ci",
+                            "1": "utf8mb4",
+                            "2": 305,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 278,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_0900_bin",
+                            "1": "utf8mb4",
+                            "2": 309,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_bg_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 318,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_bg_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 319,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_bin",
+                            "1": "utf8mb4",
+                            "2": 46,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_bs_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 316,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_bs_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 317,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_croatian_ci",
+                            "1": "utf8mb4",
+                            "2": 245,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_cs_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 266,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_cs_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 289,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_czech_ci",
+                            "1": "utf8mb4",
+                            "2": 234,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_danish_ci",
+                            "1": "utf8mb4",
+                            "2": 235,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_da_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 267,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_da_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 290,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_de_pb_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 256,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_de_pb_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 279,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_eo_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 273,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_eo_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 296,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_esperanto_ci",
+                            "1": "utf8mb4",
+                            "2": 241,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_estonian_ci",
+                            "1": "utf8mb4",
+                            "2": 230,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_es_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 263,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_es_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 286,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_es_trad_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 270,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_es_trad_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 293,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_et_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 262,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_et_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 285,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_general_ci",
+                            "1": "utf8mb4",
+                            "2": 45,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 1,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_german2_ci",
+                            "1": "utf8mb4",
+                            "2": 244,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_gl_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 320,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_gl_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 321,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_hr_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 275,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_hr_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 298,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_hungarian_ci",
+                            "1": "utf8mb4",
+                            "2": 242,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_hu_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 274,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_hu_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 297,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_icelandic_ci",
+                            "1": "utf8mb4",
+                            "2": 225,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_is_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 257,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_is_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 280,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_ja_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 303,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_ja_0900_as_cs_ks",
+                            "1": "utf8mb4",
+                            "2": 304,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 24,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_latvian_ci",
+                            "1": "utf8mb4",
+                            "2": 226,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_la_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 271,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_la_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 294,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_lithuanian_ci",
+                            "1": "utf8mb4",
+                            "2": 236,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_lt_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 268,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_lt_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 291,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_lv_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 258,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_lv_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 281,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_mn_cyrl_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 322,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_mn_cyrl_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 323,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_nb_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 310,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_nb_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 311,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_nn_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 312,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_nn_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 313,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_persian_ci",
+                            "1": "utf8mb4",
+                            "2": 240,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_pl_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 261,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_pl_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 284,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_polish_ci",
+                            "1": "utf8mb4",
+                            "2": 229,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_romanian_ci",
+                            "1": "utf8mb4",
+                            "2": 227,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_roman_ci",
+                            "1": "utf8mb4",
+                            "2": 239,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_ro_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 259,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_ro_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 282,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_ru_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 306,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_ru_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 307,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_sinhala_ci",
+                            "1": "utf8mb4",
+                            "2": 243,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_sk_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 269,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_sk_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 292,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_slovak_ci",
+                            "1": "utf8mb4",
+                            "2": 237,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_slovenian_ci",
+                            "1": "utf8mb4",
+                            "2": 228,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_sl_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 260,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_sl_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 283,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_spanish2_ci",
+                            "1": "utf8mb4",
+                            "2": 238,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_spanish_ci",
+                            "1": "utf8mb4",
+                            "2": 231,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_sr_latn_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 314,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_sr_latn_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 315,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_sv_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 264,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_sv_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 287,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_swedish_ci",
+                            "1": "utf8mb4",
+                            "2": 232,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_tr_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 265,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_tr_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 288,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_turkish_ci",
+                            "1": "utf8mb4",
+                            "2": 233,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_unicode_520_ci",
+                            "1": "utf8mb4",
+                            "2": 246,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_unicode_ci",
+                            "1": "utf8mb4",
+                            "2": 224,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_vietnamese_ci",
+                            "1": "utf8mb4",
+                            "2": 247,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 8,
+                            "6": "PAD SPACE"
+                        },
+                        {
+                            "0": "utf8mb4_vi_0900_ai_ci",
+                            "1": "utf8mb4",
+                            "2": 277,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_vi_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 300,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        },
+                        {
+                            "0": "utf8mb4_zh_0900_as_cs",
+                            "1": "utf8mb4",
+                            "2": 308,
+                            "3": "",
+                            "4": "Yes",
+                            "5": 0,
+                            "6": "NO PAD"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Collation",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Charset",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Id",
+                            "field": "2",
+                            "dataType": {
+                                "type": 5,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 20,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INT8",
+                                    "SERIAL"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Default",
+                            "field": "3",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Compiled",
+                            "field": "4",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Sortlen",
+                            "field": "5",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Pad_attribute",
+                            "field": "6",
+                            "dataType": {
+                                "type": 43,
+                                "needsQuotes": true
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 286 records retrieved in 9.791ms"
+                    },
+                    "totalRowCount": 286,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 查看支持的校对\nSHOW COLLATION",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 12,
+                "end": 14,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "d49e88d5-b029-4db9-c5f3-5a5791d8d84d",
+                        "7c1c6801-b9e9-4a6a-caca-4fca197ff19a"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 2,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 49
+                        },
+                        "contentStart": 15,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 49,
+                            "length": 35
+                        },
+                        "contentStart": 50,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "ac5c98cc-3839-4143-fbc8-83209b5768c2",
+                    "resultId": "d49e88d5-b029-4db9-c5f3-5a5791d8d84d",
+                    "rows": [
+                        {
+                            "0": "character_set_client",
+                            "1": "utf8mb4"
+                        },
+                        {
+                            "0": "character_set_connection",
+                            "1": "utf8mb4"
+                        },
+                        {
+                            "0": "character_set_database",
+                            "1": "utf8mb4"
+                        },
+                        {
+                            "0": "character_set_filesystem",
+                            "1": "binary"
+                        },
+                        {
+                            "0": "character_set_results",
+                            "1": "utf8mb4"
+                        },
+                        {
+                            "0": "character_set_server",
+                            "1": "utf8mb4"
+                        },
+                        {
+                            "0": "character_set_system",
+                            "1": "utf8mb3"
+                        },
+                        {
+                            "0": "character_sets_dir",
+                            "1": "C:\\Program Files\\MySQL\\MySQL Server 8.4\\share\\charsets\\"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Variable_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Value",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 8 records retrieved in 29.169ms"
+                    },
+                    "totalRowCount": 8,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 确定所用的字符集和校对\nSHOW VARIABLES LIKE '%character%'",
+                    "updatable": false
+                },
+                {
+                    "tabId": "ac5c98cc-3839-4143-fbc8-83209b5768c2",
+                    "resultId": "7c1c6801-b9e9-4a6a-caca-4fca197ff19a",
+                    "rows": [
+                        {
+                            "0": "collation_connection",
+                            "1": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "collation_database",
+                            "1": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "collation_server",
+                            "1": "utf8mb4_0900_ai_ci"
+                        },
+                        {
+                            "0": "default_collation_for_utf8mb4",
+                            "1": "utf8mb4_0900_ai_ci"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Variable_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Value",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 4 records retrieved in 3.598ms"
+                    },
+                    "totalRowCount": 4,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 1,
+                    "sql": "\nSHOW VARIABLES LIKE '%collation%'",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 15,
+                "end": 22,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "149885c8-ae3e-4b2c-99ce-22d356f4c56a",
+                            "content": "OK, 0 records retrieved in 117.428ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 154
+                        },
+                        "contentStart": 40,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 23,
+                "end": 30,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "cd97faca-25bc-4381-aa9d-858803b75fe7",
+                            "content": "OK, 0 records retrieved in 24.58ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 204
+                        },
+                        "contentStart": 19,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 31,
+                "end": 34,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "ff1b1724-3454-40c6-c557-2adbbce0d8be"
+                    ]
+                },
+                "currentHeight": 351.984375,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 113
+                        },
+                        "contentStart": 41,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "ac5c98cc-3839-4143-fbc8-83209b5768c2",
+                    "resultId": "ff1b1724-3454-40c6-c557-2adbbce0d8be",
+                    "rows": [
+                        {
+                            "0": 10001,
+                            "1": "Coyote Inc.",
+                            "2": "200 Maple Lane",
+                            "3": "Detroit",
+                            "4": "MI",
+                            "5": "44444",
+                            "6": "USA",
+                            "7": "Y Lee",
+                            "8": "ylee@coyote.com"
+                        },
+                        {
+                            "0": 10005,
+                            "1": "Funds",
+                            "2": "4545 53rd Street",
+                            "3": "Chicago",
+                            "4": "IL",
+                            "5": "54545",
+                            "6": "USA",
+                            "7": "E Fudd",
+                            "8": null
+                        },
+                        {
+                            "0": 10009,
+                            "1": "Mar",
+                            "2": "42 Way",
+                            "3": "New York",
+                            "4": "NY",
+                            "5": "11213",
+                            "6": "USA",
+                            "7": null,
+                            "8": null
+                        },
+                        {
+                            "0": 10011,
+                            "1": "Mar",
+                            "2": "42 Way",
+                            "3": "New York",
+                            "4": "NY",
+                            "5": "11213",
+                            "6": "USA",
+                            "7": null,
+                            "8": null
+                        },
+                        {
+                            "0": 10002,
+                            "1": "Mouse House",
+                            "2": "333 Fromage Lane",
+                            "3": "Columbus",
+                            "4": "OH",
+                            "5": "43333",
+                            "6": "USA",
+                            "7": "Jerry Mouse",
+                            "8": null
+                        },
+                        {
+                            "0": 10007,
+                            "1": "Pep",
+                            "2": "100 Street",
+                            "3": "Los Angeles",
+                            "4": "CA",
+                            "5": "90046",
+                            "6": "USA",
+                            "7": null,
+                            "8": null
+                        },
+                        {
+                            "0": 10008,
+                            "1": "Pep",
+                            "2": "100 Street",
+                            "3": "Los Angeles",
+                            "4": "CA",
+                            "5": "90046",
+                            "6": "USA",
+                            "7": null,
+                            "8": null
+                        },
+                        {
+                            "0": 10010,
+                            "1": "Pep",
+                            "2": "100 Street",
+                            "3": "Los Angeles",
+                            "4": "CA",
+                            "5": "90046",
+                            "6": "USA",
+                            "7": null,
+                            "8": null
+                        },
+                        {
+                            "0": 10003,
+                            "1": "Wascals",
+                            "2": "1 Sunny Place",
+                            "3": "Muncie",
+                            "4": "IN",
+                            "5": "42222",
+                            "6": "USA",
+                            "7": "Jim Jones",
+                            "8": "rabbit@wascally.com"
+                        },
+                        {
+                            "0": 10004,
+                            "1": "Yosemite Place",
+                            "2": "829 Riverside Drive",
+                            "3": "Phoenix",
+                            "4": "AZ",
+                            "5": "88888",
+                            "6": "USA",
+                            "7": "Y Sam",
+                            "8": "sam@yosemite.com"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": true,
+                            "nullable": false,
+                            "autoIncrement": true
+                        },
+                        {
+                            "title": "cust_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_address",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": null
+                        },
+                        {
+                            "title": "cust_city",
+                            "field": "3",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": null
+                        },
+                        {
+                            "title": "cust_state",
+                            "field": "4",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": null
+                        },
+                        {
+                            "title": "cust_zip",
+                            "field": "5",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": null
+                        },
+                        {
+                            "title": "cust_country",
+                            "field": "6",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": null
+                        },
+                        {
+                            "title": "cust_contact",
+                            "field": "7",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": null
+                        },
+                        {
+                            "title": "cust_email",
+                            "field": "8",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": null
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 10 records retrieved in 5.317ms"
+                    },
+                    "totalRowCount": 10,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 还可以改变ORDER BY的排序方式(校对顺序)\nSELECT * FROM customers\nORDER BY cust_name\n    COLLATE utf8mb4_0900_bin",
+                    "updatable": true,
+                    "fullTableName": "customers"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 35,
+                "end": 35,
+                "language": "mysql",
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 0
+                        },
+                        "contentStart": 0,
+                        "state": 0
                     }
                 ]
             },
