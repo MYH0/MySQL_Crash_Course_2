@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C23 使用存储过程",
+    "content": "\\about\n#C23 使用存储过程\n#23.1 存储过程\n-- 存储过程可视为函数\n#23.2 为什么要使用存储过程\n-- 简化操作,安全,高性能\n#23.3 使用存储过程\n##23.3.1 执行(调用)\n-- 代码还不能执行,只作为示范\n-- productpricing为存储过程的名字,后面的是参数\nCALL productpricing(@pricelow,@pricehigh,@priceaverage);\n##23.3.2 创建存储过程\n-- 不能反复创建,如果事先存在,要先删除\n-- DELIMITER // 表示用//代替分号;作为语句结束的分隔符,\n-- 当然,在执行完语句后,把分号;的作用改回来,也就是说DILIMITER ;\n\nDELIMITER //\nCREATE PROCEDURE productpricing()\nBEGIN\n    SELECT AVG(prod_price) AS priceaverage\n    FROM products;\nEND//\n\nDELIMITER ;\n-- 现在来使用这个存储过程\nCALL productpricing();\n##23.3.3 DELIMITER\n##23.3.4 删除存储过程\n-- 注意函数名后不加括号!!\nDROP PROCEDURE productpricing;\n-- 如果指定删除的函数不存在,可以使用IF EXISTS\nDROP PROCEDURE IF EXISTS productpricing;\n##23.3.5 使用参数\n-- IN:传递给存储过程\n-- OUT:传出给用户\n-- INOUT:两者兼备\nDELIMITER //\nCREATE PROCEDURE productpricing\n(\n    OUT pl DECIMAL(8,2),\n    OUT ph DECIMAL(8,2),\n    OUT pa DECIMAL(8,2)\n)\nBEGIN\n    SELECT MIN(prod_price)\n    INTO pl\n    FROM products;\n    SELECT MAX(prod_price)\n    INTO ph\n    FROM products;\n    SELECT AVG(prod_price)\n    INTO pa\n    FROM products;\nEND//\nDELIMITER ;\n-- 现在调用\nCALL productpricing(@pricelow,@pricehigh,@priceaverage);\n-- 检索这3个值\nSELECT @pricelow,@pricehigh,@priceaverage;\n-- 这次使用IN和OUT参数,ordertotal接受订单号,并返回订单总额\nDELIMITER //\nCREATE PROCEDURE ordertotal\n(\n    IN onum INT,\n    OUT ototal DECIMAL(8,2)\n)\nBEGIN\n    SELECT SUM(quantity*item_price)\n    FROM orderitems\n    WHERE order_num=onum\n    INTO ototal;\nEND//\nDELIMITER ;\nCALL ordertotal(20005,@total);\nSELECT @total;\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 2,
-                    "column": 12
+                    "lineNumber": 76,
+                    "column": 1
                 },
                 "position": {
-                    "lineNumber": 2,
-                    "column": 12
+                    "lineNumber": 76,
+                    "column": 1
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 1,
+                "lineNumber": 55,
                 "column": 1
             },
-            "firstPositionDeltaTop": 0
+            "firstPositionDeltaTop": -14
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -53,7 +53,7 @@
                         }
                     ]
                 },
-                "currentHeight": 151.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -72,7 +72,723 @@
         {
             "state": {
                 "start": 2,
-                "end": 2,
+                "end": 4,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "3ed86fd1-73ef-428b-d52b-65bec229318e",
+                            "content": "OK, 0 records retrieved in 1.737ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 35
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 5,
+                "end": 6,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "c98fec65-7baf-4b3e-f450-d7a61c2af441",
+                            "content": "OK, 0 records retrieved in 0.947ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 31
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 7,
+                "end": 11,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 0,
+                            "index": 0,
+                            "content": "MySQL Error (1305): PROCEDURE crashcourse.productpricing does not exist",
+                            "language": "ansi"
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": ""
+                    }
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 135
+                        },
+                        "contentStart": 79,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 12,
+                "end": 24,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "959b4bb0-a50e-4833-9c05-a3b49aa8da12",
+                            "content": "OK, 0 records retrieved in 0.756ms"
+                        },
+                        {
+                            "type": 2,
+                            "index": 2,
+                            "resultId": "0f5b59df-5420-4167-a45b-03a008948afa",
+                            "content": "OK, 0 records retrieved in 24.609ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 118
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    },
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 118,
+                            "length": 12
+                        },
+                        "contentStart": 118,
+                        "state": 4
+                    },
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 130,
+                            "length": 108
+                        },
+                        "contentStart": 131,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 238,
+                            "length": 13
+                        },
+                        "contentStart": 240,
+                        "state": 4
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 25,
+                "end": 26,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "984eba65-491b-46b8-b7f9-4448bb0d962a",
+                        "4b62bfe7-9252-41fc-fb61-8cbf499a2ab2"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 37
+                        },
+                        "contentStart": 15,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "984eba65-491b-46b8-b7f9-4448bb0d962a",
+                    "rows": [
+                        {
+                            "0": "16.133571"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "priceaverage",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 19.422ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "subIndex": 0,
+                    "sql": "-- 现在来使用这个存储过程\nCALL productpricing()",
+                    "updatable": false
+                },
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "4b62bfe7-9252-41fc-fb61-8cbf499a2ab2",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 0 records retrieved in 19.422ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "subIndex": 1,
+                    "sql": "-- 现在来使用这个存储过程\nCALL productpricing()",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 27,
+                "end": 27,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "f277463f-f22b-47b3-8507-1f3bbb9f32c0",
+                            "content": "OK, 0 records retrieved in 0.822ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 18
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 28,
+                "end": 30,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "47fa0fd8-cdf6-454f-ee8d-27176be021f0",
+                            "content": "OK, 0 records retrieved in 38.363ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 62
+                        },
+                        "contentStart": 33,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 31,
+                "end": 32,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "75b681f1-1455-402c-dbdb-4f0f620ee6a0",
+                            "content": "OK, 0 records retrieved in 2.726ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 70
+                        },
+                        "contentStart": 31,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 33,
+                "end": 55,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "e6261f2c-2d02-4b06-fe59-c31945f7059b",
+                            "content": "OK, 0 records retrieved in 1.466ms"
+                        },
+                        {
+                            "type": 2,
+                            "index": 2,
+                            "resultId": "2d24f635-a736-4cd4-b76c-34b30020c727",
+                            "content": "OK, 0 records retrieved in 6.375ms"
+                        }
+                    ]
+                },
+                "currentHeight": 55.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 55
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    },
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 55,
+                            "length": 12
+                        },
+                        "contentStart": 55,
+                        "state": 4
+                    },
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 67,
+                            "length": 296
+                        },
+                        "contentStart": 68,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 363,
+                            "length": 12
+                        },
+                        "contentStart": 364,
+                        "state": 4
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 56,
+                "end": 57,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "34a4cc49-1457-40c6-c078-54d78110be63",
+                            "content": "OK, 1 row affected in 6.116ms",
+                            "subIndex": 0
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 64
+                        },
+                        "contentStart": 8,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 58,
+                "end": 59,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "4b526f32-1d96-4437-a75b-669f53c83bb9"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 52
+                        },
+                        "contentStart": 10,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "4b526f32-1d96-4437-a75b-669f53c83bb9",
+                    "rows": [
+                        {
+                            "0": "2.50",
+                            "1": "55.00",
+                            "2": "16.13"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "@pricelow",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "@pricehigh",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "@priceaverage",
+                            "field": "2",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 1.4ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- 检索这3个值\nSELECT @pricelow,@pricehigh,@priceaverage",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 60,
+                "end": 73,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 1,
+                            "resultId": "dc4c4c0c-f804-42a5-e452-4e2a76f295a9",
+                            "content": "OK, 0 records retrieved in 11.286ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 0,
+                            "length": 52
+                        },
+                        "contentStart": 40,
+                        "state": 4
+                    },
+                    {
+                        "delimiter": "//",
+                        "span": {
+                            "start": 52,
+                            "length": 187
+                        },
+                        "contentStart": 53,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 239,
+                            "length": 12
+                        },
+                        "contentStart": 240,
+                        "state": 4
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 74,
+                "end": 74,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "4b85d405-0494-41f2-e860-ccd2bdf7ff7b",
+                            "content": "OK, 1 row affected in 6.909ms",
+                            "subIndex": 0
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 30
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 75,
+                "end": 75,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "241d1aea-975a-47e0-85da-0b176adb11ce"
+                    ]
+                },
+                "currentHeight": 102.203125,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 14
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
+                    "resultId": "241d1aea-975a-47e0-85da-0b176adb11ce",
+                    "rows": [
+                        {
+                            "0": "149.87"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "@total",
+                            "field": "0",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 0.856ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT @total",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 76,
+                "end": 76,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
@@ -80,10 +796,10 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 11
+                            "length": 0
                         },
                         "contentStart": 0,
-                        "state": 1
+                        "state": 0
                     }
                 ]
             },
