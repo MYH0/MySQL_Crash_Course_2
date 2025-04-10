@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C23 使用存储过程\n#23.1 存储过程\n-- 存储过程可视为函数\n#23.2 为什么要使用存储过程\n-- 简化操作,安全,高性能\n#23.3 使用存储过程\n##23.3.1 执行(调用)\n-- 代码还不能执行,只作为示范\n-- productpricing为存储过程的名字,后面的是参数\nCALL productpricing(@pricelow,@pricehigh,@priceaverage);\n##23.3.2 创建存储过程\n-- 不能反复创建,如果事先存在,要先删除\n-- DELIMITER // 表示用//代替分号;作为语句结束的分隔符,\n-- 当然,在执行完语句后,把分号;的作用改回来,也就是说DILIMITER ;\n\nDELIMITER //\nCREATE PROCEDURE productpricing()\nBEGIN\n    SELECT AVG(prod_price) AS priceaverage\n    FROM products;\nEND//\n\nDELIMITER ;\n-- 现在来使用这个存储过程\nCALL productpricing();\n##23.3.3 DELIMITER\n##23.3.4 删除存储过程\n-- 注意函数名后不加括号!!\nDROP PROCEDURE productpricing;\n-- 如果指定删除的函数不存在,可以使用IF EXISTS\nDROP PROCEDURE IF EXISTS productpricing;\n##23.3.5 使用参数\n-- 不能通过一个参数返回多行或多列\n-- IN:传递给存储过程\n-- OUT:传出给用户\n-- INOUT:两者兼备\nDELIMITER //\nCREATE PROCEDURE productpricing\n(\n    OUT pl DECIMAL(8,2),\n    OUT ph DECIMAL(8,2),\n    OUT pa DECIMAL(8,2)\n)\nBEGIN\n    SELECT MIN(prod_price)\n    INTO pl\n    FROM products;\n    SELECT MAX(prod_price)\n    INTO ph\n    FROM products;\n    SELECT AVG(prod_price)\n    INTO pa\n    FROM products;\nEND//\nDELIMITER ;\n-- 现在调用\nCALL productpricing(@pricelow,@pricehigh,@priceaverage);\n-- 检索这3个值\nSELECT @pricelow,@pricehigh,@priceaverage;\n-- 这次使用IN和OUT参数,ordertotal接受订单号,并返回订单总额\nDELIMITER //\nCREATE PROCEDURE ordertotal\n(\n    IN onum INT,\n    OUT ototal DECIMAL(8,2)\n)\nBEGIN\n    SELECT SUM(quantity*item_price)\n    FROM orderitems\n    WHERE order_num=onum\n    INTO ototal;\nEND//\nDELIMITER ;\nCALL ordertotal(20005,@total);\nSELECT @total;\n-- INTO的位置可以调整\nDELIMITER //\nCREATE PROCEDURE productpricing4\n(\n    OUT pa DECIMAL(8,2)\n)\nBEGIN\n    SELECT AVG(prod_price)\n    FROM products\n    INTO pa;\nEND//\nDELIMITER ;\nCALL productpricing4(@pavg);\nSELECT @pavg;\n##23.3.6 有控制条件IF的存储过程\n-- DECLARE 定义局部变量\n-- IF XXX THEN XXXX;\n-- END IF;\n-- 这次我们加入营业额是否有关税的判定\n-- COMMENT不是必须得,它的值的值会在SHOW PROCEDURE STATUS的结果中显示\nDELIMITER //\nCREATE PROCEDURE ordertotal2\n(\n    IN onum INT,\n    IN tax_able BOOLEAN,\n    OUT ototal DECIMAL(8,2)\n)COMMENT ' Obtain order total,optionally adding tax'\nBEGIN\n    DECLARE total DECIMAL(8,2);\n    DECLARE tax_rate INT DEFAULT 5;\n    -- 获得总额\n    SELECT SUM(quantity*item_price)\n    FROM orderitems\n    WHERE order_num=onum\n    INTO total;\n    -- 计算是否收税\n    IF tax_able THEN\n        SELECT total*(1-tax_rate/100) INTO total;\n    END IF;\n    -- 最后，输出\n    SELECT total INTO ototal;\nEND//\nDELIMITER ;\nCALL ordertotal2(20005,0,@total);\nSELECT @total;\nCALL ordertotal2(20005,1,@total);\nSELECT @total;\n##23.3.7 显示创建存储过程的CREATE语句\nSHOW CREATE PROCEDURE ordertotal2;\n-- 如果想知道是何时、由谁创建.这将列出所有的存储过程\nSHOW PROCEDURE STATUS;\n-- 如果只想知道一部分,可以用LIKE过滤\nSHOW PROCEDURE STATUS LIKE 'ordertotal2';\n/*E1!!\n创建一个存储过程，该存储过程接受客户 ID 并返回该客户下的所有订单。\n*/\nDELIMITER //\nCREATE PROCEDURE orderlist\n(\n    IN cid INT\n)\nBEGIN\n    SELECT order_num\n    FROM orders\n    WHERE cust_id=cid;\nEND//\nDELIMITER ;\n/*E2\n不同地点的税率不同。ordertotal存储过程将税率硬编码为6%。更新该存储过程，以便它接受要使用的税率（如果需要）。这里有一个提示：你实际上不需要另一个参数，你可以替换taxable标志来接受税率，其中0表示没有税\n*/\nDELIMITER //\nCREATE PROCEDURE ordertotal3\n(\n    IN onum INT,\n    IN tax_rate INT,\n    OUT ototal DECIMAL(8,2)\n)COMMENT ' Obtain order total,optionally adding tax'\nBEGIN\n    DECLARE total DECIMAL(8,2);\n    -- 获得总额\n    SELECT SUM(quantity*item_price)\n    FROM orderitems\n    WHERE order_num=onum\n    INTO total;\n    -- 计算税后\n    SELECT total*(1-tax_rate/100) INTO total;\n    -- 最后，输出\n    SELECT total INTO ototal;\nEND //\nDELIMITER ;\n",
+    "content": "\\about\n#C23 使用存储过程\n#23.1 存储过程\n-- 存储过程可视为函数\n#23.2 为什么要使用存储过程\n-- 简化操作,安全,高性能\n\n-- 存储过程执行速度比逐个执行MySQL语句要快\n#23.3 使用存储过程\n##23.3.1 执行(调用)\n-- 代码还不能执行,只作为示范\n-- productpricing为存储过程的名字,后面的是参数\nCALL productpricing(@pricelow,@pricehigh,@priceaverage);\n##23.3.2 创建存储过程\n-- 不能反复创建,如果事先存在,要先删除\n-- DELIMITER // 表示用//代替分号;作为语句结束的分隔符,\n-- 当然,在执行完语句后,把分号;的作用改回来,也就是说DILIMITER ;\n\nDELIMITER //\nCREATE PROCEDURE productpricing()\nBEGIN\n    SELECT AVG(prod_price) AS priceaverage\n    FROM products;\nEND//\n\nDELIMITER ;\n-- 现在来使用这个存储过程\nCALL productpricing();\n##23.3.3 DELIMITER\n##23.3.4 删除存储过程\n-- 注意函数名后不加括号!!\nDROP PROCEDURE productpricing;\n-- 如果指定删除的函数不存在,可以使用IF EXISTS\nDROP PROCEDURE IF EXISTS productpricing;\n##23.3.5 使用参数\n-- 不能通过一个参数返回多行或多列\n-- IN:传递给存储过程\n-- OUT:传出给用户\n-- INOUT:两者兼备\nDELIMITER //\nCREATE PROCEDURE productpricing\n(\n    OUT pl DECIMAL(8,2),\n    OUT ph DECIMAL(8,2),\n    OUT pa DECIMAL(8,2)\n)\nBEGIN\n    SELECT MIN(prod_price)\n    INTO pl\n    FROM products;\n    SELECT MAX(prod_price)\n    INTO ph\n    FROM products;\n    SELECT AVG(prod_price)\n    INTO pa\n    FROM products;\nEND//\nDELIMITER ;\n-- 现在调用\nCALL productpricing(@pricelow,@pricehigh,@priceaverage);\n-- 检索这3个值\nSELECT @pricelow,@pricehigh,@priceaverage;\n-- 这次使用IN和OUT参数,ordertotal接受订单号,并返回订单总额\nDELIMITER //\nCREATE PROCEDURE ordertotal\n(\n    IN onum INT,\n    OUT ototal DECIMAL(8,2)\n)\nBEGIN\n    SELECT SUM(quantity*item_price)\n    FROM orderitems\n    WHERE order_num=onum\n    INTO ototal;\nEND//\nDELIMITER ;\nCALL ordertotal(20005,@total);\nSELECT @total;\n-- INTO的位置可以调整\nDELIMITER //\nCREATE PROCEDURE productpricing4\n(\n    OUT pa DECIMAL(8,2)\n)\nBEGIN\n    SELECT AVG(prod_price)\n    FROM products\n    INTO pa;\nEND//\nDELIMITER ;\nCALL productpricing4(@pavg);\nSELECT @pavg;\n##23.3.6 有控制条件IF的存储过程\n-- DECLARE 定义局部变量\n-- IF XXX THEN XXXX;\n-- END IF;\n-- 这次我们加入营业额是否有关税的判定\n-- COMMENT不是必须得,它的值的值会在SHOW PROCEDURE STATUS的结果中显示\nDELIMITER //\nCREATE PROCEDURE ordertotal2\n(\n    IN onum INT,\n    IN tax_able BOOLEAN,\n    OUT ototal DECIMAL(8,2)\n)COMMENT ' Obtain order total,optionally adding tax'\nBEGIN\n    DECLARE total DECIMAL(8,2);\n    DECLARE tax_rate INT DEFAULT 5;\n    -- 获得总额\n    SELECT SUM(quantity*item_price)\n    FROM orderitems\n    WHERE order_num=onum\n    INTO total;\n    -- 计算是否收税\n    IF tax_able THEN\n        SELECT total*(1-tax_rate/100) INTO total;\n    END IF;\n    -- 最后，输出\n    SELECT total INTO ototal;\nEND//\nDELIMITER ;\nCALL ordertotal2(20005,0,@total);\nSELECT @total;\nCALL ordertotal2(20005,1,@total);\nSELECT @total;\n##23.3.7 显示创建存储过程的CREATE语句\nSHOW CREATE PROCEDURE ordertotal2;\n-- 如果想知道是何时、由谁创建.这将列出所有的存储过程\nSHOW PROCEDURE STATUS;\n-- 如果只想知道一部分,可以用LIKE过滤\nSHOW PROCEDURE STATUS LIKE 'ordertotal2';\n/*E1!!\n创建一个存储过程，该存储过程接受客户 ID 并返回该客户下的所有订单。\n*/\nDELIMITER //\nCREATE PROCEDURE orderlist\n(\n    IN cid INT\n)\nBEGIN\n    SELECT order_num\n    FROM orders\n    WHERE cust_id=cid;\nEND//\nDELIMITER ;\n/*E2\n不同地点的税率不同。ordertotal存储过程将税率硬编码为6%。更新该存储过程，以便它接受要使用的税率（如果需要）。这里有一个提示：你实际上不需要另一个参数，你可以替换taxable标志来接受税率，其中0表示没有税\n*/\nDELIMITER //\nCREATE PROCEDURE ordertotal3\n(\n    IN onum INT,\n    IN tax_rate INT,\n    OUT ototal DECIMAL(8,2)\n)COMMENT ' Obtain order total,optionally adding tax'\nBEGIN\n    DECLARE total DECIMAL(8,2);\n    -- 获得总额\n    SELECT SUM(quantity*item_price)\n    FROM orderitems\n    WHERE order_num=onum\n    INTO total;\n    -- 计算税后\n    SELECT total*(1-tax_rate/100) INTO total;\n    -- 最后，输出\n    SELECT total INTO ototal;\nEND //\nDELIMITER ;\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 150,
-                    "column": 17
+                    "lineNumber": 8,
+                    "column": 26
                 },
                 "position": {
-                    "lineNumber": 150,
-                    "column": 17
+                    "lineNumber": 8,
+                    "column": 26
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 135,
+                "lineNumber": 1,
                 "column": 1
             },
-            "firstPositionDeltaTop": -12
+            "firstPositionDeltaTop": 0
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -53,7 +53,7 @@
                         }
                     ]
                 },
-                "currentHeight": 28,
+                "currentHeight": 151.96875,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -85,7 +85,7 @@
                         }
                     ]
                 },
-                "currentHeight": 28,
+                "currentHeight": 31.96875,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -104,7 +104,7 @@
         {
             "state": {
                 "start": 5,
-                "end": 6,
+                "end": 8,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -112,19 +112,19 @@
                         {
                             "type": 2,
                             "index": 0,
-                            "resultId": "c98fec65-7baf-4b3e-f450-d7a61c2af441",
-                            "content": "OK, 0 records retrieved in 0.947ms"
+                            "resultId": "01891e6d-082c-4889-f984-30251bc73acb",
+                            "content": "OK, 0 records retrieved in 12.34ms"
                         }
                     ]
                 },
-                "currentHeight": 28,
+                "currentHeight": 31.96875,
                 "currentSet": 1,
                 "statements": [
                     {
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 31
+                            "length": 58
                         },
                         "contentStart": 0,
                         "state": 1
@@ -135,8 +135,8 @@
         },
         {
             "state": {
-                "start": 7,
-                "end": 11,
+                "start": 9,
+                "end": 13,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -152,7 +152,7 @@
                         "text": ""
                     }
                 },
-                "currentHeight": 28,
+                "currentHeight": 31.96875,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -170,8 +170,8 @@
         },
         {
             "state": {
-                "start": 12,
-                "end": 24,
+                "start": 14,
+                "end": 26,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -235,14 +235,13 @@
         },
         {
             "state": {
-                "start": 25,
-                "end": 26,
+                "start": 27,
+                "end": 28,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "984eba65-491b-46b8-b7f9-4448bb0d962a",
-                        "4b62bfe7-9252-41fc-fb61-8cbf499a2ab2"
+                        "2f176856-14d4-4b29-b3df-1992c49bd365"
                     ]
                 },
                 "currentHeight": 36,
@@ -261,8 +260,8 @@
             },
             "data": [
                 {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "984eba65-491b-46b8-b7f9-4448bb0d962a",
+                    "tabId": "242a8e45-e2dd-472f-f6e6-74454dedd105",
+                    "resultId": "2f176856-14d4-4b29-b3df-1992c49bd365",
                     "rows": [
                         {
                             "0": "16.133571"
@@ -302,28 +301,13 @@
                     "subIndex": 0,
                     "sql": "-- 现在来使用这个存储过程\nCALL productpricing()",
                     "updatable": false
-                },
-                {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "4b62bfe7-9252-41fc-fb61-8cbf499a2ab2",
-                    "rows": [],
-                    "executionInfo": {
-                        "text": "OK, 0 records retrieved in 19.422ms"
-                    },
-                    "totalRowCount": 0,
-                    "hasMoreRows": false,
-                    "currentPage": 0,
-                    "index": 0,
-                    "subIndex": 1,
-                    "sql": "-- 现在来使用这个存储过程\nCALL productpricing()",
-                    "updatable": false
                 }
             ]
         },
         {
             "state": {
-                "start": 27,
-                "end": 27,
+                "start": 29,
+                "end": 29,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -354,8 +338,8 @@
         },
         {
             "state": {
-                "start": 28,
-                "end": 30,
+                "start": 30,
+                "end": 32,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -386,8 +370,8 @@
         },
         {
             "state": {
-                "start": 31,
-                "end": 32,
+                "start": 33,
+                "end": 34,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -418,8 +402,8 @@
         },
         {
             "state": {
-                "start": 33,
-                "end": 56,
+                "start": 35,
+                "end": 58,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -483,8 +467,8 @@
         },
         {
             "state": {
-                "start": 57,
-                "end": 58,
+                "start": 59,
+                "end": 60,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -516,13 +500,13 @@
         },
         {
             "state": {
-                "start": 59,
-                "end": 60,
+                "start": 61,
+                "end": 62,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "4b526f32-1d96-4437-a75b-669f53c83bb9"
+                        "2f241020-2c3f-4897-f5e5-db42e95cb0b4"
                     ]
                 },
                 "currentHeight": 36,
@@ -541,8 +525,8 @@
             },
             "data": [
                 {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "4b526f32-1d96-4437-a75b-669f53c83bb9",
+                    "tabId": "242a8e45-e2dd-472f-f6e6-74454dedd105",
+                    "resultId": "2f241020-2c3f-4897-f5e5-db42e95cb0b4",
                     "rows": [
                         {
                             "0": "2.50",
@@ -633,8 +617,8 @@
         },
         {
             "state": {
-                "start": 61,
-                "end": 74,
+                "start": 63,
+                "end": 76,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -683,8 +667,8 @@
         },
         {
             "state": {
-                "start": 75,
-                "end": 75,
+                "start": 77,
+                "end": 77,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -716,13 +700,13 @@
         },
         {
             "state": {
-                "start": 76,
-                "end": 76,
+                "start": 78,
+                "end": 78,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "241d1aea-975a-47e0-85da-0b176adb11ce"
+                        "cda7c6b1-d481-48aa-dff0-d4be350c954c"
                     ]
                 },
                 "currentHeight": 36,
@@ -741,8 +725,8 @@
             },
             "data": [
                 {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "241d1aea-975a-47e0-85da-0b176adb11ce",
+                    "tabId": "242a8e45-e2dd-472f-f6e6-74454dedd105",
+                    "resultId": "cda7c6b1-d481-48aa-dff0-d4be350c954c",
                     "rows": [
                         {
                             "0": "149.87"
@@ -787,15 +771,13 @@
         },
         {
             "state": {
-                "start": 77,
-                "end": 90,
+                "start": 79,
+                "end": 92,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "5c427d93-3b23-473b-ff1f-deef2b1152e5",
-                        "b995c5fe-6588-481f-8b89-ecc423539139",
-                        "c5ebeb8c-58bc-4454-e58a-24e9e77d0c3d"
+                        "c2875c54-b9c7-45c4-e858-5686ff3c2b83"
                     ]
                 },
                 "currentHeight": 36,
@@ -859,8 +841,8 @@
             },
             "data": [
                 {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "5c427d93-3b23-473b-ff1f-deef2b1152e5",
+                    "tabId": "242a8e45-e2dd-472f-f6e6-74454dedd105",
+                    "resultId": "c2875c54-b9c7-45c4-e858-5686ff3c2b83",
                     "rows": [
                         {
                             "0": "16.13"
@@ -900,42 +882,13 @@
                     "sql": "\nSELECT @pavg",
                     "updatable": false,
                     "fullTableName": ""
-                },
-                {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "b995c5fe-6588-481f-8b89-ecc423539139",
-                    "rows": [],
-                    "executionInfo": {
-                        "text": "OK, 0 records retrieved in 8.459ms"
-                    },
-                    "totalRowCount": 0,
-                    "hasMoreRows": false,
-                    "currentPage": 0,
-                    "index": 1,
-                    "sql": "\nCREATE PROCEDURE productpricing4\n(\n    OUT pa DECIMAL(8,2)\n)\nBEGIN\n    SELECT AVG(prod_price)\n    FROM products\n    INTO pa;\nEND",
-                    "updatable": false
-                },
-                {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "c5ebeb8c-58bc-4454-e58a-24e9e77d0c3d",
-                    "rows": [],
-                    "executionInfo": {
-                        "text": "OK, 1 row affected in 2.813ms"
-                    },
-                    "totalRowCount": 0,
-                    "hasMoreRows": false,
-                    "currentPage": 0,
-                    "index": 3,
-                    "subIndex": 0,
-                    "sql": "\nCALL productpricing4(@pavg)",
-                    "updatable": false
                 }
             ]
         },
         {
             "state": {
-                "start": 91,
-                "end": 94,
+                "start": 93,
+                "end": 96,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -966,8 +919,8 @@
         },
         {
             "state": {
-                "start": 95,
-                "end": 119,
+                "start": 97,
+                "end": 121,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -1031,14 +984,13 @@
         },
         {
             "state": {
-                "start": 120,
-                "end": 121,
+                "start": 122,
+                "end": 123,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "227cc936-7810-47fb-dfdc-d1203aebfbb2",
-                        "daa97d4a-1e0d-4303-e97c-1a7876d873b6"
+                        "a6e9067f-d4b7-42d2-d3c9-6382b0c83eca"
                     ]
                 },
                 "currentHeight": 36,
@@ -1066,8 +1018,8 @@
             },
             "data": [
                 {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "227cc936-7810-47fb-dfdc-d1203aebfbb2",
+                    "tabId": "242a8e45-e2dd-472f-f6e6-74454dedd105",
+                    "resultId": "a6e9067f-d4b7-42d2-d3c9-6382b0c83eca",
                     "rows": [
                         {
                             "0": "149.87"
@@ -1107,34 +1059,18 @@
                     "sql": "\nSELECT @total",
                     "updatable": false,
                     "fullTableName": ""
-                },
-                {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "daa97d4a-1e0d-4303-e97c-1a7876d873b6",
-                    "rows": [],
-                    "executionInfo": {
-                        "text": "OK, 1 row affected in 9.03ms"
-                    },
-                    "totalRowCount": 0,
-                    "hasMoreRows": false,
-                    "currentPage": 0,
-                    "index": 0,
-                    "subIndex": 0,
-                    "sql": "CALL ordertotal2(20005,0,@total)",
-                    "updatable": false
                 }
             ]
         },
         {
             "state": {
-                "start": 122,
-                "end": 123,
+                "start": 124,
+                "end": 125,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "e561440c-a33d-42ab-f67d-234bcb7c87f1",
-                        "bac7964c-0bad-49bb-85e2-fb8814b85cb1"
+                        "bf73b3f4-4c08-4d87-c55b-c5b7d84aabcc"
                     ]
                 },
                 "currentHeight": 36,
@@ -1162,8 +1098,8 @@
             },
             "data": [
                 {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "e561440c-a33d-42ab-f67d-234bcb7c87f1",
+                    "tabId": "242a8e45-e2dd-472f-f6e6-74454dedd105",
+                    "resultId": "bf73b3f4-4c08-4d87-c55b-c5b7d84aabcc",
                     "rows": [
                         {
                             "0": "142.38"
@@ -1203,33 +1139,18 @@
                     "sql": "\nSELECT @total",
                     "updatable": false,
                     "fullTableName": ""
-                },
-                {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "bac7964c-0bad-49bb-85e2-fb8814b85cb1",
-                    "rows": [],
-                    "executionInfo": {
-                        "text": "OK, 1 row affected in 1.243ms"
-                    },
-                    "totalRowCount": 0,
-                    "hasMoreRows": false,
-                    "currentPage": 0,
-                    "index": 0,
-                    "subIndex": 0,
-                    "sql": "CALL ordertotal2(20005,1,@total)",
-                    "updatable": false
                 }
             ]
         },
         {
             "state": {
-                "start": 124,
-                "end": 125,
+                "start": 126,
+                "end": 127,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "a5ee3341-31d5-47aa-b388-b77c59e0ddc0"
+                        "92ada0ca-cce8-4fba-9df5-38590461e67b"
                     ]
                 },
                 "currentHeight": 36,
@@ -1248,8 +1169,8 @@
             },
             "data": [
                 {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "a5ee3341-31d5-47aa-b388-b77c59e0ddc0",
+                    "tabId": "242a8e45-e2dd-472f-f6e6-74454dedd105",
+                    "resultId": "92ada0ca-cce8-4fba-9df5-38590461e67b",
                     "rows": [
                         {
                             "0": "ordertotal2",
@@ -1384,13 +1305,13 @@
         },
         {
             "state": {
-                "start": 126,
-                "end": 127,
+                "start": 128,
+                "end": 129,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "716d2a2b-1b98-4c7f-e628-18822d00007e"
+                        "e6d5beb4-4710-4de2-f3a5-e4c528306bfb"
                     ]
                 },
                 "currentHeight": 36,
@@ -1409,8 +1330,8 @@
             },
             "data": [
                 {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "716d2a2b-1b98-4c7f-e628-18822d00007e",
+                    "tabId": "242a8e45-e2dd-472f-f6e6-74454dedd105",
+                    "resultId": "e6d5beb4-4710-4de2-f3a5-e4c528306bfb",
                     "rows": [
                         {
                             "0": "crashcourse",
@@ -2125,13 +2046,13 @@
         },
         {
             "state": {
-                "start": 128,
-                "end": 129,
+                "start": 130,
+                "end": 131,
                 "language": "mysql",
                 "result": {
                     "type": "resultIds",
                     "list": [
-                        "a68abb85-e9a9-46d9-b8a6-c6601736ebdb"
+                        "04d4c3f4-f6dc-4773-e400-3ee1f7f39823"
                     ]
                 },
                 "currentHeight": 122.359375,
@@ -2150,8 +2071,8 @@
             },
             "data": [
                 {
-                    "tabId": "939a226e-3dd0-4328-c5d5-b53890959c42",
-                    "resultId": "a68abb85-e9a9-46d9-b8a6-c6601736ebdb",
+                    "tabId": "242a8e45-e2dd-472f-f6e6-74454dedd105",
+                    "resultId": "04d4c3f4-f6dc-4773-e400-3ee1f7f39823",
                     "rows": [
                         {
                             "0": "crashcourse",
@@ -2376,8 +2297,8 @@
         },
         {
             "state": {
-                "start": 130,
-                "end": 143,
+                "start": 132,
+                "end": 145,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -2390,7 +2311,7 @@
                         }
                     ]
                 },
-                "currentHeight": 31.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -2435,8 +2356,8 @@
         },
         {
             "state": {
-                "start": 144,
-                "end": 166,
+                "start": 146,
+                "end": 168,
                 "language": "mysql",
                 "result": {
                     "type": "text",
@@ -2449,7 +2370,7 @@
                         }
                     ]
                 },
-                "currentHeight": 31.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -2485,8 +2406,8 @@
         },
         {
             "state": {
-                "start": 167,
-                "end": 167,
+                "start": 169,
+                "end": 169,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
