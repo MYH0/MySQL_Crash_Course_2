@@ -2,7 +2,7 @@
     "type": "MySQLNotebook",
     "version": "1.0",
     "caption": "DB Notebook",
-    "content": "\\about\n#C22 视图",
+    "content": "\\about\n#C22 使用视图\n#22.1 视图\n-- 视图是虚拟表，本身不包含任何数据\n-- 视图基本上只可用于检索SELECT,不能更新(UPDATE,INSERT,DELETE)!!即使更新也是更新基表的数据\n-- 视图不能被索引\n-- 创建视图需要足够的权限\n-- 使用视图,这里还没有建立视图，肯定报错\nSELECT cust_name, cust_contact\nFROM prodcust1\nWHERE prod_id = 'TNT2';\n#22.2 视图的使用\n##22.2.1 创建视图,利用视图简化连接\nCREATE VIEW prodcust1 AS\nSELECT cust_name,cust_contact,prod_id\nFROM customers,orders,orderitems\nWHERE customers.cust_id=orders.cust_id\n    AND orderitems.order_num=orders.order_num;\nSELECT cust_name, cust_contact\nFROM prodcust1\nWHERE prod_id = 'TNT2';\n##22.2.2 用视图重新格式化检索出的数据\nCREATE VIEW vendl1 AS\nSELECT CONCAT(RTrim(vend_name),'(',RTrim(vend_country),')') AS vend_title\nFROM vendors\nORDER BY vend_name;\nSELECT *\nFROM vendl1;\n##22.2.3 用视图过滤不想要的数据\nCREATE VIEW custem AS\nSELECT cust_id,cust_name,cust_email\nFROM customers\nWHERE cust_email IS NOT NULL;\nSELECT *\nFROM custem;\n##22.2.4 使用视图与计算字段\nCREATE VIEW oditprice1 AS\nSELECT order_num,prod_id,quantity,item_price,quantity*item_price AS exp_price\nFROM orderitems;\nSELECT *\nFROM oditprice1\nWHERE order_num=20005;\n#22.3 查看创建视图的语句\nSHOW CREATE VIEW vendl;\n#22.4 删除视图\nDROP VIEW prodcust;\n#22.5 更新视图\n-- 先删除,再创建\n-- 或者\n-- CREATE OR REPLACE VIEW XXX\n/*E1\n创建视图,把vendors和products表连接起来\n*/\nCREATE VIEW vendorproducts AS\nSELECT vendors.vend_id,vend_name,vend_city,prod_id,prod_name\nFROM vendors,products\nWHERE vendors.vend_id=products.vend_id;\n/*E2\n创建一个名为CustomersWithOrders的视图，该视图包含Customers中的所有列，但仅包括已下订单的列。提示，您可以JOIN Orders表以仅筛选所需的客户。然后使用SELECT确保您拥有正确的数据。\n*/\nCREATE VIEW customerswithorders AS\nSELECT customers.cust_id,cust_name,cust_address,cust_city,cust_state,cust_zip,cust_country,cust_contact,cust_email\nFROM customers JOIN orders ON customers.cust_id=orders.cust_id;\nSELECT *\nFROM customerswithorders;\n",
     "options": {
         "tabSize": 4,
         "indentSize": 4,
@@ -15,22 +15,22 @@
             {
                 "inSelectionMode": false,
                 "selectionStart": {
-                    "lineNumber": 2,
-                    "column": 8
+                    "lineNumber": 66,
+                    "column": 1
                 },
                 "position": {
-                    "lineNumber": 2,
-                    "column": 8
+                    "lineNumber": 66,
+                    "column": 1
                 }
             }
         ],
         "viewState": {
             "scrollLeft": 0,
             "firstPosition": {
-                "lineNumber": 1,
+                "lineNumber": 47,
                 "column": 1
             },
-            "firstPositionDeltaTop": 0
+            "firstPositionDeltaTop": 30
         },
         "contributionsState": {
             "editor.contrib.folding": {},
@@ -53,7 +53,7 @@
                         }
                     ]
                 },
-                "currentHeight": 151.96875,
+                "currentHeight": 28,
                 "currentSet": 1,
                 "statements": [
                     {
@@ -72,7 +72,1184 @@
         {
             "state": {
                 "start": 2,
-                "end": 2,
+                "end": 7,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "22593678-bff5-4c6e-85e4-74f53953900a",
+                            "content": "OK, 0 records retrieved in 0.815ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 127
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 8,
+                "end": 11,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 0,
+                            "index": 0,
+                            "content": "MySQL Error (1064): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 7",
+                            "language": "ansi"
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": ""
+                    }
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 92
+                        },
+                        "contentStart": 23,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 12,
+                "end": 18,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "2964b0ab-e099-4dae-e363-c40f90d34688",
+                            "content": "OK, 0 records retrieved in 24.945ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 216
+                        },
+                        "contentStart": 35,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 19,
+                "end": 21,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "e8d7a63b-4e54-4867-827d-20743af55cf5"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 69
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "5cdc8c92-d84f-4c66-c6f1-be67002b0798",
+                    "resultId": "e8d7a63b-4e54-4867-827d-20743af55cf5",
+                    "rows": [
+                        {
+                            "0": "Coyote Inc.",
+                            "1": "Y Lee"
+                        },
+                        {
+                            "0": "Yosemite Place",
+                            "1": "Y Sam"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_name",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_contact",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 3.123ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT cust_name, cust_contact\nFROM prodcust1\nWHERE prod_id = 'TNT2'",
+                    "updatable": false,
+                    "fullTableName": "prodcust1"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 22,
+                "end": 26,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "287a10e7-b37a-4bb7-db22-f3fe8a683837",
+                            "content": "OK, 0 records retrieved in 9.728ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 152
+                        },
+                        "contentStart": 24,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 152,
+                            "length": 0
+                        },
+                        "contentStart": 151,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 27,
+                "end": 28,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "7b0fe1a6-469e-4cda-bd0d-370f4580f05e"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 21
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "5cdc8c92-d84f-4c66-c6f1-be67002b0798",
+                    "resultId": "7b0fe1a6-469e-4cda-bd0d-370f4580f05e",
+                    "rows": [
+                        {
+                            "0": "ACME(USA)"
+                        },
+                        {
+                            "0": "Anvils R Us(USA)"
+                        },
+                        {
+                            "0": "Furball Inc.(USA)"
+                        },
+                        {
+                            "0": "Jet Set(England)"
+                        },
+                        {
+                            "0": "Jouets Et Ours(France)"
+                        },
+                        {
+                            "0": "LT Supplies(USA)"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "vend_title",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 2.487ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT *\nFROM vendl1",
+                    "updatable": false,
+                    "fullTableName": "vendl1"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 29,
+                "end": 33,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "adc9f035-45eb-4786-8731-3b452a0eac0b",
+                            "content": "OK, 0 records retrieved in 11.18ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 123
+                        },
+                        "contentStart": 21,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 34,
+                "end": 35,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "36e57604-e4aa-463d-cf12-2d05628f742c"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 21
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "5cdc8c92-d84f-4c66-c6f1-be67002b0798",
+                    "resultId": "36e57604-e4aa-463d-cf12-2d05628f742c",
+                    "rows": [
+                        {
+                            "0": 10001,
+                            "1": "Coyote Inc.",
+                            "2": "ylee@coyote.com"
+                        },
+                        {
+                            "0": 10003,
+                            "1": "Wascals",
+                            "2": "rabbit@wascally.com"
+                        },
+                        {
+                            "0": 10004,
+                            "1": "Yosemite Place",
+                            "2": "sam@yosemite.com"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_email",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 3 records retrieved in 4.556ms"
+                    },
+                    "totalRowCount": 3,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT *\nFROM custem",
+                    "updatable": false,
+                    "fullTableName": "custem"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 36,
+                "end": 39,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "001fa653-19da-4015-b2aa-af4b235d1044",
+                            "content": "OK, 0 records retrieved in 9.607ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 139
+                        },
+                        "contentStart": 19,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 40,
+                "end": 42,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "f78aecd1-97ca-4140-8975-ab2452ef01b7"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 47
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "5cdc8c92-d84f-4c66-c6f1-be67002b0798",
+                    "resultId": "f78aecd1-97ca-4140-8975-ab2452ef01b7",
+                    "rows": [
+                        {
+                            "0": 20005,
+                            "1": "ANV01",
+                            "2": 10,
+                            "3": "5.99",
+                            "4": "59.90"
+                        },
+                        {
+                            "0": 20005,
+                            "1": "ANV02",
+                            "2": 3,
+                            "3": "9.99",
+                            "4": "29.97"
+                        },
+                        {
+                            "0": 20005,
+                            "1": "TNT2",
+                            "2": 5,
+                            "3": "10.00",
+                            "4": "50.00"
+                        },
+                        {
+                            "0": 20005,
+                            "1": "FB",
+                            "2": 1,
+                            "3": "10.00",
+                            "4": "10.00"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "order_num",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "prod_id",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "quantity",
+                            "field": "2",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "item_price",
+                            "field": "3",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "exp_price",
+                            "field": "4",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 4 records retrieved in 3.432ms"
+                    },
+                    "totalRowCount": 4,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT *\nFROM oditprice1\nWHERE order_num=20005",
+                    "updatable": false,
+                    "fullTableName": "oditprice1"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 43,
+                "end": 44,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "7a144a1d-99ac-4241-9b20-27df1796685c"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 39
+                        },
+                        "contentStart": 16,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "5cdc8c92-d84f-4c66-c6f1-be67002b0798",
+                    "resultId": "7a144a1d-99ac-4241-9b20-27df1796685c",
+                    "rows": [
+                        {
+                            "0": "vendl",
+                            "1": "CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vendl` AS select concat(rtrim(`vendors`.`vend_name`),'(',rtrim(`vendors`.`vend_country`),')') AS `vend_title` from `vendors` order by `vendors`.`vend_name`",
+                            "2": "utf8mb4",
+                            "3": "utf8mb4_0900_ai_ci"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "View",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "Create View",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "character_set_client",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "collation_connection",
+                            "field": "3",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 3.011ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "##22.3 查看创建视图的语句\nSHOW CREATE VIEW vendl",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 45,
+                "end": 46,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "4893b6e9-691c-4227-b93f-9b01fa9f46d1",
+                            "content": "OK, 0 records retrieved in 20.433ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 30
+                        },
+                        "contentStart": 12,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 47,
+                "end": 50,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "ffde7483-1e16-4b32-db0a-e4826afe0cb5",
+                            "content": "OK, 0 records retrieved in 1.549ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 57
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 51,
+                "end": 57,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "52f22c56-4877-43e7-94ff-30a7b62f657d",
+                            "content": "OK, 0 records retrieved in 14.629ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 188
+                        },
+                        "contentStart": 36,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 58,
+                "end": 65,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "96a5ff49-f6b6-41ac-d503-7e8049856bcc",
+                        "6863ac34-3b75-4be2-d925-550081244738"
+                    ]
+                },
+                "currentHeight": 270.421875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 331
+                        },
+                        "contentStart": 118,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 331,
+                            "length": 35
+                        },
+                        "contentStart": 332,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "5cdc8c92-d84f-4c66-c6f1-be67002b0798",
+                    "resultId": "96a5ff49-f6b6-41ac-d503-7e8049856bcc",
+                    "rows": [
+                        {
+                            "0": 10001,
+                            "1": "Coyote Inc.",
+                            "2": "200 Maple Lane",
+                            "3": "Detroit",
+                            "4": "MI",
+                            "5": "44444",
+                            "6": "USA",
+                            "7": "Y Lee",
+                            "8": "ylee@coyote.com"
+                        },
+                        {
+                            "0": 10001,
+                            "1": "Coyote Inc.",
+                            "2": "200 Maple Lane",
+                            "3": "Detroit",
+                            "4": "MI",
+                            "5": "44444",
+                            "6": "USA",
+                            "7": "Y Lee",
+                            "8": "ylee@coyote.com"
+                        },
+                        {
+                            "0": 10003,
+                            "1": "Wascals",
+                            "2": "1 Sunny Place",
+                            "3": "Muncie",
+                            "4": "IN",
+                            "5": "42222",
+                            "6": "USA",
+                            "7": "Jim Jones",
+                            "8": "rabbit@wascally.com"
+                        },
+                        {
+                            "0": 10004,
+                            "1": "Yosemite Place",
+                            "2": "829 Riverside Drive",
+                            "3": "Phoenix",
+                            "4": "AZ",
+                            "5": "88888",
+                            "6": "USA",
+                            "7": "Y Sam",
+                            "8": "sam@yosemite.com"
+                        },
+                        {
+                            "0": 10005,
+                            "1": "Funds",
+                            "2": "4545 53rd Street",
+                            "3": "Chicago",
+                            "4": "IL",
+                            "5": "54545",
+                            "6": "USA",
+                            "7": "E Fudd",
+                            "8": null
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "cust_id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_name",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_address",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_city",
+                            "field": "3",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_state",
+                            "field": "4",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_zip",
+                            "field": "5",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_country",
+                            "field": "6",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_contact",
+                            "field": "7",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "cust_email",
+                            "field": "8",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 5 records retrieved in 6.606ms"
+                    },
+                    "totalRowCount": 5,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 1,
+                    "sql": "\nSELECT *\nFROM customerswithorders",
+                    "updatable": false,
+                    "fullTableName": "customerswithorders"
+                },
+                {
+                    "tabId": "5cdc8c92-d84f-4c66-c6f1-be67002b0798",
+                    "resultId": "6863ac34-3b75-4be2-d925-550081244738",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 0 records retrieved in 28.029ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "/*E2\n\n*/\nCREATE VIEW customerswithorders AS\nSELECT customers.cust_id,cust_name,cust_address,cust_city,cust_state,cust_zip,cust_country,cust_contact,cust_email\nFROM customers JOIN orders ON customers.cust_id=orders.cust_id",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 66,
+                "end": 66,
                 "language": "mysql",
                 "currentSet": 1,
                 "statements": [
@@ -80,10 +1257,10 @@
                         "delimiter": ";",
                         "span": {
                             "start": 0,
-                            "length": 7
+                            "length": 0
                         },
                         "contentStart": 0,
-                        "state": 1
+                        "state": 0
                     }
                 ]
             },
