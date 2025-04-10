@@ -1,0 +1,776 @@
+{
+    "type": "MySQLNotebook",
+    "version": "1.0",
+    "caption": "DB Notebook",
+    "content": "\\about\n#C26 管理事务处理\n#26.1 事务处理\n-- 保证成批的mysql操作要么全部执行,要么都不执行\n-- 回滚ROLLBACK:撤销指定SQL语句\n-- 提交COMMIT:把未存储的SQL语句结果写入数据库表\n-- 保存点SAVEPOINT:事务处理中设置的临时占位符,可对其回滚,来达到回滚一部分而不是整个事务的效果\n#26.2 控制事务处理\n-- 使用下面的语句来标识事务的开始\nSTART TRANSACTION;\n##26.2.1 使用ROLLBACK回滚\n/*\n可以回滚的语句:INSERT,UPDATE,DELETE\n不可回滚的语句:SELECT,CREATE,DROP\n*/\n\nSELECT * FROM ordertotals;\nSTART TRANSACTION;\nDELETE FROM ordertotals;\nSELECT * FROM ordertotals;\nROLLBACK;\nSELECT * FROM ordertotals;\n##26.2.2 使用COMMIT提交\n/*\n1.mysql语句通常直接写入数据库表,属于隐式提交\n2.但在事务处理块中,需要显式提交\n3.在ROLLBACK或COMMIT执行后,事务自动关闭\n*/\nSTART TRANSACTION;\nDELETE FROM orderitems WHERE order_num=20010;\nDELETE FROM orders WHERE order_num=20010;\nCOMMIT;\n##26.2.3 使用保存点SAVEPOINT\n/*\n1.有时候我们只想回滚一部分\n2.每个保存点都要有唯一的名称,这样才能回滚到指定保存点\n3.保存点在事务结束后自动释放,也可以用RELEASE SAVEPOINT手动释放\n*/\n-- 创建保存点\nSAVEPOINT dele1;\n-- 回滚到保存点del1\nROLLBACK TO dele1;\n##26.2.4 更改默认的提交行为\n/*\n1.标志auotocommit默认为1,,也就是自动提交\n2.如果要手动提交可以置0\n3.autocommit标志针对每个连接,而不是服务器\n*/\nSET autocommit=0;",
+    "options": {
+        "tabSize": 4,
+        "indentSize": 4,
+        "insertSpaces": true,
+        "defaultEOL": "LF",
+        "trimAutoWhitespace": true
+    },
+    "viewState": {
+        "cursorState": [
+            {
+                "inSelectionMode": false,
+                "selectionStart": {
+                    "lineNumber": 45,
+                    "column": 29
+                },
+                "position": {
+                    "lineNumber": 45,
+                    "column": 29
+                }
+            }
+        ],
+        "viewState": {
+            "scrollLeft": 0,
+            "firstPosition": {
+                "lineNumber": 24,
+                "column": 1
+            },
+            "firstPositionDeltaTop": -16
+        },
+        "contributionsState": {
+            "editor.contrib.folding": {},
+            "editor.contrib.wordHighlighter": false
+        }
+    },
+    "contexts": [
+        {
+            "state": {
+                "start": 1,
+                "end": 1,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "content": "Welcome to the MySQL Shell - DB Notebook.\n\nPress Ctrl+Enter to execute the code block.\n\nExecute \\sql to switch to SQL, \\js to JavaScript and \\ts to TypeScript mode.\nExecute \\help or \\? for help;",
+                            "language": "ansi"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 6
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 2,
+                "end": 7,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "09d948bf-27d6-4f6d-845d-806c8fd2702e",
+                            "content": "OK, 0 records retrieved in 0.746ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 161
+                        },
+                        "contentStart": 0,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 8,
+                "end": 10,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "6a8e8375-aeca-453a-a5bb-2fa083dfa26c",
+                            "content": "OK, 0 records retrieved in 4.086ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 50
+                        },
+                        "contentStart": 32,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 11,
+                "end": 15,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "591782a9-5685-46bd-f21e-0ee6f2802b3d",
+                            "content": "OK, 0 records retrieved in 1.069ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 3,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 83
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 17,
+                "end": 22,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "532af8dd-0370-4321-f432-fe32b0b17e48",
+                        "7fd7596b-f196-4cf1-a277-9148a4386ce5",
+                        "d8ebad60-ee76-4ca5-c68a-9e731c006173",
+                        "a407940b-bb9e-4f9d-d01f-9a2e4a4f1f6e",
+                        "2f2fe5b7-cf81-44fc-ffe8-1b86098e0e49",
+                        "71dc12dd-03fd-419d-9bf4-eea1fa7db40e"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 3,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 26
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 26,
+                            "length": 19
+                        },
+                        "contentStart": 27,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 45,
+                            "length": 25
+                        },
+                        "contentStart": 47,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 70,
+                            "length": 27
+                        },
+                        "contentStart": 71,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 97,
+                            "length": 10
+                        },
+                        "contentStart": 98,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 107,
+                            "length": 27
+                        },
+                        "contentStart": 108,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "dcbf892f-4529-4bb4-bf96-ee70cdb1e808",
+                    "resultId": "532af8dd-0370-4321-f432-fe32b0b17e48",
+                    "rows": [
+                        {
+                            "0": 20005,
+                            "1": "142.38"
+                        },
+                        {
+                            "0": 20009,
+                            "1": "36.55"
+                        },
+                        {
+                            "0": 20006,
+                            "1": "52.25"
+                        },
+                        {
+                            "0": 20007,
+                            "1": "950.00"
+                        },
+                        {
+                            "0": 20008,
+                            "1": "118.75"
+                        },
+                        {
+                            "0": 20008,
+                            "1": "118.75"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "order_num",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "total",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 1.17ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT * FROM ordertotals",
+                    "updatable": false,
+                    "fullTableName": "ordertotals"
+                },
+                {
+                    "tabId": "dcbf892f-4529-4bb4-bf96-ee70cdb1e808",
+                    "resultId": "7fd7596b-f196-4cf1-a277-9148a4386ce5",
+                    "rows": [],
+                    "columns": [
+                        {
+                            "title": "order_num",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "total",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 0 records retrieved in 0.721ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 3,
+                    "sql": "\nSELECT * FROM ordertotals",
+                    "updatable": false,
+                    "fullTableName": "ordertotals"
+                },
+                {
+                    "tabId": "dcbf892f-4529-4bb4-bf96-ee70cdb1e808",
+                    "resultId": "d8ebad60-ee76-4ca5-c68a-9e731c006173",
+                    "rows": [
+                        {
+                            "0": 20005,
+                            "1": "142.38"
+                        },
+                        {
+                            "0": 20009,
+                            "1": "36.55"
+                        },
+                        {
+                            "0": 20006,
+                            "1": "52.25"
+                        },
+                        {
+                            "0": 20007,
+                            "1": "950.00"
+                        },
+                        {
+                            "0": 20008,
+                            "1": "118.75"
+                        },
+                        {
+                            "0": 20008,
+                            "1": "118.75"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "order_num",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "total",
+                            "field": "1",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 2.054ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 5,
+                    "sql": "\nSELECT * FROM ordertotals",
+                    "updatable": false,
+                    "fullTableName": "ordertotals"
+                },
+                {
+                    "tabId": "dcbf892f-4529-4bb4-bf96-ee70cdb1e808",
+                    "resultId": "a407940b-bb9e-4f9d-d01f-9a2e4a4f1f6e",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 0 records retrieved in 0.638ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 1,
+                    "sql": "\nSTART TRANSACTION",
+                    "updatable": false
+                },
+                {
+                    "tabId": "dcbf892f-4529-4bb4-bf96-ee70cdb1e808",
+                    "resultId": "2f2fe5b7-cf81-44fc-ffe8-1b86098e0e49",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 6 rows affected in 2.045ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 2,
+                    "sql": "\nDELETE FROM ordertotals",
+                    "updatable": false
+                },
+                {
+                    "tabId": "dcbf892f-4529-4bb4-bf96-ee70cdb1e808",
+                    "resultId": "71dc12dd-03fd-419d-9bf4-eea1fa7db40e",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 0 records retrieved in 3.187ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 4,
+                    "sql": "\nROLLBACK",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 23,
+                "end": 28,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "58a04db1-3d67-46f2-f0b5-4dd03319b022",
+                            "content": "OK, 0 records retrieved in 0.995ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 99
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 29,
+                "end": 32,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "68ddcd76-26ab-47e1-9b90-9c24202e145c",
+                            "content": "OK, 0 records retrieved in 0.873ms"
+                        },
+                        {
+                            "type": 2,
+                            "index": 1,
+                            "resultId": "3b68dd09-e2bb-452e-f87a-3ee1612e8f18",
+                            "content": "OK, 0 records retrieved in 15.84ms"
+                        },
+                        {
+                            "type": 2,
+                            "index": 2,
+                            "resultId": "84ee3f13-5561-4d52-abe9-134ce8002b13",
+                            "content": "OK, 0 records retrieved in 42.235ms"
+                        },
+                        {
+                            "type": 2,
+                            "index": 3,
+                            "resultId": "0efe8b4e-3df8-444b-89a6-fdcb88a8fa4e",
+                            "content": "OK, 0 records retrieved in 2.563ms"
+                        }
+                    ]
+                },
+                "currentHeight": 103.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 18
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 18,
+                            "length": 46
+                        },
+                        "contentStart": 20,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 64,
+                            "length": 42
+                        },
+                        "contentStart": 66,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 106,
+                            "length": 8
+                        },
+                        "contentStart": 107,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 33,
+                "end": 38,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "50df6904-e400-42cd-940e-4cae9477f2a8",
+                            "content": "OK, 0 records retrieved in 0.996ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 115
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 39,
+                "end": 40,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "b9e745df-5f6d-420e-fbac-03a74dbd0fb3",
+                            "content": "OK, 0 records retrieved in 0.854ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 25
+                        },
+                        "contentStart": 9,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 41,
+                "end": 42,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 0,
+                            "index": 0,
+                            "content": "MySQL Error (1305): SAVEPOINT dele1 does not exist",
+                            "language": "ansi"
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": ""
+                    }
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 32
+                        },
+                        "contentStart": 14,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 43,
+                "end": 48,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "6335fcd5-2e70-490d-b396-ad3ba589fba3",
+                            "content": "OK, 0 records retrieved in 0.896ms"
+                        }
+                    ]
+                },
+                "currentHeight": 31.96875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 95
+                        },
+                        "contentStart": -1,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 49,
+                "end": 49,
+                "language": "mysql",
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 17
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        }
+    ]
+}
